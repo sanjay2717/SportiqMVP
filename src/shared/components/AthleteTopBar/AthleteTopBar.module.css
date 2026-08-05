@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: var(--nav-height);
+  height: calc(var(--nav-height) + env(safe-area-inset-top, 0px));
   background-color: var(--color-glass-bg);
   backdrop-filter: blur(var(--blur-md));
   border-bottom: 1px solid var(--color-neutral-200);
@@ -13,6 +13,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--spacing-4);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .left {
@@ -35,8 +36,8 @@
 }
 
 .iconButton {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-full);
   background: transparent;
   border: none;

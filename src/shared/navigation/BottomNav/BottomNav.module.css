@@ -3,7 +3,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--spacing-16);
+  height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
   background-color: var(--color-glass-bg);
   backdrop-filter: blur(var(--blur-md));
   box-shadow: var(--shadow-glass);
@@ -13,8 +13,9 @@
   justify-content: space-around;
   align-items: center;
   padding: 0 var(--spacing-2);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
 
 
 .navItems {

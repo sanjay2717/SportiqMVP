@@ -1,10 +1,10 @@
 .layout {
   min-height: 100vh;
-  padding-bottom: var(--nav-height);
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
   background-color: var(--color-bg-secondary);
 }
 
 .layoutTopNav {
-  padding-top: var(--nav-height);
+  padding-top: calc(var(--nav-height) + env(safe-area-inset-top, 0px));
 }
 
