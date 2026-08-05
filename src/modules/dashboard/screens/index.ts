@@ -9,5 +9,5 @@ export * from './ReportsScreen/ReportsScreen';
 export * from './LeaderboardsScreen/LeaderboardsScreen';
 export * from './CreateTournamentScreen/CreateTournamentScreen';
 export * from './TeamManagementScreen/TeamManagementScreen';
-export * from './OrganizationDetailScreen/OrganizationDetailScreen';
-
+export * from './OrganizationDetailScreen/OrganizationDetailScreen';export * from './AssignTrainingScreen/AssignTrainingScreen';
+export * from './AnnouncementsScreen/AnnouncementsScreen';

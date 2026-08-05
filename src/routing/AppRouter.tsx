@@ -18,7 +18,9 @@ import {
   OrganizationDetailScreen,
   ReportsScreen,
   LeaderboardsScreen,
-  GovernmentAnalyticsScreen
+  GovernmentAnalyticsScreen,
+  AssignTrainingScreen,
+  AnnouncementsScreen
 } from '../modules/dashboard/screens';
 
 
@@ -239,9 +241,9 @@ export function AppRouter() {
         />
 
         {/* Quick Actions Temporary Placeholders */}
-        <Route path={ROUTES.ASSIGN_TRAINING} element={<ProtectedRoute><PlaceholderScreen title="Assign Training" description="// TODO: replace with real Assign Training screen" /></ProtectedRoute>} />
+        <Route path={ROUTES.ASSIGN_TRAINING} element={<ProtectedRoute><AppLayout><AssignTrainingScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.MY_ATHLETES} element={<ProtectedRoute><AppLayout><CoachAthleteSearchScreen /></AppLayout></ProtectedRoute>} />
-        <Route path={ROUTES.ANNOUNCEMENTS} element={<ProtectedRoute><PlaceholderScreen title="Announcements" description="// TODO: replace with real Announcements screen" /></ProtectedRoute>} />
+        <Route path={ROUTES.ANNOUNCEMENTS} element={<ProtectedRoute><AppLayout><AnnouncementsScreen /></AppLayout></ProtectedRoute>} />
         
         {/* Events Module */}
         <Route path={ROUTES.EVENTS} element={<ProtectedRoute><AppLayout><EventsListScreen /></AppLayout></ProtectedRoute>} />
