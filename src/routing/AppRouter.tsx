@@ -29,6 +29,8 @@ import {
   CreateEventScreen
 } from '../modules/events/screens';
 
+import { NotificationsScreen } from '../modules/notifications/screens';
+
 import styles from './Routing.module.css';
 
 // Helper component to redirect authenticated users away from public auth pages
@@ -219,15 +221,13 @@ export function AppRouter() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path={ROUTES.NOTIFICATIONS}
+        <Route 
+          path={ROUTES.NOTIFICATIONS} 
           element={
             <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderScreen title="Notifications" description="Notifications will be implemented here." />
-              </AppLayout>
+              <NotificationsScreen />
             </ProtectedRoute>
-          }
+          } 
         />
         <Route
           path={ROUTES.SETTINGS}
