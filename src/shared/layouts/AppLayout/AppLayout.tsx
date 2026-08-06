@@ -3,7 +3,7 @@ import { useAuth } from '@core/auth/AuthProvider';
 import { UserRole } from '@core/auth/types';
 import { BottomNavBar } from '@shared/navigation/BottomNav';
 import { AICoachWidget } from '@shared/components/AICoachWidget';
-import { AthleteTopBar } from '@shared/components/AthleteTopBar';
+import { TopBar } from '@shared/components/TopBar';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -15,8 +15,8 @@ export function AppLayout({ children }: AppLayoutProps) {
   const isAthlete = user?.role === UserRole.Athlete;
 
   return (
-    <div className={`${styles.layout} ${isAthlete ? styles.layoutTopNav : ''}`}>
-      {isAthlete && <AthleteTopBar />}
+    <div className={`${styles.layout} ${styles.layoutTopNav}`}>
+      <TopBar showSearch={isAthlete} />
       {children}
       <BottomNavBar />
       {isAthlete && <AICoachWidget />}

@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@core/auth/AuthProvider';
 import { getOwnProfile } from '@modules/profile/services/profileService';
 import { ROUTES } from '@routing/routes';
-import styles from './AthleteTopBar.module.css';
+import styles from './TopBar.module.css';
 
-export function AthleteTopBar() {
+interface TopBarProps {
+  showSearch?: boolean;
+}
+
+export function TopBar({ showSearch = false }: TopBarProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -33,8 +37,23 @@ export function AthleteTopBar() {
         <span className={styles.wordmark}>SportIQ</span>
       </div>
       <div className={styles.right}>
-        <button className={styles.iconButton} aria-label="Search" type="button">
-          <span className="material-symbols-outlined">search</span>
+        {showSearch && (
+          <button 
+            className={styles.iconButton} 
+            onClick={() => navigate(ROUTES.SEARCH)} 
+            aria-label="Search" 
+            type="button"
+          >
+            <span className="material-symbols-outlined">search</span>
+          </button>
+        )}
+        <button 
+          className={styles.iconButton} 
+          onClick={() => navigate(ROUTES.NOTIFICATIONS)} 
+          aria-label="Notifications" 
+          type="button"
+        >
+          <span className="material-symbols-outlined">notifications</span>
         </button>
         <button 
           className={styles.iconButton} 
@@ -56,4 +75,3 @@ export function AthleteTopBar() {
     </header>
   );
 }
-
