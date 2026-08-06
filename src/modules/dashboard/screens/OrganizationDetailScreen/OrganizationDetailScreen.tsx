@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../../core/database/supabaseClient';
-import { AppLayout } from '../../../../shared/layouts/AppLayout';
+
 import styles from './OrganizationDetailScreen.module.css';
 
 interface OrganizationProfile {
@@ -125,18 +125,18 @@ export function OrganizationDetailScreen() {
 
   if (isLoading) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.loadingState}>
           <div className={styles.spinner}></div>
           <p className={styles.loadingText}>Loading organization profile...</p>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
   if (error) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.errorState}>
           <span className={`material-symbols-outlined ${styles.errorIcon}`}>error</span>
           <p className={styles.errorText}>{error}</p>
@@ -144,13 +144,13 @@ export function OrganizationDetailScreen() {
             Retry
           </button>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
   if (!profile) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.notFoundState}>
           <span className={`material-symbols-outlined ${styles.notFoundIcon}`}>domain_disabled</span>
           <p className={styles.notFoundText}>Organization not found or not visible.</p>
@@ -158,7 +158,7 @@ export function OrganizationDetailScreen() {
             Go Back
           </button>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
@@ -167,7 +167,7 @@ export function OrganizationDetailScreen() {
   const sportsDisplay = formatSports(profile.selected_sports);
 
   return (
-    <AppLayout>
+    <>
       <main className={styles.container}>
         {/* Top Bar Navigation */}
         <header className={styles.topBar}>
@@ -352,6 +352,6 @@ export function OrganizationDetailScreen() {
           </div>
         </section>
       </main>
-    </AppLayout>
+    </>
   );
 }

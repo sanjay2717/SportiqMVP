@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../../core/database/supabaseClient';
 import { REGION_LIST } from '../../../../shared/constants/regions';
-import { AppLayout } from '../../../../shared/layouts/AppLayout';
+
 import styles from './AthletePublicProfileScreen.module.css';
 
 interface AthleteProfile {
@@ -69,36 +69,36 @@ export function AthletePublicProfileScreen() {
 
   if (isLoading) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.loadingState}>
           <div className={styles.spinner}></div>
           <p className={styles.loadingText}>Loading profile...</p>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
   if (error) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.errorState}>
           <span className={`material-symbols-outlined ${styles.errorIcon}`}>error</span>
           <p className={styles.errorText}>{error}</p>
           <button className={styles.retryButton} onClick={() => window.location.reload()}>Retry</button>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
   if (!profile) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.notFoundState}>
           <span className={`material-symbols-outlined ${styles.notFoundIcon}`}>person_off</span>
           <p className={styles.notFoundText}>Athlete not found or not visible.</p>
           <button className={styles.backToSearchButton} onClick={() => navigate(-1)}>Go Back</button>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
@@ -113,7 +113,7 @@ export function AthletePublicProfileScreen() {
     : 'A';
 
   return (
-    <AppLayout>
+    <>
       <main className={styles.container}>
         {/* 1. Hero / Header Section */}
         <section className={styles.headerImageContainer}>
@@ -277,6 +277,6 @@ export function AthletePublicProfileScreen() {
           </div>
         </div>
       </main>
-    </AppLayout>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppLayout } from '../../../../shared/layouts/AppLayout';
+
 import { getUpcomingEvents, DashboardEvent } from '../../../dashboard/services/organiserService';
 import styles from './NotificationsScreen.module.css';
 
@@ -27,24 +27,24 @@ export function NotificationsScreen() {
 
   if (isLoading) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.loadingState}>
           <div className={styles.spinner}></div>
           <p className={styles.loadingText}>Loading notifications...</p>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
   if (error) {
     return (
-      <AppLayout>
+      <>
         <div className={styles.errorState}>
           <span className={`material-symbols-outlined ${styles.errorIcon}`}>error</span>
           <p className={styles.errorText}>{error}</p>
           <button className={styles.retryButton} onClick={() => window.location.reload()}>Retry</button>
         </div>
-      </AppLayout>
+      </>
     );
   }
 
@@ -59,7 +59,7 @@ export function NotificationsScreen() {
   };
 
   return (
-    <AppLayout>
+    <>
       <main className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.title}>Notifications</h1>
@@ -141,6 +141,6 @@ export function NotificationsScreen() {
           </section>
         </div>
       </main>
-    </AppLayout>
+    </>
   );
 }

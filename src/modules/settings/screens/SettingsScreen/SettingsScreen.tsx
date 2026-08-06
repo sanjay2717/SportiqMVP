@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { AppLayout } from '../../../../shared/layouts/AppLayout';
+
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import styles from './SettingsScreen.module.css';
 
@@ -44,7 +44,7 @@ export function SettingsScreen() {
   };
 
   return (
-    <AppLayout>
+    <>
       <main className={styles.container}>
         <header className={styles.header}>
           <button className={styles.backButton} onClick={() => navigate(-1)} aria-label="Go back">
@@ -105,6 +105,6 @@ export function SettingsScreen() {
           </button>
         </div>
       </main>
-    </AppLayout>
+    </>
   );
 }
