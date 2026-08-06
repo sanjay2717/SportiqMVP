@@ -139,11 +139,11 @@ Route: `/notifications` (registered, Protected, currently renders `PlaceholderSc
 
 Route: `/settings` (registered, Protected, currently renders `PlaceholderScreen`). 1 screen.
 
-Ownership note: "Profile Settings" (`f53e82b64d484729a86a69d17e0619cd`) could belong to either Settings or Profile module. Pending operator decision. Listed here provisionally.
+Ownership resolved: "Profile Settings" (`f53e82b64d484729a86a69d17e0619cd`) belongs to the Settings module.
 
 | Screen Name | Screen ID | Build Status | Notes |
 |---|---|---|---|
-| Profile Settings | `f53e82b64d484729a86a69d17e0619cd` | Not built | Application and account settings panel — module ownership TBD |
+| Profile Settings | `f53e82b64d484729a86a69d17e0619cd` | Not built | Application and account settings panel |
 
 ---
 

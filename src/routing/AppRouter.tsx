@@ -30,6 +30,7 @@ import {
 } from '../modules/events/screens';
 
 import { NotificationsScreen } from '../modules/notifications/screens';
+import { SettingsScreen } from '../modules/settings/screens';
 
 import styles from './Routing.module.css';
 
@@ -229,15 +230,13 @@ export function AppRouter() {
             </ProtectedRoute>
           } 
         />
-        <Route
-          path={ROUTES.SETTINGS}
+        <Route 
+          path={ROUTES.SETTINGS} 
           element={
             <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderScreen title="Settings" description="Settings will be implemented here." />
-              </AppLayout>
+              <SettingsScreen />
             </ProtectedRoute>
-          }
+          } 
         />
 
         {/* Quick Actions Temporary Placeholders */}
