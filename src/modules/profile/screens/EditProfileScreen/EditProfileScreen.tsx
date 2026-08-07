@@ -197,7 +197,7 @@ export function EditProfileScreen() {
               </div>
             )}
             <div className={styles.avatarOverlay}>
-              <span className="material-symbols-outlined" style={{ color: 'var(--color-on-primary)', fontVariationSettings: "'FILL' 1" }}>
+              <span className="material-symbols-outlined" style={{ color: 'var(--color-text-inverse)', fontVariationSettings: "'FILL' 1" }}>
                 photo_camera
               </span>
             </div>
@@ -353,7 +353,7 @@ export function EditProfileScreen() {
         <div className={styles.formGroupFull}>
           <label className={styles.label}>Instagram Username</label>
           <div className={styles.inputWrapper}>
-            <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-body-lg)', fontSize: 'var(--text-body-lg)', color: 'var(--color-on-surface-variant)' }}>
+            <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-base)', color: 'var(--color-text-secondary)' }}>
               @
             </span>
             <input 
