@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../../routing/routes';
 import { useAuth } from '../../../../core/auth/AuthProvider';
+import { UserRole } from '../../../../core/auth/types';
 import {
   getOwnProfile,
   updateEditProfile,
@@ -253,15 +254,19 @@ export function EditProfileScreen() {
             />
             <p className={styles.helperText}>Contact support to change email.</p>
           </div>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Date of Birth</label>
-            <input 
-              className={styles.input} 
-              type="date" 
-              value={dateOfBirth} 
-              onChange={e => setDateOfBirth(e.target.value)} 
-            />
-          </div>
+          
+          {user?.role === UserRole.Athlete && (
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Date of Birth</label>
+              <input 
+                className={styles.input} 
+                type="date" 
+                value={dateOfBirth} 
+                onChange={e => setDateOfBirth(e.target.value)} 
+              />
+            </div>
+          )}
+
           <div className={styles.formGroup}>
             <label className={styles.label}>Location</label>
             <div className={styles.inputWrapper}>
@@ -282,41 +287,46 @@ export function EditProfileScreen() {
       <section className={styles.section}>
         <h3 className={styles.sectionHeader}>Professional Details</h3>
         <div className={styles.formGrid}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Primary Sport</label>
-            <div className={styles.inputWrapper}>
-              <select 
-                className={styles.input} 
-                style={{ appearance: 'none', paddingRight: '40px' }}
-                value={primarySport}
-                onChange={e => setPrimarySport(e.target.value)}
-              >
-                <option value="Football (Soccer)">Football (Soccer)</option>
-                <option value="Basketball">Basketball</option>
-                <option value="Tennis">Tennis</option>
-                <option value="Athletics">Athletics</option>
-              </select>
-              <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
-            </div>
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Position / Role</label>
-            <input 
-              className={styles.input} 
-              type="text" 
-              value={position} 
-              onChange={e => setPosition(e.target.value)} 
-            />
-          </div>
-          <div className={styles.formGroupFull}>
-            <label className={styles.label}>Current Team / Affiliation</label>
-            <input 
-              className={styles.input} 
-              type="text" 
-              value={currentTeam} 
-              onChange={e => setCurrentTeam(e.target.value)} 
-            />
-          </div>
+          {user?.role === UserRole.Athlete && (
+            <>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Primary Sport</label>
+                <div className={styles.inputWrapper}>
+                  <select 
+                    className={styles.input} 
+                    style={{ appearance: 'none', paddingRight: '40px' }}
+                    value={primarySport}
+                    onChange={e => setPrimarySport(e.target.value)}
+                  >
+                    <option value="Football (Soccer)">Football (Soccer)</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Athletics">Athletics</option>
+                  </select>
+                  <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Position / Role</label>
+                <input 
+                  className={styles.input} 
+                  type="text" 
+                  value={position} 
+                  onChange={e => setPosition(e.target.value)} 
+                />
+              </div>
+              <div className={styles.formGroupFull}>
+                <label className={styles.label}>Current Team / Affiliation</label>
+                <input 
+                  className={styles.input} 
+                  type="text" 
+                  value={currentTeam} 
+                  onChange={e => setCurrentTeam(e.target.value)} 
+                />
+              </div>
+            </>
+          )}
+          
           <div className={styles.formGroupFull}>
             <label className={styles.label}>Career Bio</label>
             <textarea 
@@ -334,38 +344,40 @@ export function EditProfileScreen() {
         </div>
       </section>
 
-      {/* Social & Links Section */}
-      <section className={styles.section}>
-        <h3 className={styles.sectionHeader}>Social & Links</h3>
-        <div className={styles.formGroupFull}>
-          <label className={styles.label}>Highlight Reel URL</label>
-          <div className={styles.inputWrapper}>
-            <input 
-              className={`${styles.input} ${styles.inputWithIconLeft}`} 
-              type="url" 
-              value={highlightReelUrl} 
-              onChange={e => setHighlightReelUrl(e.target.value)} 
-              placeholder="https://youtube.com/watch?v=..."
-            />
-            <span className={`material-symbols-outlined ${styles.iconLeft}`}>play_circle</span>
+      {/* Social & Links Section (Athlete Only) */}
+      {user?.role === UserRole.Athlete && (
+        <section className={styles.section}>
+          <h3 className={styles.sectionHeader}>Social & Links</h3>
+          <div className={styles.formGroupFull}>
+            <label className={styles.label}>Highlight Reel URL</label>
+            <div className={styles.inputWrapper}>
+              <input 
+                className={`${styles.input} ${styles.inputWithIconLeft}`} 
+                type="url" 
+                value={highlightReelUrl} 
+                onChange={e => setHighlightReelUrl(e.target.value)} 
+                placeholder="https://youtube.com/watch?v=..."
+              />
+              <span className={`material-symbols-outlined ${styles.iconLeft}`}>play_circle</span>
+            </div>
           </div>
-        </div>
-        <div className={styles.formGroupFull}>
-          <label className={styles.label}>Instagram Username</label>
-          <div className={styles.inputWrapper}>
-            <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-base)', color: 'var(--color-text-secondary)' }}>
-              @
-            </span>
-            <input 
-              className={styles.input} 
-              style={{ paddingLeft: '40px' }}
-              type="text" 
-              value={instagramUsername} 
-              onChange={e => setInstagramUsername(e.target.value)} 
-            />
+          <div className={styles.formGroupFull}>
+            <label className={styles.label}>Instagram Username</label>
+            <div className={styles.inputWrapper}>
+              <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-base)', color: 'var(--color-text-secondary)' }}>
+                @
+              </span>
+              <input 
+                className={styles.input} 
+                style={{ paddingLeft: '40px' }}
+                type="text" 
+                value={instagramUsername} 
+                onChange={e => setInstagramUsername(e.target.value)} 
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       
       {/* Loading overlay for saves */}
       {isSaving && (
