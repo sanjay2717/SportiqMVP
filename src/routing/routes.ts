@@ -37,6 +37,8 @@ export const ROUTES = {
   REPORTS: '/reports',
   LEADERBOARDS: '/leaderboards',
   ACHIEVEMENTS: '/achievements',
+  ACHIEVEMENTS_FORM: '/achievements/form',
+  ACHIEVEMENTS_EDIT: '/achievements/:id/edit',
   SCHEDULE: '/schedule',
   TOURNAMENTS: '/tournaments',
   ANALYTICS: '/analytics',

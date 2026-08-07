@@ -1,5 +1,6 @@
 // STATIC DEMO DATA — relocated from dashboard, no real performance data pipeline exists yet.
 import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../../../routing/routes';
 import styles from './StatisticsScreen.module.css';
 import { ATHLETE_MOCK_DATA } from '../../../dashboard/constants/mockData';
 import { ProfileSectionHeader } from '../../components/ProfileSectionHeader/ProfileSectionHeader';
@@ -71,7 +72,11 @@ export function StatisticsScreen() {
       </section>
 
       <section className={styles.section}>
-        <ProfileSectionHeader title="Recent Achievements" />
+        <ProfileSectionHeader 
+          title="Recent Achievements" 
+          actionText="View All" 
+          onActionClick={() => navigate(ROUTES.ACHIEVEMENTS)} 
+        />
         <div className={styles.achievementsList}>
           {ATHLETE_MOCK_DATA.achievements.map(ach => (
             <div key={ach.id} className={styles.achievementItem}>

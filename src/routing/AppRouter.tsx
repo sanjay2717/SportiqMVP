@@ -4,7 +4,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { OnboardingGate } from './OnboardingGate';
 import { useAuth } from '../core/auth/AuthProvider';
 import { WelcomeScreen, SplashScreen, LoginScreen, SignUpScreen, VerifyEmailScreen, ForgotPasswordScreen } from '../modules/authentication/screens';
-import { SelectSportsScreen, CreateSportsProfileScreen, ProfilePictureUploadScreen, PersonalInformationScreen, PlayingInformationScreen, ProfileCompletionScreen, OwnProfileScreen, AthletePublicProfileScreen, StatisticsScreen, EditProfileScreen } from '../modules/profile/screens';
+import { SelectSportsScreen, CreateSportsProfileScreen, ProfilePictureUploadScreen, PersonalInformationScreen, PlayingInformationScreen, ProfileCompletionScreen, OwnProfileScreen, AthletePublicProfileScreen, StatisticsScreen, EditProfileScreen, AchievementsGalleryScreen, AchievementForm } from '../modules/profile/screens';
 import { PlaceholderScreen } from '@shared/components/PlaceholderScreen';
 import { AppLayout } from '@shared/layouts/AppLayout';
 import { UserRole } from '../core/auth/types';
@@ -263,7 +263,9 @@ export function AppRouter() {
         <Route path={ROUTES.ORGANIZATION_DETAIL} element={<ProtectedRoute><AppLayout><OrganizationDetailScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.REPORTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Reports screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.LEADERBOARDS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Leaderboards screen" /></AppLayout></ProtectedRoute>} />
-        <Route path={ROUTES.ACHIEVEMENTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Achievements" description="// TODO: replace with real Achievements screen" /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.ACHIEVEMENTS} element={<ProtectedRoute><AppLayout><AchievementsGalleryScreen /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.ACHIEVEMENTS_FORM} element={<ProtectedRoute><AppLayout><AchievementForm /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.ACHIEVEMENTS_EDIT} element={<ProtectedRoute><AppLayout><AchievementForm /></AppLayout></ProtectedRoute>} />
         
         <Route path={ROUTES.SCHEDULE} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Schedule" description="// TODO: replace with real Schedule screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.TOURNAMENTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Tournaments" description="// TODO: replace with real Tournaments screen" /></AppLayout></ProtectedRoute>} />

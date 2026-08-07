@@ -8,3 +8,5 @@ export * from './OwnProfileScreen/OwnProfileScreen';
 export * from './AthletePublicProfileScreen/AthletePublicProfileScreen';
 export * from './StatisticsScreen/StatisticsScreen';
 export * from './EditProfileScreen/EditProfileScreen';
+export * from './AchievementForm/AchievementForm';
+export * from './AchievementsGalleryScreen/AchievementsGalleryScreen';
