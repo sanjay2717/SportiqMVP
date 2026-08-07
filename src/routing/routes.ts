@@ -27,6 +27,7 @@ export const ROUTES = {
   CREATE_EVENT: '/events/create',
   CREATE_TOURNAMENT: '/tournaments/create',
   EVENTS: '/events',
+  EVENT_DETAILS: '/events/:id',
   APPROVALS: '/approvals',
   TEAM_MANAGEMENT: '/team-management',
   ATHLETE_DIRECTORY: '/athletes',

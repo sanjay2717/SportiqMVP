@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../../../routing/routes';
 import { SportEvent } from '../../services/eventService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
 import styles from './EventCard.module.css';
@@ -19,6 +21,8 @@ function formatSportName(sportId: string | null): string {
 }
 
 export function EventCard({ event }: EventCardProps) {
+  const navigate = useNavigate();
+
   const date = new Date(event.event_date);
   const formattedDate = date.toLocaleDateString(undefined, { 
     weekday: 'short', 
@@ -62,7 +66,10 @@ export function EventCard({ event }: EventCardProps) {
         </div>
       </div>
       <div className={styles.footer}>
-        <button className={styles.actionButton}>
+        <button 
+          className={styles.actionButton}
+          onClick={() => navigate(ROUTES.EVENT_DETAILS.replace(':id', event.id))}
+        >
           View Details
           <span className="material-symbols-outlined" style={{ fontSize: '16px', marginLeft: '4px' }}>arrow_forward</span>
         </button>

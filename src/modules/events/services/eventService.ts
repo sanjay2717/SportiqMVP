@@ -58,3 +58,30 @@ export async function getEvents(): Promise<SportEvent[]> {
     creator_name: event.profiles?.full_name || 'Unknown',
   })) as SportEvent[];
 }
+
+export async function getEventById(id: string): Promise<SportEvent | null> {
+  const { data, error } = await supabase
+    .from('events')
+    .select(`
+      *,
+      profiles:created_by (
+        full_name
+      )
+    `)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') {
+      // Row not found
+      return null;
+    }
+    console.error('Error fetching event by id:', error);
+    throw error;
+  }
+
+  return {
+    ...data,
+    creator_name: data.profiles?.full_name || 'Unknown',
+  } as SportEvent;
+}

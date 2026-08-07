@@ -26,7 +26,8 @@ import {
 
 import {
   EventsListScreen,
-  CreateEventScreen
+  CreateEventScreen,
+  EventDetailsScreen
 } from '../modules/events/screens';
 
 import { NotificationsScreen } from '../modules/notifications/screens';
@@ -250,6 +251,7 @@ export function AppRouter() {
         
         {/* Events Module */}
         <Route path={ROUTES.EVENTS} element={<ProtectedRoute><AppLayout><EventsListScreen /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.EVENT_DETAILS} element={<ProtectedRoute><AppLayout><EventDetailsScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.CREATE_EVENT} element={<ProtectedRoute><AppLayout><CreateEventScreen /></AppLayout></ProtectedRoute>} />
         
         <Route path={ROUTES.CREATE_TOURNAMENT} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Create Tournament screen" /></AppLayout></ProtectedRoute>} />
