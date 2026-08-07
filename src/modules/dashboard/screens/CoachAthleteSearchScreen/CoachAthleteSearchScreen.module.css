@@ -111,13 +111,27 @@
 
 .filtersGrid {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-4);
-  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .filtersGrid {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 
 .dropdownWrapper {
   position: relative;
-  min-width: 160px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .dropdownWrapper {
+    width: auto;
+    min-width: 160px;
+  }
 }
 
 .dropdown {
@@ -173,21 +187,9 @@
 }
 
 .resultsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-4);
-}
-
-@media (min-width: 768px) {
-  .resultsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .resultsGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .emptyState {
