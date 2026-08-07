@@ -1,0 +1,291 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.header {
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-container-margin);
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.closeBtn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: none;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  margin-left: -0.5rem;
+  transition: background-color 0.2s;
+}
+
+.closeBtn:hover:not(:disabled) {
+  background-color: var(--color-surface-container);
+}
+
+.title {
+  font-family: var(--font-title-md);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.postBtn {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-label-md);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.postBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-600);
+  color: var(--color-white);
+}
+
+.postBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md) var(--spacing-container-margin) 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.errorBanner {
+  background-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--color-surface-container);
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.authorName {
+  font-family: var(--font-title-md);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.visibilityBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--color-surface-container);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  width: max-content;
+}
+
+.iconSm {
+  font-size: 16px !important;
+}
+
+.visibilityText {
+  font-family: var(--font-label-md);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.editorWrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 300px;
+  background: transparent;
+  border: none;
+  resize: none;
+  outline: none;
+  font-family: var(--font-body-lg);
+  font-size: var(--font-size-md);
+  color: var(--color-on-surface);
+  line-height: 1.6;
+  padding: 0;
+}
+
+.textarea::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.imagePreviewContainer {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--spacing-md);
+  border: 1px solid var(--color-surface-variant);
+}
+
+.imagePreview {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.removeImageBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.removeImageBtn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.removeImageBtn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--color-surface-variant);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 20;
+}
+
+.actionList {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-container-margin);
+  overflow-x: auto;
+  align-items: center;
+  scrollbar-width: none;
+}
+
+.actionList::-webkit-scrollbar {
+  display: none;
+}
+
+.actionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: 2.5rem;
+  padding: 0 1rem;
+  background-color: var(--color-surface-container);
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  font-family: var(--font-label-md);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.actionItem:hover:not(:disabled) {
+  background-color: var(--color-surface-variant);
+  color: var(--color-primary-600);
+}
+
+.iconColorPrimary {
+  color: var(--color-primary-500);
+  font-size: 20px !important;
+}
+
+.iconColorTertiary {
+  color: var(--color-tertiary-500);
+  font-size: 20px !important;
+}
+
+.sportSelectWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: 2.5rem;
+  padding: 0 1rem;
+  background-color: var(--color-surface-container);
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
+}
+
+.sportSelect {
+  background: transparent;
+  border: none;
+  font-family: var(--font-label-md);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-variant);
+  outline: none;
+  cursor: pointer;
+}

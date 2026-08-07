@@ -20,7 +20,8 @@ import {
   LeaderboardsScreen,
   GovernmentAnalyticsScreen,
   AssignTrainingScreen,
-  AnnouncementsScreen
+  AnnouncementsScreen,
+  CreatePostScreen
 } from '../modules/dashboard/screens';
 
 
@@ -272,7 +273,7 @@ export function AppRouter() {
         <Route path={ROUTES.ANALYTICS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Analytics screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.POSTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Posts" description="// TODO: replace with real Posts screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.NETWORK} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Network" description="// TODO: replace with real Network screen" /></AppLayout></ProtectedRoute>} />
-        <Route path={ROUTES.CREATE} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Create Post — Coming Soon" description="Post creation will live here." /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.CREATE} element={<ProtectedRoute><AppLayout><CreatePostScreen /></AppLayout></ProtectedRoute>} />
 
         {/* Fallback */}
         <Route

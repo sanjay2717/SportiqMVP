@@ -11,3 +11,4 @@ export * from './CreateTournamentScreen/CreateTournamentScreen';
 export * from './TeamManagementScreen/TeamManagementScreen';
 export * from './OrganizationDetailScreen/OrganizationDetailScreen';export * from './AssignTrainingScreen/AssignTrainingScreen';
 export * from './AnnouncementsScreen/AnnouncementsScreen';
+export * from './CreatePostScreen/CreatePostScreen';
