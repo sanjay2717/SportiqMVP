@@ -7,12 +7,16 @@ import { getTotalAthletesCount } from '../../services/athleteSearchService';
 export function CoachDashboardScreen() {
   const navigate = useNavigate();
   const [totalAthletes, setTotalAthletes] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getTotalAthletesCount()
       .then(setTotalAthletes)
       .catch(() => {
         // Fallback handled in UI
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -35,7 +39,9 @@ export function CoachDashboardScreen() {
       {/* Metrics Hero Bento Grid */}
       <section className={styles.metricsGrid}>
         {COACH_MOCK_DATA.stats.map((stat) => {
-          const displayValue = stat.id === '1' && totalAthletes !== null ? totalAthletes : stat.value;
+          const displayValue = stat.id === '1'
+            ? (isLoading ? <div className="skeleton" style={{ width: 40, height: 32, display: 'inline-block' }} /> : (totalAthletes ?? 0))
+            : stat.value;
           return (
             <div key={stat.id} className={styles.metricCard}>
               <div className={styles.metricTop}>

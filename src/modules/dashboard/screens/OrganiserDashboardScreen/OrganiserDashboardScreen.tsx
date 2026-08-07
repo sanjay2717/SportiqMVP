@@ -8,6 +8,7 @@ import { EventItem } from '../../types';
 export function OrganiserDashboardScreen() {
   const navigate = useNavigate();
   const [upcomingEvents, setUpcomingEvents] = useState<DashboardEvent[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getUpcomingEvents()
@@ -15,6 +16,9 @@ export function OrganiserDashboardScreen() {
       .catch((err) => {
         console.error('Failed to load upcoming events:', err);
         setUpcomingEvents([]);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -31,8 +35,7 @@ export function OrganiserDashboardScreen() {
     return '';
   };
 
-  const displayEvents: Array<DashboardEvent | EventItem> =
-    upcomingEvents.length > 0 ? upcomingEvents : ORGANISER_MOCK_DATA.upcomingEvents;
+
 
   const getStatCardClassName = (index: number) => {
     if (index === 0) {
@@ -145,53 +148,80 @@ export function OrganiserDashboardScreen() {
               </button>
             </div>
             <div className={styles.eventScrollContainer}>
-              {displayEvents.map((event, index) => (
-                <div key={event.id} className={styles.eventCard}>
-                  <div
-                    className={
-                      index === 0 ? styles.eventTopBarPrimary : styles.eventTopBarSecondary
-                    }
-                  />
-                  <div className={styles.eventCardBody}>
-                    <div className={styles.eventHeaderRow}>
-                      <span className={styles.eventDateBadge}>
-                        {formatEventTimestamp(event)}
-                      </span>
-                      <div
-                        className={
-                          index === 0
-                            ? styles.eventStatusDotPrimary
-                            : styles.eventStatusDotSecondary
-                        }
-                      />
-                    </div>
-                    <h4 className={styles.eventTitle}>{event.title}</h4>
-                    <div className={styles.eventLocation}>
-                      <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                        location_on
-                      </span>
-                      <span>{event.location}</span>
-                    </div>
-                    <div className={styles.eventCardFooter}>
-                      <div className={styles.eventAttendees}>
-                        {'attendees' in event ? (
-                          <>
-                            <span className={styles.attendeeCount}>
-                              {event.attendees || '45'}
-                            </span>{' '}
-                            {ORGANISER_MOCK_DATA.upcomingEventsRegisteredText}
-                          </>
-                        ) : (
-                          <span>{'sport' in event ? event.sport : ''}</span>
-                        )}
+              {isLoading ? (
+                // SKELETON STATE
+                [1, 2, 3].map((key) => (
+                  <div key={key} className={styles.eventCard}>
+                    <div className={styles.eventTopBarSecondary} />
+                    <div className={styles.eventCardBody}>
+                      <div className={styles.eventHeaderRow}>
+                        <div className="skeleton" style={{ width: '80px', height: '16px' }} />
+                        <div className={styles.eventStatusDotSecondary} />
                       </div>
-                      <button className={styles.eventManageBtn}>
-                        {ORGANISER_MOCK_DATA.upcomingEventsManageText}
-                      </button>
+                      <div className="skeleton" style={{ width: '140px', height: '24px', margin: '8px 0' }} />
+                      <div className="skeleton" style={{ width: '100px', height: '16px', marginBottom: '16px' }} />
+                      <div className={styles.eventCardFooter}>
+                        <div className="skeleton" style={{ width: '120px', height: '16px' }} />
+                        <div className="skeleton" style={{ width: '60px', height: '32px', borderRadius: '4px' }} />
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : upcomingEvents.length === 0 ? (
+                // EMPTY STATE
+                <div style={{ padding: 'var(--spacing-6)', color: 'var(--color-text-tertiary)' }}>
+                  No upcoming events.
                 </div>
-              ))}
+              ) : (
+                // LOADED DATA
+                upcomingEvents.map((event, index) => (
+                  <div key={event.id} className={styles.eventCard}>
+                    <div
+                      className={
+                        index === 0 ? styles.eventTopBarPrimary : styles.eventTopBarSecondary
+                      }
+                    />
+                    <div className={styles.eventCardBody}>
+                      <div className={styles.eventHeaderRow}>
+                        <span className={styles.eventDateBadge}>
+                          {formatEventTimestamp(event)}
+                        </span>
+                        <div
+                          className={
+                            index === 0
+                              ? styles.eventStatusDotPrimary
+                              : styles.eventStatusDotSecondary
+                          }
+                        />
+                      </div>
+                      <h4 className={styles.eventTitle}>{event.title}</h4>
+                      <div className={styles.eventLocation}>
+                        <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                          location_on
+                        </span>
+                        <span>{event.location}</span>
+                      </div>
+                      <div className={styles.eventCardFooter}>
+                        <div className={styles.eventAttendees}>
+                          {'attendees' in event ? (
+                            <>
+                              <span className={styles.attendeeCount}>
+                                {(event as any).attendees || '0'}
+                              </span>{' '}
+                              {ORGANISER_MOCK_DATA.upcomingEventsRegisteredText}
+                            </>
+                          ) : (
+                            <span>{'sport' in event ? String((event as any).sport) : ''}</span>
+                          )}
+                        </div>
+                        <button className={styles.eventManageBtn}>
+                          {ORGANISER_MOCK_DATA.upcomingEventsManageText}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </section>
 

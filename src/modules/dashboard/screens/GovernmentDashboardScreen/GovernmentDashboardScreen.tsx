@@ -8,27 +8,31 @@ import { ROUTES } from '../../../../routing/routes';
 export function GovernmentDashboardScreen() {
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getGovernmentAnalytics()
       .then(setAnalytics)
       .catch((err) => {
         console.error('Failed to load government analytics:', err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
-  const totalAthletesDisplay = analytics
-    ? analytics.totalAthletes.toLocaleString()
-    : (GOVERNMENT_MOCK_DATA.stats[0]?.value ?? '1.2M');
-  const totalCoachesDisplay = analytics
-    ? analytics.totalCoaches.toLocaleString()
-    : (GOVERNMENT_MOCK_DATA.stats[1]?.value ?? '45k');
-  const totalOrganisersDisplay = analytics
-    ? analytics.totalOrganisers.toLocaleString()
-    : (GOVERNMENT_MOCK_DATA.stats[2]?.value ?? '12k');
-  const totalEventsDisplay = analytics
-    ? analytics.totalEvents.toLocaleString()
-    : (GOVERNMENT_MOCK_DATA.stats[3]?.value ?? '3.2k');
+  const totalAthletesDisplay = isLoading
+    ? <div className="skeleton" style={{width: 80, height: 28, display: 'inline-block'}} />
+    : (analytics?.totalAthletes.toLocaleString() ?? '0');
+  const totalCoachesDisplay = isLoading
+    ? <div className="skeleton" style={{width: 50, height: 20, display: 'inline-block'}} />
+    : (analytics?.totalCoaches.toLocaleString() ?? '0');
+  const totalOrganisersDisplay = isLoading
+    ? <div className="skeleton" style={{width: 50, height: 20, display: 'inline-block'}} />
+    : (analytics?.totalOrganisers.toLocaleString() ?? '0');
+  const totalEventsDisplay = isLoading
+    ? <div className="skeleton" style={{width: 50, height: 20, display: 'inline-block'}} />
+    : (analytics?.totalEvents.toLocaleString() ?? '0');
 
   const displayDistricts =
     analytics?.athletesByDistrict && analytics.athletesByDistrict.length > 0
@@ -38,7 +42,7 @@ export function GovernmentDashboardScreen() {
   const displaySports =
     analytics?.athletesBySport && analytics.athletesBySport.length > 0
       ? analytics.athletesBySport.slice(0, 3)
-      : GOVERNMENT_MOCK_DATA.topSports;
+      : [];
 
   const maxDistrictCount =
     displayDistricts.length > 0
@@ -208,23 +212,32 @@ export function GovernmentDashboardScreen() {
             </button>
           </div>
           <div className={styles.chartBars}>
-            {displayDistricts.map((district, idx) => {
-              const heightPercent = Math.max(
-                (district.count / maxDistrictCount) * 100,
-                10
-              );
-              return (
-                <div key={`${district.name}-${idx}`} className={styles.chartBarCol}>
-                  <div
-                    className={styles.chartBar}
-                    style={{ height: `${heightPercent}%` }}
-                  />
-                  <span className={styles.chartXLabel}>{district.name}</span>
+            {isLoading ? (
+              // SKELETON STATE
+              [1, 2, 3, 4].map((key) => (
+                <div key={key} className={styles.chartBarCol}>
+                  <div className={`skeleton ${styles.chartBar}`} style={{ height: `${20 + Math.random() * 60}%`, background: 'var(--color-neutral-200)' }} />
+                  <div className="skeleton" style={{ width: '40px', height: '12px', marginTop: '8px' }} />
                 </div>
-              );
-            })}
-            {displayDistricts.length === 0 && (
+              ))
+            ) : displayDistricts.length === 0 ? (
               <div className={styles.noDataMsg}>No district data available</div>
+            ) : (
+              displayDistricts.map((district, idx) => {
+                const heightPercent = Math.max(
+                  (district.count / maxDistrictCount) * 100,
+                  10
+                );
+                return (
+                  <div key={`${district.name}-${idx}`} className={styles.chartBarCol}>
+                    <div
+                      className={styles.chartBar}
+                      style={{ height: `${heightPercent}%` }}
+                    />
+                    <span className={styles.chartXLabel}>{district.name}</span>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
@@ -243,25 +256,42 @@ export function GovernmentDashboardScreen() {
             </button>
           </div>
           <div className={styles.sportsList}>
-            {displaySports.map((sport, idx) => {
-              const widthPercent = getSportWidthPercent(sport.count, idx);
-              return (
-                <div key={`${sport.name}-${idx}`} className={styles.sportRow}>
+            {isLoading ? (
+              // SKELETON STATE
+              [1, 2, 3].map((key) => (
+                <div key={key} className={styles.sportRow}>
                   <div className={styles.sportRowHeader}>
-                    <span className={styles.sportName}>{sport.name}</span>
-                    <span className={styles.sportCount}>
-                      {formatSportCount(sport.count)}
-                    </span>
+                    <div className="skeleton" style={{ width: '80px', height: '16px' }} />
+                    <div className="skeleton" style={{ width: '40px', height: '16px' }} />
                   </div>
                   <div className={styles.sportBarTrack}>
-                    <div
-                      className={`${styles.sportBarFill} ${getSportBarClassName(idx)}`}
-                      style={{ width: `${widthPercent}%` }}
-                    />
+                    <div className="skeleton" style={{ width: `${30 + Math.random() * 50}%`, height: '8px' }} />
                   </div>
                 </div>
-              );
-            })}
+              ))
+            ) : displaySports.length === 0 ? (
+              <div className={styles.noDataMsg}>No sports data available</div>
+            ) : (
+              displaySports.map((sport, idx) => {
+                const widthPercent = getSportWidthPercent(sport.count, idx);
+                return (
+                  <div key={`${sport.name}-${idx}`} className={styles.sportRow}>
+                    <div className={styles.sportRowHeader}>
+                      <span className={styles.sportName}>{sport.name}</span>
+                      <span className={styles.sportCount}>
+                        {formatSportCount(sport.count)}
+                      </span>
+                    </div>
+                    <div className={styles.sportBarTrack}>
+                      <div
+                        className={`${styles.sportBarFill} ${getSportBarClassName(idx)}`}
+                        style={{ width: `${widthPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </section>
@@ -270,25 +300,7 @@ export function GovernmentDashboardScreen() {
       <section className={styles.activityCard}>
         <h3 className={styles.activityTitle}>Recent Activity</h3>
         <div className={styles.timelineList}>
-          {GOVERNMENT_MOCK_DATA.activities.map((activity, idx) => (
-            <div key={activity.id} className={styles.timelineItem}>
-              <div className={styles.timelineIconCol}>
-                <div
-                  className={`${styles.timelineDot} ${getTimelineDotClassName(idx)}`}
-                />
-                {idx < GOVERNMENT_MOCK_DATA.activities.length - 1 && (
-                  <div className={styles.timelineLine} />
-                )}
-              </div>
-              <div className={styles.timelineContent}>
-                <h4 className={styles.timelineItemTitle}>{activity.title}</h4>
-                <p className={styles.timelineItemDesc}>{activity.description}</p>
-                <span className={styles.timelineItemTime}>
-                  {activity.timestamp}
-                </span>
-              </div>
-            </div>
-          ))}
+          <div className={styles.noDataMsg}>Activity tracking coming soon</div>
         </div>
       </section>
     </div>
