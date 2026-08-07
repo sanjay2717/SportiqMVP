@@ -6,7 +6,9 @@ import { AthleteSearchResult, searchAthletes } from '../../services/athleteSearc
 import { AthleteResultCard } from '../../components/AthleteResultCard/AthleteResultCard';
 import { DashboardSectionHeader } from '../../components/DashboardSectionHeader/DashboardSectionHeader';
 import { PlaceholderScreen } from '../../../../shared/components/PlaceholderScreen';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import styles from './CoachAthleteSearchScreen.module.css';
+import cardStyles from '../../components/AthleteResultCard/AthleteResultCard.module.css';
 
 // Simple debounce hook for text input
 function useDebounce<T>(value: T, delay: number): T {
@@ -129,18 +131,46 @@ export function CoachAthleteSearchScreen() {
           </span>
         </div>
 
-        {error ? (
+        {isLoading ? (
+          <div className={styles.resultsGrid}>
+            {[1, 2, 3, 4, 5, 6].map(key => (
+              <div key={key} className={cardStyles.card}>
+                <div className={cardStyles.topSection}>
+                  <Skeleton width="60px" height="24px" style={{ borderRadius: '100px', position: 'absolute', top: '16px', right: '16px' }} />
+                  <div className={cardStyles.avatar} style={{ background: 'transparent' }}>
+                    <Skeleton width="100%" height="100%" variant="circular" />
+                  </div>
+                  <div className={cardStyles.info}>
+                    <Skeleton width="120px" height="24px" style={{ marginBottom: '4px' }} />
+                    <Skeleton width="160px" height="16px" style={{ marginBottom: '12px' }} />
+                    <div className={cardStyles.tags}>
+                      <Skeleton width="60px" height="24px" style={{ borderRadius: '100px' }} />
+                      <Skeleton width="100px" height="24px" style={{ borderRadius: '100px' }} />
+                    </div>
+                  </div>
+                </div>
+                <div className={cardStyles.bottomSection}>
+                  <div className={cardStyles.scoreBlock}>
+                    <Skeleton width="80px" height="14px" style={{ marginBottom: '4px' }} />
+                    <Skeleton width="40px" height="24px" />
+                  </div>
+                  <Skeleton width="120px" height="36px" style={{ borderRadius: '8px' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
           <div className={styles.emptyState}>
             <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-error-500)' }}>error</span>
             <p className={styles.emptyStateText}>{error}</p>
           </div>
-        ) : results.length === 0 && !isLoading ? (
+        ) : results.length === 0 ? (
           <div className={styles.emptyState}>
             <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)' }}>search_off</span>
             <p className={styles.emptyStateText}>No athletes found in this district matching your criteria.</p>
           </div>
         ) : (
-          <div className={styles.resultsGrid}>
+          <div className={`${styles.resultsGrid} animate-fade-in`}>
             {results.map((athlete) => (
               <AthleteResultCard
                 key={athlete.id}

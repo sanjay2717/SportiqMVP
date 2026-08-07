@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../../routing/routes';
 import { getEventById, SportEvent } from '../../services/eventService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import styles from './EventDetailsScreen.module.css';
 
 // Map for region readable names
@@ -42,9 +43,60 @@ export function EventDetailsScreen() {
 
   if (isLoading) {
     return (
-      <div className={styles.loadingContainer}>
-        <span className="material-symbols-outlined" style={{ fontSize: '32px', animation: 'spin 1s linear infinite' }}>sync</span>
-        <p>Loading event details...</p>
+      <div className={styles.container}>
+        <section className={styles.heroSection}>
+          <Skeleton width="100%" height="240px" variant="rectangular" style={{ borderRadius: 0 }} />
+          <div className={styles.heroContent} style={{ position: 'absolute', bottom: '24px', left: '24px', right: '24px', zIndex: 2 }}>
+            <div className={styles.heroText}>
+              <Skeleton width="120px" height="24px" style={{ borderRadius: '100px', marginBottom: '8px' }} />
+              <Skeleton width="300px" height="40px" style={{ marginBottom: '8px' }} />
+              <Skeleton width="200px" height="24px" />
+            </div>
+            <div className={styles.heroActions}>
+              <Skeleton width="120px" height="40px" variant="rectangular" style={{ borderRadius: '100px' }} />
+            </div>
+          </div>
+        </section>
+
+        <div className={styles.bentoGrid}>
+          <div className={styles.mainColumn}>
+            <section className={styles.statsGrid}>
+              <Skeleton width="100%" height="120px" variant="rectangular" />
+              <Skeleton width="100%" height="120px" variant="rectangular" />
+              <Skeleton width="100%" height="120px" variant="rectangular" />
+            </section>
+            <section className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <Skeleton width="200px" height="24px" />
+                <Skeleton width="120px" height="32px" variant="rectangular" />
+              </div>
+              <div className={styles.listContainer}>
+                {[1, 2].map((key) => (
+                  <div key={key} className={styles.listItem}>
+                    <div className={styles.listUserInfo}>
+                      <Skeleton width="48px" height="48px" variant="circular" />
+                      <div>
+                        <Skeleton width="150px" height="20px" style={{ marginBottom: '4px' }} />
+                        <Skeleton width="200px" height="16px" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+          <div className={styles.sideColumn}>
+            <section className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <Skeleton width="120px" height="24px" />
+              </div>
+              <Skeleton width="100%" height="100px" variant="rectangular" />
+            </section>
+            <section className={styles.quickActionCard}>
+              <Skeleton width="100%" height="120px" variant="rectangular" />
+            </section>
+          </div>
+        </div>
       </div>
     );
   }
@@ -73,7 +125,7 @@ export function EventDetailsScreen() {
   const locationDisplay = event.location ? (REGION_MAP[event.location] || event.location) : 'TBD';
 
   return (
-    <div className={styles.container}>
+    <div className={`animate-fade-in ${styles.container}`}>
       {/* Hero Banner */}
       <section className={styles.heroSection}>
         <div className={styles.heroImageContainer}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getUpcomingEvents, DashboardEvent } from '../../../dashboard/services/organiserService';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import styles from './NotificationsScreen.module.css';
 
 export function NotificationsScreen() {
@@ -27,12 +28,55 @@ export function NotificationsScreen() {
 
   if (isLoading) {
     return (
-      <>
-        <div className={styles.loadingState}>
-          <div className={styles.spinner}></div>
-          <p className={styles.loadingText}>Loading notifications...</p>
+      <main className={styles.container}>
+        <header className={styles.header}>
+          <Skeleton width="150px" height="32px" />
+          <div className={styles.headerActions}>
+             <Skeleton width="40px" height="40px" variant="circular" />
+             <Skeleton width="40px" height="40px" variant="circular" />
+          </div>
+        </header>
+        <div className={styles.content}>
+          <section className={styles.section}>
+            <Skeleton width="120px" height="24px" className={styles.sectionTitle} />
+            <div className={styles.sectionCard}>
+               <div className={styles.notificationItem}>
+                  <div className={styles.iconWrapper}>
+                    <Skeleton width="100%" height="100%" variant="circular" />
+                  </div>
+                  <div className={styles.contentWrapper}>
+                     <div className={styles.headerRow}>
+                       <Skeleton width="80%" height="20px" />
+                       <Skeleton width="40px" height="20px" />
+                     </div>
+                  </div>
+               </div>
+               <div className={styles.notificationItem} style={{ borderTop: '1px solid var(--color-outline-variant)' }}>
+                  <div className={styles.iconWrapper}>
+                    <Skeleton width="100%" height="100%" variant="circular" />
+                  </div>
+                  <div className={styles.contentWrapper}>
+                     <div className={styles.headerRow}>
+                       <Skeleton width="60%" height="20px" />
+                       <Skeleton width="40px" height="20px" />
+                     </div>
+                  </div>
+               </div>
+            </div>
+          </section>
+          
+          <section className={styles.section}>
+            <Skeleton width="120px" height="24px" className={styles.sectionTitle} />
+            <div className={styles.sectionCard}>
+               <div className={styles.emptyState}>
+                 <Skeleton width="48px" height="48px" variant="circular" style={{ marginBottom: '16px' }} />
+                 <Skeleton width="160px" height="24px" style={{ marginBottom: '8px' }} />
+                 <Skeleton width="200px" height="20px" />
+               </div>
+            </div>
+          </section>
         </div>
-      </>
+      </main>
     );
   }
 
@@ -59,7 +103,7 @@ export function NotificationsScreen() {
   };
 
   return (
-    <>
+    <div className="animate-fade-in">
       <main className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.title}>Notifications</h1>
@@ -141,6 +185,6 @@ export function NotificationsScreen() {
           </section>
         </div>
       </main>
-    </>
+    </div>
   );
 }

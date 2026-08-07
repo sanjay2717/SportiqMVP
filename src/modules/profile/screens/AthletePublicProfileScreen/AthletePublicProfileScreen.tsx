@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../../core/database/supabaseClient';
 import { REGION_LIST } from '../../../../shared/constants/regions';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 
 import styles from './AthletePublicProfileScreen.module.css';
 
@@ -69,12 +70,66 @@ export function AthletePublicProfileScreen() {
 
   if (isLoading) {
     return (
-      <>
-        <div className={styles.loadingState}>
-          <div className={styles.spinner}></div>
-          <p className={styles.loadingText}>Loading profile...</p>
+      <main className={styles.container}>
+        <section className={styles.headerImageContainer}>
+          <Skeleton width="100%" height="100%" variant="rectangular" style={{ position: 'absolute', inset: 0, borderRadius: 0 }} />
+          <nav className={styles.topNav} style={{ zIndex: 2 }}>
+            <Skeleton width="48px" height="48px" variant="circular" />
+            <Skeleton width="48px" height="48px" variant="circular" />
+          </nav>
+          <div className={styles.profileInfoOverlay} style={{ zIndex: 2 }}>
+            <div className={styles.avatarWrapper}>
+              <Skeleton width="100%" height="100%" variant="circular" />
+            </div>
+            <div className={styles.nameRow}>
+              <Skeleton width="200px" height="32px" />
+            </div>
+            <Skeleton width="150px" height="20px" style={{ marginTop: '8px' }} />
+            <div className={styles.tagsRow} style={{ marginTop: '16px' }}>
+              <Skeleton width="100px" height="28px" variant="rectangular" style={{ borderRadius: '100px' }} />
+              <Skeleton width="100px" height="28px" variant="rectangular" style={{ borderRadius: '100px' }} />
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.actionsSection}>
+          <Skeleton width="120px" height="40px" variant="rectangular" style={{ borderRadius: '100px' }} />
+          <Skeleton width="120px" height="40px" variant="rectangular" style={{ borderRadius: '100px' }} />
+        </section>
+
+        <div className={styles.contentGrid}>
+          <div className={styles.leftColumn} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+            <section className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <Skeleton width="120px" height="24px" />
+              </div>
+              <div className={styles.card}>
+                <Skeleton width="100%" height="16px" style={{ marginBottom: '8px' }} />
+                <Skeleton width="100%" height="16px" style={{ marginBottom: '8px' }} />
+                <Skeleton width="60%" height="16px" />
+              </div>
+            </section>
+            <section className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <Skeleton width="120px" height="24px" />
+              </div>
+              <div className={`${styles.card} ${styles.impactScoreCard}`}>
+                 <Skeleton width="100%" height="96px" variant="rectangular" />
+              </div>
+            </section>
+          </div>
+          <div className={styles.rightColumn} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+            <section className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <Skeleton width="120px" height="24px" />
+              </div>
+              <div className={styles.card} style={{ height: '140px' }}>
+                 <Skeleton width="100%" height="100%" variant="rectangular" />
+              </div>
+            </section>
+          </div>
         </div>
-      </>
+      </main>
     );
   }
 
@@ -113,7 +168,7 @@ export function AthletePublicProfileScreen() {
     : 'A';
 
   return (
-    <>
+    <div className="animate-fade-in">
       <main className={styles.container}>
         {/* 1. Hero / Header Section */}
         <section className={styles.headerImageContainer}>
@@ -277,6 +332,6 @@ export function AthletePublicProfileScreen() {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 }

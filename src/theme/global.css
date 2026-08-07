@@ -88,3 +88,13 @@ img {
   animation: shimmer 2s infinite linear;
   border-radius: var(--radius-sm);
 }
+
+/* Fade-in Transition */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--easing-default);
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../../core/database/supabaseClient';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 
 import styles from './OrganizationDetailScreen.module.css';
 
@@ -125,12 +126,52 @@ export function OrganizationDetailScreen() {
 
   if (isLoading) {
     return (
-      <>
-        <div className={styles.loadingState}>
-          <div className={styles.spinner}></div>
-          <p className={styles.loadingText}>Loading organization profile...</p>
-        </div>
-      </>
+      <main className={styles.container}>
+        <header className={styles.topBar}>
+          <div className={styles.topBarLeft}>
+            <Skeleton width="40px" height="40px" variant="circular" />
+            <Skeleton width="150px" height="24px" className={styles.pageTitle} />
+          </div>
+          <div className={styles.topBarRight}>
+            <Skeleton width="40px" height="40px" variant="circular" />
+            <Skeleton width="40px" height="40px" variant="circular" />
+          </div>
+        </header>
+
+        <section className={styles.heroCard}>
+          <Skeleton width="100%" height="120px" variant="rectangular" style={{ borderRadius: 0 }} />
+          <div className={styles.heroContent}>
+            <div className={styles.avatarWrapper}>
+              <Skeleton width="80px" height="80px" variant="circular" />
+            </div>
+            <div className={styles.orgNameRow}>
+              <Skeleton width="200px" height="32px" />
+            </div>
+            <div className={styles.metaRow}>
+              <Skeleton width="120px" height="20px" />
+              <Skeleton width="120px" height="20px" />
+            </div>
+            <div className={styles.statsGrid}>
+               <Skeleton width="100%" height="60px" variant="rectangular" />
+               <Skeleton width="100%" height="60px" variant="rectangular" />
+               <Skeleton width="100%" height="60px" variant="rectangular" />
+            </div>
+            <div className={styles.heroActions}>
+              <Skeleton width="100%" height="48px" variant="rectangular" style={{ borderRadius: '100px' }} />
+              <Skeleton width="100%" height="48px" variant="rectangular" style={{ borderRadius: '100px' }} />
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.sectionCard}>
+          <div className={styles.sectionHeader}>
+            <Skeleton width="120px" height="24px" />
+          </div>
+          <Skeleton width="100%" height="16px" style={{ marginBottom: '8px' }} />
+          <Skeleton width="100%" height="16px" style={{ marginBottom: '8px' }} />
+          <Skeleton width="60%" height="16px" />
+        </section>
+      </main>
     );
   }
 
@@ -167,7 +208,7 @@ export function OrganizationDetailScreen() {
   const sportsDisplay = formatSports(profile.selected_sports);
 
   return (
-    <>
+    <div className="animate-fade-in">
       <main className={styles.container}>
         {/* Top Bar Navigation */}
         <header className={styles.topBar}>
@@ -352,6 +393,6 @@ export function OrganizationDetailScreen() {
           </div>
         </section>
       </main>
-    </>
+    </div>
   );
 }

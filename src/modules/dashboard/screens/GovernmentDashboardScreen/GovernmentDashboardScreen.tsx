@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { GOVERNMENT_MOCK_DATA } from '../../constants/mockData';
 import { getGovernmentAnalytics, DashboardAnalytics } from '../../services/analyticsService';
 import { ROUTES } from '../../../../routing/routes';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 
 export function GovernmentDashboardScreen() {
   const navigate = useNavigate();
@@ -21,18 +22,10 @@ export function GovernmentDashboardScreen() {
       });
   }, []);
 
-  const totalAthletesDisplay = isLoading
-    ? <div className="skeleton" style={{width: 80, height: 28, display: 'inline-block'}} />
-    : (analytics?.totalAthletes.toLocaleString() ?? '0');
-  const totalCoachesDisplay = isLoading
-    ? <div className="skeleton" style={{width: 50, height: 20, display: 'inline-block'}} />
-    : (analytics?.totalCoaches.toLocaleString() ?? '0');
-  const totalOrganisersDisplay = isLoading
-    ? <div className="skeleton" style={{width: 50, height: 20, display: 'inline-block'}} />
-    : (analytics?.totalOrganisers.toLocaleString() ?? '0');
-  const totalEventsDisplay = isLoading
-    ? <div className="skeleton" style={{width: 50, height: 20, display: 'inline-block'}} />
-    : (analytics?.totalEvents.toLocaleString() ?? '0');
+  const totalAthletesDisplay = analytics?.totalAthletes.toLocaleString() ?? '0';
+  const totalCoachesDisplay = analytics?.totalCoaches.toLocaleString() ?? '0';
+  const totalOrganisersDisplay = analytics?.totalOrganisers.toLocaleString() ?? '0';
+  const totalEventsDisplay = analytics?.totalEvents.toLocaleString() ?? '0';
 
   const displayDistricts =
     analytics?.athletesByDistrict && analytics.athletesByDistrict.length > 0
@@ -91,67 +84,99 @@ export function GovernmentDashboardScreen() {
     <div className={styles.container}>
       {/* Hero Analytics Bento Grid */}
       <section className={styles.statsGrid}>
-        {/* Primary Stat Card */}
-        <div className={styles.statCardPrimary}>
-          <span className={`material-symbols-outlined ${styles.watermarkIcon}`}>
-            groups
-          </span>
-          <div>
-            <div className={styles.statLabelPrimary}>
-              Total Registered Athletes
+        {isLoading ? (
+          <>
+            <div className={styles.statCardPrimary} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Skeleton width="180px" height="24px" />
+                <Skeleton width="48px" height="48px" variant="circular" />
+              </div>
+              <Skeleton width="120px" height="48px" />
+              <Skeleton width="140px" height="40px" variant="rectangular" style={{ marginTop: 'auto', borderRadius: '100px' }} />
             </div>
-            <div className={styles.statValueRow}>
-              <span className={styles.statValuePrimary}>
-                {totalAthletesDisplay}
+            <div className={styles.statsColRight}>
+              <div className={styles.statCardSecondary}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Skeleton width="100px" height="16px" />
+                  <Skeleton width="60px" height="24px" />
+                </div>
+              </div>
+              <div className={styles.statCardTertiary}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Skeleton width="100px" height="16px" />
+                  <Skeleton width="60px" height="24px" />
+                </div>
+              </div>
+            </div>
+            <div className={styles.statCardFull}>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Skeleton width="100px" height="16px" />
+                  <Skeleton width="60px" height="24px" />
+               </div>
+            </div>
+          </>
+        ) : (
+          <div className="animate-fade-in" style={{ display: 'contents' }}>
+            <div className={styles.statCardPrimary}>
+              <span className={`material-symbols-outlined ${styles.watermarkIcon}`}>
+                groups
               </span>
-              <span className={styles.trendBadge}>
-                <span className="material-symbols-outlined">trending_up</span>
-                +5%
-              </span>
+              <div>
+                <div className={styles.statLabelPrimary}>
+                  Total Registered Athletes
+                </div>
+                <div className={styles.statValueRow}>
+                  <span className={styles.statValuePrimary}>
+                    {totalAthletesDisplay}
+                  </span>
+                  <span className={styles.trendBadge}>
+                    <span className="material-symbols-outlined">trending_up</span>
+                    +5%
+                  </span>
+                </div>
+              </div>
+              <button
+                className={styles.deepDiveBtn}
+                onClick={() => navigate(ROUTES.ANALYTICS)}
+                type="button"
+              >
+                View Deep Dive
+              </button>
             </div>
-          </div>
-          <button
-            className={styles.deepDiveBtn}
-            onClick={() => navigate(ROUTES.ANALYTICS)}
-            type="button"
-          >
-            View Deep Dive
-          </button>
-        </div>
 
-        {/* Secondary Stats Column (Right) */}
-        <div className={styles.statsColRight}>
-          <div className={styles.statCardSecondary}>
-            <div>
-              <p className={styles.statLabelSmall}>Verified Coaches</p>
-              <p className={styles.statValueSmall}>{totalCoachesDisplay}</p>
-            </div>
-            <div className={styles.statIconSecondary}>
-              <span className="material-symbols-outlined">sports</span>
-            </div>
-          </div>
+            <div className={styles.statsColRight}>
+              <div className={styles.statCardSecondary}>
+                <div>
+                  <p className={styles.statLabelSmall}>Verified Coaches</p>
+                  <p className={styles.statValueSmall}>{totalCoachesDisplay}</p>
+                </div>
+                <div className={styles.statIconSecondary}>
+                  <span className="material-symbols-outlined">sports</span>
+                </div>
+              </div>
 
-          <div className={styles.statCardTertiary}>
-            <div>
-              <p className={styles.statLabelSmall}>Organizations</p>
-              <p className={styles.statValueSmall}>{totalOrganisersDisplay}</p>
+              <div className={styles.statCardTertiary}>
+                <div>
+                  <p className={styles.statLabelSmall}>Organizations</p>
+                  <p className={styles.statValueSmall}>{totalOrganisersDisplay}</p>
+                </div>
+                <div className={styles.statIconTertiary}>
+                  <span className="material-symbols-outlined">corporate_fare</span>
+                </div>
+              </div>
             </div>
-            <div className={styles.statIconTertiary}>
-              <span className="material-symbols-outlined">corporate_fare</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Full-Width Stat Card (Bottom) */}
-        <div className={styles.statCardFull}>
-          <div>
-            <p className={styles.statLabelSmall}>Active Events</p>
-            <p className={styles.statValueSmall}>{totalEventsDisplay}</p>
+            <div className={styles.statCardFull}>
+              <div>
+                <p className={styles.statLabelSmall}>Active Events</p>
+                <p className={styles.statValueSmall}>{totalEventsDisplay}</p>
+              </div>
+              <div className={styles.statIconPrimary}>
+                <span className="material-symbols-outlined">event</span>
+              </div>
+            </div>
           </div>
-          <div className={styles.statIconPrimary}>
-            <span className="material-symbols-outlined">event</span>
-          </div>
-        </div>
+        )}
       </section>
 
       {/* Quick Actions Glassmorphism Strip */}
@@ -216,28 +241,30 @@ export function GovernmentDashboardScreen() {
               // SKELETON STATE
               [1, 2, 3, 4].map((key) => (
                 <div key={key} className={styles.chartBarCol}>
-                  <div className={`skeleton ${styles.chartBar}`} style={{ height: `${20 + Math.random() * 60}%`, background: 'var(--color-neutral-200)' }} />
-                  <div className="skeleton" style={{ width: '40px', height: '12px', marginTop: '8px' }} />
+                  <Skeleton width="32px" height={`${20 + Math.random() * 60}%`} variant="rectangular" className={styles.chartBar} style={{ minHeight: '40px' }} />
+                  <Skeleton width="40px" height="12px" style={{ marginTop: '8px' }} />
                 </div>
               ))
             ) : displayDistricts.length === 0 ? (
               <div className={styles.noDataMsg}>No district data available</div>
             ) : (
-              displayDistricts.map((district, idx) => {
-                const heightPercent = Math.max(
-                  (district.count / maxDistrictCount) * 100,
-                  10
-                );
-                return (
-                  <div key={`${district.name}-${idx}`} className={styles.chartBarCol}>
-                    <div
-                      className={styles.chartBar}
-                      style={{ height: `${heightPercent}%` }}
-                    />
-                    <span className={styles.chartXLabel}>{district.name}</span>
-                  </div>
-                );
-              })
+              <div className="animate-fade-in" style={{ display: 'contents' }}>
+                {displayDistricts.map((district, idx) => {
+                  const heightPercent = Math.max(
+                    (district.count / maxDistrictCount) * 100,
+                    10
+                  );
+                  return (
+                    <div key={`${district.name}-${idx}`} className={styles.chartBarCol}>
+                      <div
+                        className={styles.chartBar}
+                        style={{ height: `${heightPercent}%` }}
+                      />
+                      <span className={styles.chartXLabel}>{district.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>
@@ -261,36 +288,38 @@ export function GovernmentDashboardScreen() {
               [1, 2, 3].map((key) => (
                 <div key={key} className={styles.sportRow}>
                   <div className={styles.sportRowHeader}>
-                    <div className="skeleton" style={{ width: '80px', height: '16px' }} />
-                    <div className="skeleton" style={{ width: '40px', height: '16px' }} />
+                    <Skeleton width="80px" height="16px" />
+                    <Skeleton width="40px" height="16px" />
                   </div>
                   <div className={styles.sportBarTrack}>
-                    <div className="skeleton" style={{ width: `${30 + Math.random() * 50}%`, height: '8px' }} />
+                    <Skeleton width={`${30 + Math.random() * 50}%`} height="8px" variant="rectangular" />
                   </div>
                 </div>
               ))
             ) : displaySports.length === 0 ? (
               <div className={styles.noDataMsg}>No sports data available</div>
             ) : (
-              displaySports.map((sport, idx) => {
-                const widthPercent = getSportWidthPercent(sport.count, idx);
-                return (
-                  <div key={`${sport.name}-${idx}`} className={styles.sportRow}>
-                    <div className={styles.sportRowHeader}>
-                      <span className={styles.sportName}>{sport.name}</span>
-                      <span className={styles.sportCount}>
-                        {formatSportCount(sport.count)}
-                      </span>
+              <div className="animate-fade-in" style={{ display: 'contents' }}>
+                {displaySports.map((sport, idx) => {
+                  const widthPercent = getSportWidthPercent(sport.count, idx);
+                  return (
+                    <div key={`${sport.name}-${idx}`} className={styles.sportRow}>
+                      <div className={styles.sportRowHeader}>
+                        <span className={styles.sportName}>{sport.name}</span>
+                        <span className={styles.sportCount}>
+                          {formatSportCount(sport.count)}
+                        </span>
+                      </div>
+                      <div className={styles.sportBarTrack}>
+                        <div
+                          className={`${styles.sportBarFill} ${getSportBarClassName(idx)}`}
+                          style={{ width: `${widthPercent}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className={styles.sportBarTrack}>
-                      <div
-                        className={`${styles.sportBarFill} ${getSportBarClassName(idx)}`}
-                        style={{ width: `${widthPercent}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>

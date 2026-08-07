@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../../routing/routes';
 import { getEvents, SportEvent } from '../../services/eventService';
 import { EventCard } from '../../components/EventCard/EventCard';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import styles from './EventsListScreen.module.css';
+import cardStyles from '../../components/EventCard/EventCard.module.css';
 
 export function EventsListScreen() {
   const navigate = useNavigate();
@@ -43,9 +45,27 @@ export function EventsListScreen() {
 
       <section className={styles.content}>
         {isLoading ? (
-          <div className={styles.loadingState}>
-            <span className="material-symbols-outlined" style={{ fontSize: '32px', animation: 'spin 1s linear infinite' }}>sync</span>
-            <p>Loading events...</p>
+          <div className={styles.grid}>
+            {[1, 2, 3, 4, 5, 6].map(key => (
+              <div key={key} className={cardStyles.card}>
+                <div className={cardStyles.content}>
+                  <div className={cardStyles.header}>
+                    <Skeleton width="60%" height="24px" />
+                    <Skeleton width="80px" height="24px" style={{ borderRadius: '100px' }} />
+                  </div>
+                  <Skeleton width="100%" height="16px" style={{ marginTop: '12px', marginBottom: '8px' }} />
+                  <Skeleton width="80%" height="16px" style={{ marginBottom: '16px' }} />
+                  <div className={cardStyles.metaGrid}>
+                    <Skeleton width="70%" height="20px" />
+                    <Skeleton width="50%" height="20px" />
+                    <Skeleton width="60%" height="20px" />
+                  </div>
+                </div>
+                <div className={cardStyles.footer}>
+                  <Skeleton width="120px" height="36px" style={{ borderRadius: '8px' }} />
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
           <div className={styles.emptyState}>
@@ -62,7 +82,7 @@ export function EventsListScreen() {
             </button>
           </div>
         ) : (
-          <div className={styles.grid}>
+          <div className={`${styles.grid} animate-fade-in`}>
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}

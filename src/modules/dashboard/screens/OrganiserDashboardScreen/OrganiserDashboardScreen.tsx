@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ORGANISER_MOCK_DATA } from '../../constants/mockData';
 import { getUpcomingEvents, DashboardEvent } from '../../services/organiserService';
 import { EventItem } from '../../types';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 
 export function OrganiserDashboardScreen() {
   const navigate = useNavigate();
@@ -155,14 +156,14 @@ export function OrganiserDashboardScreen() {
                     <div className={styles.eventTopBarSecondary} />
                     <div className={styles.eventCardBody}>
                       <div className={styles.eventHeaderRow}>
-                        <div className="skeleton" style={{ width: '80px', height: '16px' }} />
+                        <Skeleton width="80px" height="16px" />
                         <div className={styles.eventStatusDotSecondary} />
                       </div>
-                      <div className="skeleton" style={{ width: '140px', height: '24px', margin: '8px 0' }} />
-                      <div className="skeleton" style={{ width: '100px', height: '16px', marginBottom: '16px' }} />
+                      <Skeleton width="140px" height="24px" style={{ margin: '8px 0' }} />
+                      <Skeleton width="100px" height="16px" style={{ marginBottom: '16px' }} />
                       <div className={styles.eventCardFooter}>
-                        <div className="skeleton" style={{ width: '120px', height: '16px' }} />
-                        <div className="skeleton" style={{ width: '60px', height: '32px', borderRadius: '4px' }} />
+                        <Skeleton width="120px" height="16px" />
+                        <Skeleton width="60px" height="32px" variant="rectangular" />
                       </div>
                     </div>
                   </div>
@@ -174,53 +175,55 @@ export function OrganiserDashboardScreen() {
                 </div>
               ) : (
                 // LOADED DATA
-                upcomingEvents.map((event, index) => (
-                  <div key={event.id} className={styles.eventCard}>
-                    <div
-                      className={
-                        index === 0 ? styles.eventTopBarPrimary : styles.eventTopBarSecondary
-                      }
-                    />
-                    <div className={styles.eventCardBody}>
-                      <div className={styles.eventHeaderRow}>
-                        <span className={styles.eventDateBadge}>
-                          {formatEventTimestamp(event)}
-                        </span>
-                        <div
-                          className={
-                            index === 0
-                              ? styles.eventStatusDotPrimary
-                              : styles.eventStatusDotSecondary
-                          }
-                        />
-                      </div>
-                      <h4 className={styles.eventTitle}>{event.title}</h4>
-                      <div className={styles.eventLocation}>
-                        <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                          location_on
-                        </span>
-                        <span>{event.location}</span>
-                      </div>
-                      <div className={styles.eventCardFooter}>
-                        <div className={styles.eventAttendees}>
-                          {'attendees' in event ? (
-                            <>
-                              <span className={styles.attendeeCount}>
-                                {(event as any).attendees || '0'}
-                              </span>{' '}
-                              {ORGANISER_MOCK_DATA.upcomingEventsRegisteredText}
-                            </>
-                          ) : (
-                            <span>{'sport' in event ? String((event as any).sport) : ''}</span>
-                          )}
+                <div className="animate-fade-in" style={{ display: 'contents' }}>
+                  {upcomingEvents.map((event, index) => (
+                    <div key={event.id} className={styles.eventCard}>
+                      <div
+                        className={
+                          index === 0 ? styles.eventTopBarPrimary : styles.eventTopBarSecondary
+                        }
+                      />
+                      <div className={styles.eventCardBody}>
+                        <div className={styles.eventHeaderRow}>
+                          <span className={styles.eventDateBadge}>
+                            {formatEventTimestamp(event)}
+                          </span>
+                          <div
+                            className={
+                              index === 0
+                                ? styles.eventStatusDotPrimary
+                                : styles.eventStatusDotSecondary
+                            }
+                          />
                         </div>
-                        <button className={styles.eventManageBtn}>
-                          {ORGANISER_MOCK_DATA.upcomingEventsManageText}
-                        </button>
+                        <h4 className={styles.eventTitle}>{event.title}</h4>
+                        <div className={styles.eventLocation}>
+                          <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                            location_on
+                          </span>
+                          <span>{event.location}</span>
+                        </div>
+                        <div className={styles.eventCardFooter}>
+                          <div className={styles.eventAttendees}>
+                            {'attendees' in event ? (
+                              <>
+                                <span className={styles.attendeeCount}>
+                                  {(event as any).attendees || '0'}
+                                </span>{' '}
+                                {ORGANISER_MOCK_DATA.upcomingEventsRegisteredText}
+                              </>
+                            ) : (
+                              <span>{'sport' in event ? String((event as any).sport) : ''}</span>
+                            )}
+                          </div>
+                          <button className={styles.eventManageBtn}>
+                            {ORGANISER_MOCK_DATA.upcomingEventsManageText}
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </section>

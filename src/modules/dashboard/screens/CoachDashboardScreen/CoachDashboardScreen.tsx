@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COACH_MOCK_DATA } from '../../constants/mockData';
 import { getTotalAthletesCount } from '../../services/athleteSearchService';
+import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 
 export function CoachDashboardScreen() {
   const navigate = useNavigate();
@@ -39,23 +40,39 @@ export function CoachDashboardScreen() {
       {/* Metrics Hero Bento Grid */}
       <section className={styles.metricsGrid}>
         {COACH_MOCK_DATA.stats.map((stat) => {
-          const displayValue = stat.id === '1'
-            ? (isLoading ? <div className="skeleton" style={{ width: 40, height: 32, display: 'inline-block' }} /> : (totalAthletes ?? 0))
-            : stat.value;
+          if (stat.id === '1' && isLoading) {
+            return (
+              <div key={stat.id} className={styles.metricCard}>
+                <div className={styles.metricTop}>
+                  <Skeleton width="40px" height="40px" variant="circular" />
+                </div>
+                <div className={styles.metricBottom}>
+                  <Skeleton width="60px" height="32px" />
+                  <Skeleton width="100px" height="16px" style={{ marginTop: '8px' }} />
+                </div>
+              </div>
+            );
+          }
+
+          const displayValue = stat.id === '1' ? (totalAthletes ?? 0) : stat.value;
+          const needsFade = stat.id === '1';
+
           return (
             <div key={stat.id} className={styles.metricCard}>
-              <div className={styles.metricTop}>
-                <span className={`material-symbols-outlined ${styles.metricIcon}`}>{stat.iconName}</span>
-                {stat.badge && (
-                  <span className={stat.badge.variant === 'error' ? styles.badgeError : styles.badgePrimary}>
-                    {stat.badge.text}
-                  </span>
-                )}
-                {stat.isPulse && <span className={styles.pulseDot} />}
-              </div>
-              <div className={styles.metricBottom}>
-                <h2 className={styles.metricNumber}>{displayValue}</h2>
-                <p className={styles.metricLabel}>{stat.label}</p>
+              <div className={needsFade ? "animate-fade-in" : ""} style={{ display: 'contents' }}>
+                <div className={styles.metricTop}>
+                  <span className={`material-symbols-outlined ${styles.metricIcon}`}>{stat.iconName}</span>
+                  {stat.badge && (
+                    <span className={stat.badge.variant === 'error' ? styles.badgeError : styles.badgePrimary}>
+                      {stat.badge.text}
+                    </span>
+                  )}
+                  {stat.isPulse && <span className={styles.pulseDot} />}
+                </div>
+                <div className={styles.metricBottom}>
+                  <h2 className={styles.metricNumber}>{displayValue}</h2>
+                  <p className={styles.metricLabel}>{stat.label}</p>
+                </div>
               </div>
             </div>
           );
