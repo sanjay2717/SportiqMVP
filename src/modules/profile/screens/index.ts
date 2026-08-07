@@ -7,3 +7,4 @@ export * from './ProfileCompletionScreen/ProfileCompletionScreen';
 export * from './OwnProfileScreen/OwnProfileScreen';
 export * from './AthletePublicProfileScreen/AthletePublicProfileScreen';
 export * from './StatisticsScreen/StatisticsScreen';
+export * from './EditProfileScreen/EditProfileScreen';

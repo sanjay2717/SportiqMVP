@@ -202,3 +202,59 @@ export async function getOwnProfile(userId: string): Promise<ProfileData | null>
 
   return data as ProfileData;
 }
+
+export interface EditProfilePayload {
+  firstName: string;
+  lastName: string;
+  location: string;
+  primarySport: string;
+  position: string;
+  bio: string;
+  
+  // Unmapped fields
+  dateOfBirth?: string;
+  currentTeam?: string;
+  highlightReelUrl?: string;
+  instagramUsername?: string;
+}
+
+/**
+ * Updates the user's profile from the Edit Profile screen.
+ * Handles the existing mapped fields, and logs a schema gap warning for unmapped ones.
+ */
+export async function updateEditProfile(
+  userId: string,
+  payload: EditProfilePayload
+): Promise<void> {
+  const fullName = `${payload.firstName} ${payload.lastName}`.trim();
+  const selectedSports = payload.primarySport ? [payload.primarySport] : [];
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      full_name: fullName,
+      location: payload.location || null,
+      selected_sports: selectedSports,
+      primary_position: payload.position || null,
+      bio: payload.bio || null,
+    })
+    .eq('id', userId);
+
+  if (error) {
+    throw error;
+  }
+
+  // Stopgap schema warning for unpersisted fields
+  if (
+    payload.dateOfBirth ||
+    payload.currentTeam ||
+    payload.highlightReelUrl ||
+    payload.instagramUsername
+  ) {
+    console.warn(
+      'SCHEMA GAP: Date of Birth, Current Team, Highlight Reel URL, and Instagram Username ' +
+      'cannot be persisted to Supabase yet. Ensure they are handled client-side pending a database migration.'
+    );
+  }
+}
+
