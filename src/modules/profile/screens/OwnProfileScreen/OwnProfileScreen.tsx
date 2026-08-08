@@ -190,16 +190,21 @@ export function OwnProfileScreen() {
                 <p className={styles.emptyStateText}>No matches recorded yet</p>
               </div>
             </section>
-
-            <section className={styles.section}>
-              <ProfileSectionHeader title="Achievements" />
-              <div className={styles.emptyStateContainer}>
-                <span className="material-symbols-outlined">workspace_premium</span>
-                <p className={styles.emptyStateText}>No achievements unlocked</p>
-              </div>
-            </section>
           </>
         )}
+
+        {/* Achievements Section - Restored for all profiles */}
+        <section className={styles.section}>
+          <ProfileSectionHeader 
+            title="Achievements" 
+            actionText="View Gallery"
+            onActionClick={() => navigate(ROUTES.ACHIEVEMENTS)}
+          />
+          <div className={styles.emptyStateContainer} style={{ cursor: 'pointer' }} onClick={() => navigate(ROUTES.ACHIEVEMENTS)}>
+            <span className="material-symbols-outlined">workspace_premium</span>
+            <p className={styles.emptyStateText}>View Achievement Gallery</p>
+          </div>
+        </section>
         
       </div>
     </div>
