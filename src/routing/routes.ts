@@ -9,6 +9,7 @@ export const ROUTES = {
   PROFILE: '/profile',
   SEARCH: '/search',
   MESSAGES: '/messages',
+  PRIVATE_CHAT: '/messages/:conversationId',
   NOTIFICATIONS: '/notifications',
   SETTINGS: '/settings',
   SELECT_SPORTS: '/select-sports',

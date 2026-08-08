@@ -33,6 +33,7 @@ import {
 
 import { NotificationsScreen } from '../modules/notifications/screens';
 import { SettingsScreen } from '../modules/settings/screens';
+import { MessagesScreen, PrivateChatScreen } from '../modules/messages/screens';
 
 import styles from './Routing.module.css';
 
@@ -217,8 +218,16 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <AppLayout>
-                <PlaceholderScreen title="Messages" description="Messaging will be implemented here." />
+                <MessagesScreen />
               </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.PRIVATE_CHAT}
+          element={
+            <ProtectedRoute>
+              <PrivateChatScreen />
             </ProtectedRoute>
           }
         />
