@@ -106,6 +106,8 @@
   letter-spacing: var(--letter-spacing-headline-xl);
   margin-bottom: var(--spacing-1);
   color: var(--color-on-primary);
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .eventSubtitle {
@@ -487,6 +489,8 @@
   font-size: var(--font-size-body-lg);
   line-height: var(--line-height-body-lg);
   color: var(--color-on-background);
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .logisticsSubtext {

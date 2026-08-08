@@ -20,8 +20,8 @@
 }
 
 .closeBtn {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,6 +55,7 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
+  min-height: 44px;
   transition: all 0.2s;
 }
 

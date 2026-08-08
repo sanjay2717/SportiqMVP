@@ -5,8 +5,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-6);
-  padding-bottom: 96px; /* md:pb-8 pt-16 handling done in global or topbar */
-  padding-top: 80px;
+  padding-bottom: var(--spacing-8);
+  padding-top: calc(4rem + var(--spacing-6));
 }
 
 /* Top App Bar */
@@ -41,6 +41,8 @@
 
 .closeButton {
   padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
   color: var(--color-text-primary);
   border-radius: var(--radius-full);
   transition: background-color 0.2s, transform 0.2s;
@@ -73,6 +75,8 @@
 
 .saveButton {
   padding: 8px 16px;
+  min-width: 44px;
+  min-height: 44px;
   background-color: var(--color-primary-400);
   color: var(--color-primary-700);
   font-family: var(--font-family);
