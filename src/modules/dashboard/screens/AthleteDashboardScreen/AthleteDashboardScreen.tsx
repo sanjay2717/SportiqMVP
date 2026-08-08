@@ -175,15 +175,6 @@ export function AthleteDashboardScreen() {
           </section>
         )}
       </main>
-
-      {/* FAB for Create Post */}
-      <button 
-        className={styles.fab}
-        onClick={() => navigate(ROUTES.CREATE)}
-        aria-label="Create Post"
-      >
-        <span className="material-symbols-outlined">add</span>
-      </button>
     </div>
   );
 }

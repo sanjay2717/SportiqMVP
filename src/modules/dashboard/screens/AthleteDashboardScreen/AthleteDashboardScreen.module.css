@@ -156,33 +156,7 @@
   color: var(--color-primary-600);
 }
 
-/* FAB */
-.fab {
-  position: fixed;
-  bottom: calc(env(safe-area-inset-bottom) + 5rem);
-  right: var(--spacing-4);
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: var(--radius-full);
-  background-color: var(--color-primary-500);
-  color: var(--color-neutral-0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  z-index: 40;
-  transition: transform 0.2s, background-color 0.2s;
-}
 
-.fab:active {
-  transform: scale(0.95);
-}
-
-.fab:hover {
-  background-color: var(--color-primary-600);
-}
 
 /* Empty State */
 .emptyState {
