@@ -44,11 +44,6 @@ export function AthleteDashboardScreen() {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <header className={styles.header}>
-          <div className={styles.headerTop}>
-            <h1 className={styles.greeting}>SportIQ</h1>
-          </div>
-        </header>
         <section className={styles.feedSection}>
           <div className={styles.feedCard}>
             <div className={styles.cardHeader}>
@@ -85,12 +80,6 @@ export function AthleteDashboardScreen() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerTop}>
-          <h1 className={styles.greeting}>SportIQ</h1>
-        </div>
-      </header>
-
       <main className={styles.main}>
         {posts.length === 0 ? (
           <div className={styles.emptyState}>
