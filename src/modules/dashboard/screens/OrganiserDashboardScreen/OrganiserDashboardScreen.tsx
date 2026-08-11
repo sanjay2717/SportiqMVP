@@ -5,6 +5,7 @@ import { ORGANISER_MOCK_DATA } from '../../constants/mockData';
 import { getUpcomingEvents, DashboardEvent } from '../../services/organiserService';
 import { EventItem } from '../../types';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
+import { ROUTES } from '../../../../routing/routes';
 
 export function OrganiserDashboardScreen() {
   const navigate = useNavigate();
@@ -170,8 +171,12 @@ export function OrganiserDashboardScreen() {
                 ))
               ) : upcomingEvents.length === 0 ? (
                 // EMPTY STATE
-                <div style={{ padding: 'var(--spacing-6)', color: 'var(--color-text-tertiary)' }}>
-                  No upcoming events.
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-10) var(--spacing-6)', textAlign: 'center', backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: 'var(--radius-lg)' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>event_busy</span>
+                  <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)', marginBottom: 'var(--spacing-6)' }}>No upcoming events yet.</p>
+                  <button type="button" onClick={() => navigate(ROUTES.CREATE_EVENT)} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-5)', backgroundColor: 'var(--color-primary-500)', color: 'var(--color-on-primary)', border: 'none', borderRadius: 'var(--radius-full)', fontFamily: 'var(--font-family-label-lg)', fontWeight: 500, cursor: 'pointer', transition: 'background-color 0.2s ease' }}>
+                    Create your first event
+                  </button>
                 </div>
               ) : (
                 // LOADED DATA

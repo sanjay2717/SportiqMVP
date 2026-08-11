@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
+import { UserRole } from '../../../../core/auth/types';
 import { messageService } from '../../services/messageService';
 import { ConversationWithProfiles } from '../../types';
 import styles from './MessagesScreen.module.css';
@@ -45,6 +46,19 @@ export function MessagesScreen() {
   const formatTime = (isoString: string) => {
     const date = new Date(isoString);
     return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  };
+
+  const getDiscoveryRoute = () => {
+    switch (user?.role) {
+      case UserRole.Coach:
+        return ROUTES.ATHLETE_DIRECTORY;
+      case UserRole.Government:
+        return ROUTES.ORGANIZATION_DIRECTORY;
+      case UserRole.Athlete:
+      case UserRole.Organiser:
+      default:
+        return ROUTES.NETWORK;
+    }
   };
 
   if (isLoading) {
@@ -102,6 +116,13 @@ export function MessagesScreen() {
             <span className={`material-symbols-outlined ${styles.emptyIcon}`}>chat_bubble</span>
             <h3 className={styles.emptyTitle}>No messages yet</h3>
             <p className={styles.emptySubtitle}>Start a conversation with a coach or athlete.</p>
+            <button 
+              type="button" 
+              onClick={() => navigate(getDiscoveryRoute())} 
+              style={{ marginTop: 'var(--spacing-4)', display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-5)', backgroundColor: 'var(--color-primary-500)', color: 'var(--color-on-primary)', border: 'none', borderRadius: 'var(--radius-full)', fontFamily: 'var(--font-family-label-lg)', fontWeight: 500, cursor: 'pointer', transition: 'background-color 0.2s ease' }}
+            >
+              Discover People
+            </button>
           </div>
         ) : (
           conversations.map((conv) => {

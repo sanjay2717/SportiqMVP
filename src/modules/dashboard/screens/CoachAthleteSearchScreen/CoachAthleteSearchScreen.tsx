@@ -31,6 +31,13 @@ export function CoachAthleteSearchScreen() {
   const [results, setResults] = useState<AthleteSearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  useEffect(() => {
+    if (searchTerm !== '' || selectedRegion !== '') {
+      setHasSearched(true);
+    }
+  }, [searchTerm, selectedRegion]);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -169,8 +176,17 @@ export function CoachAthleteSearchScreen() {
           </div>
         ) : results.length === 0 ? (
           <div className={styles.emptyState}>
-            <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)' }}>search_off</span>
-            <p className={styles.emptyStateText}>No athletes found in this district matching your criteria.</p>
+            {hasSearched ? (
+              <>
+                <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)' }}>search_off</span>
+                <p className={styles.emptyStateText}>No athletes found in this district matching your criteria.</p>
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)' }}>person_search</span>
+                <p className={styles.emptyStateText}>Search by district or sport to find registered athletes</p>
+              </>
+            )}
           </div>
         ) : (
           <div className={`${styles.resultsGrid} animate-fade-in`}>
