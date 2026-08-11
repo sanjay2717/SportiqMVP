@@ -17,6 +17,8 @@
   position: relative;
   z-index: 10;
   flex-shrink: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(4rem + env(safe-area-inset-top, 0px));
 }
 
 .closeBtn {

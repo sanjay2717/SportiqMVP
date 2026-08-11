@@ -6,7 +6,7 @@
   flex-direction: column;
   gap: var(--spacing-6);
   padding-bottom: var(--spacing-8);
-  padding-top: calc(4rem + var(--spacing-6));
+  padding-top: calc(4rem + var(--spacing-6) + env(safe-area-inset-top, 0px));
 }
 
 .topBar {
@@ -19,6 +19,7 @@
   backdrop-filter: blur(var(--blur-sm));
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid var(--color-neutral-400);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .topBarInner {

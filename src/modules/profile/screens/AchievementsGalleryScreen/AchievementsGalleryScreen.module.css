@@ -73,6 +73,8 @@
   gap: 8px;
   transition: background-color 0.2s;
   cursor: pointer;
+  min-height: 44px;
+  justify-content: center;
 }
 
 .controlButton:hover {
