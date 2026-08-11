@@ -260,7 +260,7 @@ export function AppRouter() {
         {/* Events Module */}
         <Route path={ROUTES.EVENTS} element={<ProtectedRoute><AppLayout><EventsListScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.EVENT_DETAILS} element={<ProtectedRoute><AppLayout><EventDetailsScreen /></AppLayout></ProtectedRoute>} />
-        <Route path={ROUTES.CREATE_EVENT} element={<ProtectedRoute><AppLayout><CreateEventScreen /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.CREATE_EVENT} element={<ProtectedRoute><CreateEventScreen /></ProtectedRoute>} />
         
         <Route path={ROUTES.CREATE_TOURNAMENT} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Create Tournament screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.APPROVALS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Approvals" description="// TODO: replace with real Approvals screen" /></AppLayout></ProtectedRoute>} />

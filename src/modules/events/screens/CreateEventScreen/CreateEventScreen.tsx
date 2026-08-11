@@ -38,6 +38,23 @@ export function CreateEventScreen() {
         throw new Error('Invalid date or time');
       }
 
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // start of today
+      
+      const eventDateOnly = new Date(dateObj);
+      eventDateOnly.setHours(0, 0, 0, 0);
+
+      if (eventDateOnly < now) {
+        throw new Error('Event date cannot be in the past');
+      }
+
+      const currentYear = now.getFullYear();
+      const eventYear = eventDateOnly.getFullYear();
+      
+      if (eventYear < currentYear || eventYear > currentYear + 5) {
+        throw new Error(`Event year must be between ${currentYear} and ${currentYear + 5}`);
+      }
+
       const payload: CreateEventPayload = {
         title,
         description,

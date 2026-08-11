@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../../core/database/supabaseClient';
 import { REGION_LIST } from '../../../../shared/constants/regions';
+import { useAuth } from '../../../../core/auth/AuthProvider';
+import { messageService } from '../../../messages/services/messageService';
+import { ROUTES } from '../../../../routing/routes';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
-
 import styles from './AthletePublicProfileScreen.module.css';
 
 interface AthleteProfile {
@@ -30,10 +32,12 @@ const REGION_MAP: Record<string, string> = REGION_LIST.reduce((acc, region) => {
 export function AthletePublicProfileScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   const [profile, setProfile] = useState<AthleteProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isMessaging, setIsMessaging] = useState(false);
   const [activeTab, setActiveTab] = useState('Posts');
 
   useEffect(() => {
@@ -221,9 +225,25 @@ export function AthletePublicProfileScreen() {
             <span className="material-symbols-outlined">person_add</span>
             Follow
           </button>
-          <button type="button" className={styles.secondaryActionBtn}>
+          <button 
+            type="button" 
+            className={styles.secondaryActionBtn}
+            onClick={async () => {
+              if (!user || !profile || isMessaging) return;
+              setIsMessaging(true);
+              try {
+                const conversationId = await messageService.getOrCreateConversation(user.id, profile.id);
+                navigate(ROUTES.PRIVATE_CHAT.replace(':conversationId', conversationId));
+              } catch (err) {
+                console.error('Failed to create conversation:', err);
+              } finally {
+                setIsMessaging(false);
+              }
+            }}
+            disabled={isMessaging}
+          >
             <span className="material-symbols-outlined">chat</span>
-            Message
+            {isMessaging ? 'Loading...' : 'Message'}
           </button>
         </section>
 
