@@ -78,6 +78,7 @@ export function AchievementForm() {
   };
 
   const handleSave = async () => {
+    if (isSaving) return;
     if (!user) return;
     if (!title.trim()) {
       setError("Title is required.");

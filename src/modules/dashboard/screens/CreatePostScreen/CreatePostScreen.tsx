@@ -33,6 +33,7 @@ export function CreatePostScreen() {
   };
 
   const handlePost = async () => {
+    if (isSubmitting) return;
     if (!content.trim()) {
       setError('Post content cannot be empty.');
       return;

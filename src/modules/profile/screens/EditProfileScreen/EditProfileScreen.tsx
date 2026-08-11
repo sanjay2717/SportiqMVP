@@ -100,6 +100,7 @@ export function EditProfileScreen() {
   };
 
   const handleSave = async () => {
+    if (isSaving) return;
     if (!user) return;
     
     setIsSaving(true);

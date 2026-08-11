@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
@@ -17,21 +17,23 @@ export function AchievementsGalleryScreen() {
   const [sortBy, setSortBy] = useState<'dateDesc' | 'dateAsc'>('dateDesc');
   const [filterVerified, setFilterVerified] = useState(false);
 
-  useEffect(() => {
-    async function loadAchievements() {
-      if (!user) return;
-      try {
-        setIsLoading(true);
-        const data = await getAchievements(user.id);
-        setAchievements(data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load achievements.');
-      } finally {
-        setIsLoading(false);
-      }
+  const loadAchievements = useCallback(async () => {
+    if (!user) return;
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await getAchievements(user.id);
+      setAchievements(data);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load achievements.');
+    } finally {
+      setIsLoading(false);
     }
-    loadAchievements();
   }, [user]);
+
+  useEffect(() => {
+    loadAchievements();
+  }, [loadAchievements]);
 
   const toggleSort = () => {
     setSortBy(prev => prev === 'dateDesc' ? 'dateAsc' : 'dateDesc');
@@ -206,7 +208,10 @@ export function AchievementsGalleryScreen() {
         {error && (
           <div className={styles.errorAlert} style={{ marginBottom: 'var(--spacing-6)' }}>
             <span className="material-symbols-outlined">error</span>
-            <span>{error}</span>
+            <span style={{ flex: 1 }}>{error}</span>
+            <button onClick={loadAchievements} style={{ padding: 'var(--spacing-1) var(--spacing-3)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-error)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-family-label-md)', fontWeight: 'bold' }}>
+              Retry
+            </button>
           </div>
         )}
 

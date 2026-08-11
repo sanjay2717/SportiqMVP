@@ -163,6 +163,9 @@ export function CoachAthleteSearchScreen() {
           <div className={styles.emptyState}>
             <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-error-500)' }}>error</span>
             <p className={styles.emptyStateText}>{error}</p>
+            <button onClick={() => fetchAthletes()} style={{ marginTop: 'var(--spacing-4)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-container)', color: 'var(--color-on-primary-container)', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-family-label-md)', fontWeight: 'bold' }}>
+              Retry
+            </button>
           </div>
         ) : results.length === 0 ? (
           <div className={styles.emptyState}>

@@ -14,6 +14,7 @@ export function PrivateChatScreen() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Load initial messages
@@ -25,6 +26,7 @@ export function PrivateChatScreen() {
         setMessages(msgs);
       } catch (err) {
         console.error('Failed to load messages', err);
+        setError('Conversation not found or unauthorized.');
       } finally {
         setIsLoading(false);
       }
@@ -51,6 +53,7 @@ export function PrivateChatScreen() {
   }, [messages]);
 
   const handleSend = async () => {
+    if (isSending) return;
     if (!inputText.trim() || !user || !conversationId) return;
     setIsSending(true);
     try {
@@ -90,7 +93,12 @@ export function PrivateChatScreen() {
 
       {/* Chat Area */}
       <main className={styles.chatArea}>
-        {isLoading ? (
+        {error ? (
+          <div className={styles.emptyState}>
+            <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-error)' }}>lock</span>
+            <p className={styles.emptyStateText}>{error}</p>
+          </div>
+        ) : isLoading ? (
           <div className={styles.loadingContainer}>
             <div className={`${styles.skeletonBubble} ${styles.skeletonLeft}`} />
             <div className={`${styles.skeletonBubble} ${styles.skeletonRight}`} />
@@ -123,25 +131,27 @@ export function PrivateChatScreen() {
       </main>
 
       {/* Input Area */}
-      <footer className={styles.inputArea}>
-        <div className={styles.inputContainer}>
-          <textarea
-            className={styles.inputField}
-            placeholder="Message..."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={handleKeyDown}
-            rows={1}
-          />
-        </div>
-        <button
-          className={styles.sendButton}
-          onClick={handleSend}
-          disabled={!inputText.trim() || isSending}
-        >
-          <span className="material-symbols-outlined">send</span>
-        </button>
-      </footer>
+      {!error && (
+        <footer className={styles.inputArea}>
+          <div className={styles.inputContainer}>
+            <textarea
+              className={styles.inputField}
+              placeholder="Message..."
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={handleKeyDown}
+              rows={1}
+            />
+          </div>
+          <button
+            className={styles.sendButton}
+            onClick={handleSend}
+            disabled={!inputText.trim() || isSending}
+          >
+            <span className="material-symbols-outlined">send</span>
+          </button>
+        </footer>
+      )}
     </div>
   );
 }

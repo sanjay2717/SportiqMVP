@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
@@ -11,21 +11,26 @@ export function MessagesScreen() {
   const navigate = useNavigate();
   const [conversations, setConversations] = useState<ConversationWithProfiles[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadConversations = useCallback(async () => {
+    if (!user) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await messageService.getConversations(user.id);
+      setConversations(data);
+    } catch (err) {
+      console.error('Failed to load conversations:', err);
+      setError('Failed to load conversations. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
-    async function loadConversations() {
-      if (!user) return;
-      try {
-        const data = await messageService.getConversations(user.id);
-        setConversations(data);
-      } catch (err) {
-        console.error('Failed to load conversations:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
     loadConversations();
-  }, [user]);
+  }, [loadConversations]);
 
   const handleConversationClick = (id: string) => {
     navigate(ROUTES.PRIVATE_CHAT.replace(':conversationId', id));
@@ -58,6 +63,21 @@ export function MessagesScreen() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.emptyState}>
+          <span className={`material-symbols-outlined ${styles.emptyIcon}`} style={{ color: 'var(--color-error)' }}>error</span>
+          <h3 className={styles.emptyTitle}>Oops!</h3>
+          <p className={styles.emptySubtitle}>{error}</p>
+          <button onClick={loadConversations} style={{ marginTop: 'var(--spacing-4)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-container)', color: 'var(--color-on-primary-container)', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-family-label-md)', fontWeight: 'bold' }}>
+            Retry
+          </button>
         </div>
       </div>
     );

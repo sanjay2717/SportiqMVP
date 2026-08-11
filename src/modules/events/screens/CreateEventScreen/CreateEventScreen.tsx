@@ -23,6 +23,7 @@ export function CreateEventScreen() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!user) return;
     
     setIsSubmitting(true);
