@@ -12,8 +12,8 @@
 | Module | Owner | Branch | Build Status | Screens Built / Total | Blocked On |
 |---|---|---|---|---|---|
 | Authentication | Unassigned | Not created | **Complete** | 6 / 7 *(Account Created deferred)* | — |
-| Profile | Unassigned | Not created | In progress | 7 / 13 (12 active, 1 held) | Shared component interfaces (Button, Input) must be frozen first |
-| Social | Unassigned | Not created | Not started | 0 / 8 *(excl. assets)* | Post Detail ambiguity — operator must pick v1 or v2 before work begins; shared component interfaces |
+| Profile | Unassigned | Not created | In progress | 11 / 13 (12 active, 1 held) | Shared component interfaces (Button, Input) must be frozen first |
+| Social | Unassigned | Not created | ACTIVE | 3 / 8 *(excl. assets)* | Post Detail ambiguity — operator must pick v1 or v2 before work begins; shared component interfaces |
 | Search | Unassigned | Not created | Not started | 0 / 4 | Shared component interfaces |
 | Messaging | Unassigned | Not created | Not started | 0 / 2 | Shared component interfaces |
 | Notifications | Unassigned | Not created | Not started | 0 / 1 | Shared component interfaces |
@@ -63,13 +63,13 @@ RESOLVED 2026-07-25 — Onboarding Wizard Step Structure: A Stitch diagnostic re
 | Profile Preview | `96974a1bd17340dab744ce7fbbb1af6c` | 🔸 HELD — deferred from current MVP scope per operator decision 2026-07-25. Do not build until explicitly reactivated. | Lightweight card before navigating to full profile |
 | Create Sports Profile | `36a44b1ec6244d9db3556da84ddc7948` | ✅ Built — CreateSportsProfileScreen.tsx | Onboarding setup wizard for sports-specific details |
 | Profile Completion | `c022afa7e2084368b6bbdba3eaa078d2` | ✅ Built — ProfileCompletionScreen.tsx | Terminal onboarding screen (Step 4/4). Calls completeOnboarding() on mount — consolidates all sessionStorage-stopgapped fields + sets onboarding_complete = true in a single Supabase UPDATE. PREREQUISITE: migration 005_add_personal_and_playing_info.sql must be applied manually. |
-| Edit Profile | `539c8051c32e4e7787bc7233c2aa0730` | Not built | Form to update name, bio, and personal fields |
+| Edit Profile | `539c8051c32e4e7787bc7233c2aa0730` | ✅ Built — EditProfileScreen.tsx | Form to update name, bio, and personal fields. Now role-aware and reachable by all four roles (displays universal fields vs Athlete-only fields). |
 | Personal Information | `ab64f6d07cdd4308b9e9d5f0524946a4` | ✅ Built — PersonalInformationScreen.tsx | Onboarding Step 2/4 — Full Name, Location (Region), Age, Height, Weight. **SCHEMA GAP RESOLVED** by migration 005. Location/Age/Height/Weight now persisted via completeOnboarding() in ProfileCompletionScreen. |
 | Playing Information | `c50b8ebdd26e49e088f221712c631fc6` | ✅ Built — PlayingInformationScreen.tsx | Onboarding Step 3/4 — Dominant Foot, Primary Position, Years of Experience. **SCHEMA GAP RESOLVED** by migration 005. Fields now persisted via completeOnboarding() in ProfileCompletionScreen. |
 | Profile Picture Upload | `447f102ffc074887858038b1db75698c` | ✅ Built — ProfilePictureUploadScreen.tsx (optional, reusable) | ⚠️ Optional/reusable — NOT counted in the 4-step progress. Inserted between Step 1 and Step 2 in onboarding; also callable from Edit Profile / Settings. |
 | Statistics | `a5ab76d056d5477d8dd8f2e0ba0ed81c` | ✅ Built — StatisticsScreen.tsx | Static demo data, relocated from Athlete Dashboard |
-| Achievements | `b25601c5f3a14d5d8b77068b1c7a5d54` | Not built | Full standalone achievements page (780x2126) |
-| Achievements Section | `4a2fe79c7eff405da3579fdbb7e545eb` | Not built | Embedded achievements panel within another page (780x3940) — likely inside Own Profile |
+| Achievements | `b25601c5f3a14d5d8b77068b1c7a5d54` | ✅ Built — AchievementsGalleryScreen.tsx | Full standalone achievements page using real `achievements` table. |
+| Achievements Section | `4a2fe79c7eff405da3579fdbb7e545eb` | ✅ Built — AchievementForm.tsx | Form to add an achievement to the real `achievements` table. |
 | Select Sports | `9dcf3c98d6014b138364c73940b03698` | ✅ Built — SelectSportsScreen.tsx | Multi-select grid for sports of interest — onboarding |
 
 Profile Settings (`f53e82b64d484729a86a69d17e0619cd`) — see Settings module below; ownership split is pending operator decision.
@@ -89,11 +89,11 @@ The operator must confirm which is authoritative before Social module work begin
 
 | Screen Name | Screen ID | Build Status | Notes |
 |---|---|---|---|
-| Home Feed | `6e6713d235b04d0eb2b65d50e0b87179` | ✅ Built — AthleteDashboardScreen.tsx | **ACTIVE — MVP Demo Sprint.** Activated early for athlete dashboard; rest of Social module remains deferred. Static demo. |
+| Home Feed | `6e6713d235b04d0eb2b65d50e0b87179` | ✅ Built — AthleteDashboardScreen.tsx | **ACTIVE.** Re-wired to query the real `posts` table for feed content. Like/Comment/Share are explicitly non-functional. |
 | Post Detail (v1) | `bc326d7ec976480cb73568c23fcc9bac` | Not built | 780x2682 — see ambiguity flag above |
 | Post Detail (v2) | `e91d12a23c784df3973fffe4818d7b34` | Not built | 780x2454 — see ambiguity flag above |
-| Empty Feed | `fdaacdf294d243d29a940b171a3fa037` | Not built | Empty state when feed has no content |
-| Create Post | `8cacd67b59894b2c9768fa930968233a` | Not built | Composer form to author a new post |
+| Empty Feed | `fdaacdf294d243d29a940b171a3fa037` | ✅ Built | Handled intrinsically by `AthleteDashboardScreen` when the `posts` query returns empty. |
+| Create Post | `8cacd67b59894b2c9768fa930968233a` | ✅ Built — CreatePostScreen.tsx | Composer form inserting directly into the real `posts` table. |
 | Sports Community | `d24d1ca83f164c0395059e64a0de57d4` | Not built | Community groups or topic-based discussion listing |
 | Connections | `f55432c01428410488ad5899fb5bd953` | Not built | List of followers / following |
 | Share Sheet | `52b6aae41f2d42c885e6eb2802970ee2` | Not built | Bottom sheet to share content externally |

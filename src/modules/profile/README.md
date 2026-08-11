@@ -14,6 +14,9 @@ This module encompasses the user's Profile flows, including the onboarding seque
 | Playing Information | `/playing-information` | `c50b8ebdd26e49e088f221712c631fc6` | Gathers dominant foot, primary position, and years of experience. Third step. |
 | Profile Completion | `/profile-completion` | `c022afa7e2084368b6bbdba3eaa078d2` | Terminal screen — consolidates all onboarding data + sets onboarding_complete. Fourth step. |
 | Own Profile | `/profile` | `dea731f2d6d046cba33074bea97f0dc7` | Authenticated user's profile view. Closes the onboarding loop and displays real user data. |
+| Edit Profile | `/profile/edit` | `539c8051c32e4e7787bc7233c2aa0730` | Role-aware form for all four user types. Renders universal fields vs Athlete-only fields. |
+| Achievements | `/achievements` | `b25601c5f3a14d5d8b77068b1c7a5d54` | Full standalone achievements gallery using real `achievements` table. |
+| Achievement Form | `/achievements/form` | `4a2fe79c7eff405da3579fdbb7e545eb` | Form to create and insert into real `achievements` table. |
 
 ## Onboarding Wizard Structure (Resolved 2026-07-25)
 
@@ -38,7 +41,7 @@ The wizard is **4 required steps**, with one optional/reusable screen inserted a
 ## Module Scope Notes
 
 - **Profile Preview:** The Profile Preview screen (`96974a1bd17340dab744ce7fbbb1af6c`) is currently **HELD** and removed from the MVP scope per `module-registry.md`. Do not build it unless explicitly reactivated.
-- **Achievements:** There are two distinct screens in Stitch related to achievements (a standalone page and an embedded section). Ensure they are treated as separate views when implemented.
+- **Achievements:** ✅ **Resolved**. Both the standalone page (gallery) and the embedded section (form) are now implemented. They map to the real `achievements` table via migration `008`.
 
 ## Database Schema
 
@@ -66,5 +69,5 @@ The `public.profiles` table stores extended user information.
 - **Avatar URL** ⏳ **Still pending** — Migration `002` adds the `avatar_url text` column to the schema, but file upload to Supabase Storage is a separate future task. The UI `Upload Image` button is present but non-functional for persistence. `avatar_url` is intentionally excluded from the current `updateProfileOnboarding()` call until a storage bucket and upload flow are implemented.
 - **Physical Metrics & Location** ✅ **Resolved** — Migration `005_add_personal_and_playing_info.sql` adds `location`, `age`, `height_cm`, `weight_kg` columns. Now persisted via `completeOnboarding()` in `profileService.ts` (called by `ProfileCompletionScreen` on mount). **APPLY MANUALLY before this flow works in production.**
 - **Playing Information** ✅ **Resolved** — Migration `005_add_personal_and_playing_info.sql` adds `dominant_foot`, `primary_position`, `years_of_experience` columns. Now persisted via `completeOnboarding()`. **APPLY MANUALLY.**
-- **ROUTES.PROFILE** now points to the real `OwnProfileScreen`. `ROUTES.OWN_PROFILE` was removed. `ROUTES.EDIT_PROFILE` was added as a placeholder pending the real Edit Profile screen.
+- **ROUTES.PROFILE** now points to the real `OwnProfileScreen`. `ROUTES.EDIT_PROFILE` now points to the real role-aware `EditProfileScreen`.
 - **Empty States**: The Stitch design for Own Profile references mock stats ("Impact Score", "Top Speed") and achievements/matches. Since there is currently no backend support for these features outside of dashboard mock data, `OwnProfileScreen` renders structured empty states for these sections rather than inventing fake data.
