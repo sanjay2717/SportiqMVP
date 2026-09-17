@@ -1,5 +1,5 @@
 .skeleton {
-  background-color: var(--color-surface-container-high);
+  background-color: var(--color-neutral-300);
   background-image: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0,

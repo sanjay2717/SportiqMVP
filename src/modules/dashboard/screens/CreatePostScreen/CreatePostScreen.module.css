@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: var(--color-surface);
-  color: var(--color-on-surface);
+  background-color: var(--color-neutral-50);
+  color: var(--color-text-primary);
 }
 
 .header {
@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--spacing-container-margin);
+  padding: 0 var(--spacing-4);
   background-color: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   position: relative;
@@ -30,30 +30,30 @@
   border-radius: var(--radius-full);
   background: transparent;
   border: none;
-  color: var(--color-on-surface);
+  color: var(--color-text-primary);
   cursor: pointer;
   margin-left: -0.5rem;
   transition: background-color 0.2s;
 }
 
 .closeBtn:hover:not(:disabled) {
-  background-color: var(--color-surface-container);
+  background-color: var(--color-neutral-200);
 }
 
 .title {
-  font-family: var(--font-title-md);
+  font-family: var(--font-family);
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-on-surface);
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .postBtn {
-  background-color: var(--color-primary-container);
-  color: var(--color-on-primary-container);
+  background-color: var(--color-primary-400);
+  color: var(--color-text-inverse);
   padding: 0.5rem 1rem;
   border-radius: var(--radius-lg);
-  font-family: var(--font-label-md);
+  font-family: var(--font-family);
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -63,7 +63,7 @@
 
 .postBtn:hover:not(:disabled) {
   background-color: var(--color-primary-600);
-  color: var(--color-white);
+  color: var(--color-neutral-0);
 }
 
 .postBtn:disabled {
@@ -74,37 +74,37 @@
 .main {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-md) var(--spacing-container-margin) 8rem;
+  padding: var(--spacing-4) var(--spacing-4) 8rem;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-6);
 }
 
 .errorBanner {
-  background-color: var(--color-error-container);
-  color: var(--color-on-error-container);
-  padding: var(--spacing-md);
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-4);
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-4);
 }
 
 .profileRow {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-4);
 }
 
 .avatar {
   width: 3rem;
   height: 3rem;
   border-radius: var(--radius-full);
-  border: 2px solid var(--color-primary-container);
+  border: 2px solid var(--color-primary-400);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: var(--color-surface-container);
+  background-color: var(--color-neutral-200);
 }
 
 .avatarImg {
@@ -116,23 +116,23 @@
 .authorInfo {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-2);
 }
 
 .authorName {
-  font-family: var(--font-title-md);
-  font-size: var(--font-size-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
   font-weight: 600;
 }
 
 .visibilityBtn {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  background-color: var(--color-surface-container);
+  gap: var(--spacing-2);
+  background-color: var(--color-neutral-200);
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-full);
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
   border: 1px solid rgba(0, 0, 0, 0.05);
   width: max-content;
 }
@@ -142,7 +142,7 @@
 }
 
 .visibilityText {
-  font-family: var(--font-label-md);
+  font-family: var(--font-family);
   font-size: var(--font-size-xs);
   font-weight: 600;
 }
@@ -160,9 +160,9 @@
   border: none;
   resize: none;
   outline: none;
-  font-family: var(--font-body-lg);
-  font-size: var(--font-size-md);
-  color: var(--color-on-surface);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
   line-height: 1.6;
   padding: 0;
 }
@@ -176,8 +176,8 @@
   width: 100%;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-top: var(--spacing-md);
-  border: 1px solid var(--color-surface-variant);
+  margin-top: var(--spacing-4);
+  border: 1px solid var(--color-neutral-400);
 }
 
 .imagePreview {
@@ -219,15 +219,15 @@
   width: 100%;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border-top: 1px solid var(--color-surface-variant);
+  border-top: 1px solid var(--color-neutral-400);
   padding-bottom: env(safe-area-inset-bottom);
   z-index: 20;
 }
 
 .actionList {
   display: flex;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-container-margin);
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-4);
   overflow-x: auto;
   align-items: center;
   scrollbar-width: none;
@@ -240,23 +240,23 @@
 .actionItem {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-3);
   height: 2.5rem;
   padding: 0 1rem;
-  background-color: var(--color-surface-container);
+  background-color: var(--color-neutral-200);
   border-radius: var(--radius-full);
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
   border: none;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
-  font-family: var(--font-label-md);
+  font-family: var(--font-family);
   font-weight: 600;
   font-size: var(--font-size-sm);
 }
 
 .actionItem:hover:not(:disabled) {
-  background-color: var(--color-surface-variant);
+  background-color: var(--color-neutral-400);
   color: var(--color-primary-600);
 }
 
@@ -266,29 +266,29 @@
 }
 
 .iconColorTertiary {
-  color: var(--color-tertiary-500);
+  color: var(--color-text-tertiary);
   font-size: 20px !important;
 }
 
 .sportSelectWrapper {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-3);
   height: 2.5rem;
   padding: 0 1rem;
-  background-color: var(--color-surface-container);
+  background-color: var(--color-neutral-200);
   border-radius: var(--radius-full);
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
   white-space: nowrap;
 }
 
 .sportSelect {
   background: transparent;
   border: none;
-  font-family: var(--font-label-md);
+  font-family: var(--font-family);
   font-weight: 600;
   font-size: var(--font-size-sm);
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
   outline: none;
   cursor: pointer;
 }

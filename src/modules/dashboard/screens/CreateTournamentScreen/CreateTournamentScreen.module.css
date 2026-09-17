@@ -78,9 +78,9 @@
 
 .errorAlert {
   padding: var(--spacing-3) var(--spacing-4);
-  background-color: var(--color-error-50);
-  color: var(--color-error-700);
-  border: 1px solid var(--color-error-500);
+  background-color: color-mix(in srgb, var(--color-error) 10%, transparent);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
   border-radius: var(--radius-md);
   font-family: var(--font-family);
   font-size: var(--font-size-sm);

@@ -192,7 +192,7 @@
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-secondary);
+  color: var(--color-info);
   background: none;
   border: none;
   cursor: pointer;
@@ -380,7 +380,7 @@
 }
 
 .recordBtn:hover {
-  border-color: var(--color-secondary);
+  border-color: var(--color-info);
   background-color: var(--color-neutral-0);
   box-shadow: var(--shadow-md);
 }
@@ -411,7 +411,7 @@
 }
 
 .recordIcon {
-  color: var(--color-secondary);
+  color: var(--color-info);
 }
 
 .recordBtn:hover .attachmentTitle {
@@ -432,7 +432,7 @@
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-secondary);
+  color: var(--color-info);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -525,7 +525,7 @@
 }
 
 .statusDotCompleted {
-  background-color: var(--color-tertiary);
+  background-color: var(--color-text-tertiary);
 }
 
 .statusLabel {
@@ -641,8 +641,8 @@
 
 /* Missing DB Alert */
 .alert {
-  background-color: var(--color-error-50);
-  border: 1px solid var(--color-error-500);
+  background-color: color-mix(in srgb, var(--color-error) 10%, transparent);
+  border: 1px solid var(--color-error);
   padding: var(--spacing-3);
   border-radius: var(--radius-md);
   margin-bottom: var(--spacing-4);
@@ -652,12 +652,12 @@
 }
 
 .alertIcon {
-  color: var(--color-error-500);
+  color: var(--color-error);
 }
 
 .alertText {
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  color: var(--color-error-500);
+  color: var(--color-error);
   margin: 0;
 }

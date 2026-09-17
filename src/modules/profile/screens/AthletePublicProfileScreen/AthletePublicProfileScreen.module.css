@@ -266,7 +266,7 @@
 .impactTrend {
   display: flex;
   align-items: center;
-  color: var(--color-success-600);
+  color: var(--color-success);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
 }
@@ -343,7 +343,7 @@
 
 .errorIcon {
   font-size: 48px;
-  color: var(--color-error-500);
+  color: var(--color-error);
 }
 
 .notFoundIcon {

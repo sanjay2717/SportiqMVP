@@ -11,10 +11,10 @@
   display: flex;
   align-items: center;
   padding: var(--spacing-4) var(--spacing-6);
-  background-color: var(--color-surface);
+  background-color: var(--color-neutral-50);
   position: sticky;
   top: 0;
-  z-index: var(--z-index-sticky);
+  z-index: var(--z-index-overlay);
   border-bottom: 1px solid var(--color-neutral-100);
 }
 
@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--color-surface);
+  background-color: var(--color-neutral-50);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-neutral-100);
   padding: var(--spacing-4);
@@ -133,7 +133,7 @@
 }
 
 .sectionCard {
-  background-color: var(--color-surface);
+  background-color: var(--color-neutral-50);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-neutral-100);
   box-shadow: var(--shadow-sm);
@@ -204,10 +204,10 @@
   justify-content: center;
   gap: var(--spacing-2);
   padding: var(--spacing-4);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-error-200);
+  background-color: var(--color-neutral-50);
+  border: 1px solid color-mix(in srgb, var(--color-error) 30%, transparent);
   border-radius: var(--radius-xl);
-  color: var(--color-error-500);
+  color: var(--color-error);
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
@@ -217,6 +217,6 @@
 }
 
 .logoutButton:hover {
-  background-color: var(--color-error-50);
-  border-color: var(--color-error-300);
+  background-color: color-mix(in srgb, var(--color-error) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-error) 40%, transparent);
 }

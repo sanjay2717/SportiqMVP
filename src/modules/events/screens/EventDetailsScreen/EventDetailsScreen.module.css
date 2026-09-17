@@ -25,17 +25,17 @@
 
 /* Hero Section */
 .heroSection {
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--color-neutral-0);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-outline-variant);
+  border: 1px solid var(--color-neutral-500);
   overflow: hidden;
 }
 
 .heroImageContainer {
   height: 192px;
   width: 100%;
-  background-color: var(--color-surface-container);
+  background-color: var(--color-neutral-200);
   position: relative;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .heroText {
-  color: var(--color-on-primary);
+  color: var(--color-text-inverse);
   width: 100%;
 }
 
@@ -87,35 +87,35 @@
   align-items: center;
   padding: var(--spacing-1) var(--spacing-2);
   border-radius: var(--radius-full);
-  background-color: var(--color-primary-container);
-  color: var(--color-on-primary-container);
-  font-family: var(--font-family-label-md);
-  font-weight: var(--font-weight-label-md);
-  font-size: var(--font-size-label-md);
-  line-height: var(--line-height-label-md);
-  letter-spacing: var(--letter-spacing-label-md);
+  background-color: var(--color-primary-400);
+  color: var(--color-primary-700);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
   margin-bottom: var(--spacing-2);
   box-shadow: var(--shadow-sm);
 }
 
 .eventTitle {
-  font-family: var(--font-family-headline-xl);
-  font-weight: var(--font-weight-headline-xl);
-  font-size: var(--font-size-headline-xl);
-  line-height: var(--line-height-headline-xl);
-  letter-spacing: var(--letter-spacing-headline-xl);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-normal);
   margin-bottom: var(--spacing-1);
-  color: var(--color-on-primary);
+  color: var(--color-text-inverse);
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
 .eventSubtitle {
-  font-family: var(--font-family-body-lg);
-  font-weight: var(--font-weight-body-lg);
-  font-size: var(--font-size-body-lg);
-  line-height: var(--line-height-body-lg);
-  color: var(--color-surface-container-high);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-neutral-300);
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
@@ -128,15 +128,15 @@
 
 .editButton {
   background-color: rgba(248, 249, 251, 0.1);
-  color: var(--color-on-primary);
+  color: var(--color-text-inverse);
   border: 1px solid rgba(248, 249, 251, 0.3);
   backdrop-filter: blur(12px);
   padding: var(--spacing-2) var(--spacing-4);
   border-radius: var(--radius-lg);
-  font-family: var(--font-family-title-md);
-  font-weight: var(--font-weight-title-md);
-  font-size: var(--font-size-title-md);
-  line-height: var(--line-height-title-md);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
   transition: background-color var(--duration-fast) var(--easing-default);
   display: flex;
   align-items: center;
@@ -200,7 +200,7 @@
 }
 
 .statCard {
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--color-neutral-0);
   padding: var(--spacing-4);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
@@ -217,12 +217,12 @@
 }
 
 .statLabel {
-  font-family: var(--font-family-label-md);
-  font-weight: var(--font-weight-label-md);
-  font-size: var(--font-size-label-md);
-  line-height: var(--line-height-label-md);
-  letter-spacing: var(--letter-spacing-label-md);
-  color: var(--color-on-surface-variant);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   gap: var(--spacing-1);
@@ -230,33 +230,33 @@
 }
 
 .statLabelPrimary {
-  color: var(--color-on-primary-container);
+  color: var(--color-primary-700);
 }
 
 .statNumber {
-  font-family: var(--font-family-stats-number);
-  font-weight: var(--font-weight-stats-number);
-  font-size: var(--font-size-stats-number);
-  line-height: var(--line-height-stats-number);
-  letter-spacing: var(--letter-spacing-stats-number);
-  color: var(--color-on-background);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-text-primary);
 }
 
 .statSubtext {
-  font-family: var(--font-family-body-md);
-  font-weight: var(--font-weight-body-md);
-  font-size: var(--font-size-body-md);
-  line-height: var(--line-height-body-md);
-  color: var(--color-primary);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-primary-500);
   margin-top: var(--spacing-1);
 }
 
 .statSubtextMuted {
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
 }
 
 .statSubtextPrimary {
-  color: var(--color-on-primary-container);
+  color: var(--color-primary-700);
 }
 
 .pendingBadge {
@@ -267,17 +267,17 @@
   height: 24px;
   border-radius: var(--radius-full);
   background-color: var(--color-error);
-  color: var(--color-on-error);
-  font-family: var(--font-family-label-md);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family);
   font-size: 10px;
 }
 
 .reviewButton {
-  color: var(--color-primary);
-  font-family: var(--font-family-title-md);
-  font-weight: var(--font-weight-title-md);
-  font-size: var(--font-size-title-md);
-  line-height: var(--line-height-title-md);
+  color: var(--color-primary-500);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
   display: flex;
   align-items: center;
   gap: var(--spacing-1);
@@ -304,7 +304,7 @@
 
 /* Registrations List */
 .sectionCard {
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--color-neutral-0);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(0,0,0,0.05);
@@ -319,29 +319,29 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--color-neutral-0);
 }
 
 .sectionTitle {
-  font-family: var(--font-family-title-md);
-  font-weight: var(--font-weight-title-md);
-  font-size: var(--font-size-title-md);
-  line-height: var(--line-height-title-md);
-  color: var(--color-on-background);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   gap: var(--spacing-1);
 }
 
 .exportButton {
-  color: var(--color-secondary);
+  color: var(--color-info);
   padding: var(--spacing-1) var(--spacing-2);
-  border-radius: var(--radius-DEFAULT);
-  font-family: var(--font-family-label-md);
-  font-weight: var(--font-weight-label-md);
-  font-size: var(--font-size-label-md);
-  line-height: var(--line-height-label-md);
-  letter-spacing: var(--letter-spacing-label-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
   transition: background-color var(--duration-fast) var(--easing-default);
   display: flex;
   align-items: center;
@@ -379,28 +379,28 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  background-color: var(--color-surface-container-high);
+  background-color: var(--color-neutral-300);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-on-surface-variant);
-  font-family: var(--font-family-title-md);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
 }
 
 .listName {
-  font-family: var(--font-family-title-md);
-  font-weight: var(--font-weight-title-md);
-  font-size: var(--font-size-title-md);
-  line-height: var(--line-height-title-md);
-  color: var(--color-on-background);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
 }
 
 .listSubtext {
-  font-family: var(--font-family-body-md);
-  font-weight: var(--font-weight-body-md);
-  font-size: var(--font-size-body-md);
-  line-height: var(--line-height-body-md);
-  color: var(--color-on-surface-variant);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
 }
 
 .listActions {
@@ -411,20 +411,20 @@
 
 .approvedBadge {
   padding: 2px var(--spacing-1);
-  border-radius: var(--radius-DEFAULT);
-  background-color: var(--color-surface-container-highest);
-  color: var(--color-on-surface-variant);
-  font-family: var(--font-family-label-md);
+  border-radius: var(--radius-md);
+  background-color: var(--color-neutral-400);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
   font-size: 10px;
 }
 
 .approveButton {
-  color: var(--color-primary);
-  font-family: var(--font-family-label-md);
-  font-weight: var(--font-weight-label-md);
-  font-size: var(--font-size-label-md);
-  line-height: var(--line-height-label-md);
-  letter-spacing: var(--letter-spacing-label-md);
+  color: var(--color-primary-500);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
   cursor: not-allowed;
   opacity: 0.5;
   background: none;
@@ -432,7 +432,7 @@
 }
 
 .moreButton {
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
   padding: var(--spacing-1);
   cursor: not-allowed;
   opacity: 0.5;
@@ -445,17 +445,17 @@
 
 .sectionFooter {
   padding: var(--spacing-2);
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--color-neutral-0);
   border-top: 1px solid rgba(0,0,0,0.05);
   text-align: center;
 }
 
 .viewAllButton {
-  color: var(--color-secondary);
-  font-family: var(--font-family-title-md);
-  font-weight: var(--font-weight-title-md);
-  font-size: var(--font-size-title-md);
-  line-height: var(--line-height-title-md);
+  color: var(--color-info);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
   width: 100%;
   padding: var(--spacing-2) 0;
   cursor: not-allowed;
@@ -479,42 +479,42 @@
 }
 
 .logisticsIcon {
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
   margin-top: 2px;
 }
 
 .logisticsTitle {
-  font-family: var(--font-family-body-lg);
-  font-weight: var(--font-weight-body-lg);
-  font-size: var(--font-size-body-lg);
-  line-height: var(--line-height-body-lg);
-  color: var(--color-on-background);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
 .logisticsSubtext {
-  font-family: var(--font-family-body-md);
-  font-weight: var(--font-weight-body-md);
-  font-size: var(--font-size-body-md);
-  line-height: var(--line-height-body-md);
-  color: var(--color-on-surface-variant);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
 }
 
 .mapPreview {
   height: 128px;
   width: 100%;
   border-radius: var(--radius-lg);
-  background-color: var(--color-surface-container);
+  background-color: var(--color-neutral-200);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
 }
 
 /* Quick Action */
 .quickActionCard {
-  background-color: var(--color-surface-container-lowest);
+  background-color: var(--color-neutral-0);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(0,0,0,0.05);
@@ -526,32 +526,32 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-4);
-  font-family: var(--font-family-title-md);
-  font-weight: var(--font-weight-title-md);
-  font-size: var(--font-size-title-md);
-  color: var(--color-on-background);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
   gap: var(--spacing-1);
 }
 
 .quickActionText {
-  font-family: var(--font-family-body-md);
-  font-weight: var(--font-weight-body-md);
-  font-size: var(--font-size-body-md);
-  line-height: var(--line-height-body-md);
-  color: var(--color-on-surface-variant);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
   margin-bottom: var(--spacing-4);
 }
 
 .quickActionButton {
   width: 100%;
-  background-color: var(--color-secondary);
-  color: var(--color-on-secondary);
+  background-color: var(--color-info);
+  color: var(--color-text-inverse);
   padding: var(--spacing-2);
   border-radius: var(--radius-lg);
-  font-family: var(--font-family-title-md);
-  font-weight: var(--font-weight-title-md);
-  font-size: var(--font-size-title-md);
-  line-height: var(--line-height-title-md);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -570,17 +570,17 @@
   justify-content: center;
   height: 50vh;
   gap: var(--spacing-4);
-  color: var(--color-on-surface-variant);
+  color: var(--color-text-secondary);
 }
 
 .errorTitle {
-  font-family: var(--font-family-headline-lg);
-  color: var(--color-on-background);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
 }
 
 .backButton {
   padding: var(--spacing-2) var(--spacing-4);
-  background-color: var(--color-surface-container-low);
+  background-color: var(--color-neutral-100);
   border-radius: var(--radius-full);
   margin-top: var(--spacing-4);
   border: none;
