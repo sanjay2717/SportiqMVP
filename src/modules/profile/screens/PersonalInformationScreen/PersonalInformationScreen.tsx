@@ -61,6 +61,32 @@ export function PersonalInformationScreen() {
     }));
   };
 
+  const handleNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, isDecimalAllowed = false) => {
+    // Allow navigation/control keys
+    if (
+      ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) ||
+      e.ctrlKey || e.metaKey || e.altKey
+    ) {
+      return;
+    }
+
+    // Allow decimal point if supported and not already present
+    if (isDecimalAllowed && e.key === '.') {
+      if (e.currentTarget.value.includes('.')) {
+        e.preventDefault();
+      }
+      return;
+    }
+
+    // Block non-numeric characters (e.g., 'e', '-', '+')
+    if (!/^[0-9]$/.test(e.key)) {
+      e.preventDefault();
+      setError('Enter numbers only.');
+    } else {
+      if (error === 'Enter numbers only.') setError('');
+    }
+  };
+
   const handleContinue = async () => {
     setError('');
 
@@ -71,6 +97,20 @@ export function PersonalInformationScreen() {
 
     if (!fullName) {
       setError('Please provide your full name.');
+      return;
+    }
+
+    // Bounds checking
+    if (age && (Number(age) < 10 || Number(age) > 100)) {
+      setError('Age must be between 10 and 100 years.');
+      return;
+    }
+    if (height && (Number(height) < 50 || Number(height) > 250)) {
+      setError('Height must be between 50 and 250 cm.');
+      return;
+    }
+    if (weight && (Number(weight) < 20 || Number(weight) > 300)) {
+      setError('Weight must be between 20 and 300 kg.');
       return;
     }
 
@@ -196,6 +236,7 @@ export function PersonalInformationScreen() {
                     placeholder="--"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
+                    onKeyDown={(e) => handleNumericKeyDown(e, false)}
                     required
                   />
                   <span className={styles.metricUnit}>yrs</span>
@@ -217,6 +258,7 @@ export function PersonalInformationScreen() {
                     placeholder="--"
                     value={height}
                     onChange={(e) => setHeight(e.target.value)}
+                    onKeyDown={(e) => handleNumericKeyDown(e, false)}
                     required
                   />
                   <span className={styles.metricUnit}>cm</span>
@@ -239,6 +281,7 @@ export function PersonalInformationScreen() {
                     placeholder="--"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
+                    onKeyDown={(e) => handleNumericKeyDown(e, true)}
                     required
                   />
                   <span className={styles.metricUnit}>kg</span>
