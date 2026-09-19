@@ -254,3 +254,105 @@
   text-decoration: underline;
   color: var(--color-primary-600);
 }
+
+/* ── Caps Lock warning ───────────────────────────────────────────────────── */
+.capsLockWarning {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--color-warning);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  margin-top: var(--spacing-1);
+}
+
+/* ── Password strength section ───────────────────────────────────────────── */
+.strengthSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.strengthBarTrack {
+  width: 100%;
+  height: 4px;
+  background-color: var(--color-neutral-300);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.strengthBarFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--duration-normal) var(--easing-default), background-color var(--duration-normal) var(--easing-default);
+}
+
+.strengthWeak .strengthBarFill,
+.strengthBarFill.strengthWeak {
+  background-color: var(--color-error);
+}
+
+.strengthMedium .strengthBarFill,
+.strengthBarFill.strengthMedium {
+  background-color: var(--color-warning);
+}
+
+.strengthStrong .strengthBarFill,
+.strengthBarFill.strengthStrong {
+  background-color: var(--color-success);
+}
+
+.strengthLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.strengthLabel.strengthWeak {
+  color: var(--color-error);
+}
+
+.strengthLabel.strengthMedium {
+  color: var(--color-warning);
+}
+
+.strengthLabel.strengthStrong {
+  color: var(--color-success);
+}
+
+/* ── Criteria checklist ──────────────────────────────────────────────────── */
+.criteriaList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.criteriaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  transition: color var(--duration-fast) var(--easing-default);
+}
+
+.criteriaIcon {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  min-width: var(--spacing-4);
+  text-align: center;
+}
+
+.criteriaMet {
+  color: var(--color-success);
+}
+
+.criteriaUnmet {
+  color: var(--color-text-tertiary);
+}
+

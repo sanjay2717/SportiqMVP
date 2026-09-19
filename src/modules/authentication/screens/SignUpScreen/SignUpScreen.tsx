@@ -16,7 +16,51 @@ export function SignUpScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.Athlete);
   const [error, setError] = useState('');
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
+  const [confirmCapsLockOn, setConfirmCapsLockOn] = useState(false);
 
+  // ── Password strength helpers ──────────────────────────────────────────────
+  const criteria = [
+    { label: 'At least 8 characters', test: (p: string) => p.length >= 8 },
+    { label: 'One uppercase letter (A–Z)', test: (p: string) => /[A-Z]/.test(p) },
+    { label: 'One lowercase letter (a–z)', test: (p: string) => /[a-z]/.test(p) },
+    { label: 'One number (0–9)', test: (p: string) => /[0-9]/.test(p) },
+    { label: 'One special character (!@#$…)', test: (p: string) => /[^A-Za-z0-9]/.test(p) },
+  ];
+
+  const metCount = criteria.filter((c) => c.test(password)).length;
+
+  const strengthLabel =
+    password.length === 0
+      ? null
+      : metCount <= 2
+      ? 'Weak'
+      : metCount <= 4
+      ? 'Medium'
+      : 'Strong';
+
+  const strengthClass =
+    strengthLabel === 'Weak'
+      ? styles.strengthWeak
+      : strengthLabel === 'Medium'
+      ? styles.strengthMedium
+      : strengthLabel === 'Strong'
+      ? styles.strengthStrong
+      : '';
+
+  const isPasswordValid = metCount === criteria.length;
+
+  // ── Caps Lock detection ────────────────────────────────────────────────────
+  const handlePasswordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    setCapsLockOn(e.getModifierState('CapsLock'));
+  };
+
+  const handleConfirmPasswordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    setConfirmCapsLockOn(e.getModifierState('CapsLock'));
+  };
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -26,8 +70,8 @@ export function SignUpScreen() {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (!isPasswordValid) {
+      setError('Password does not meet the strength requirements. Please check the checklist below the password field.');
       return;
     }
 
@@ -104,6 +148,9 @@ export function SignUpScreen() {
                 placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setPasswordFocused(true)}
+                onBlur={() => setPasswordFocused(false)}
+                onKeyDown={handlePasswordKeyDown}
                 required
               />
               <button
@@ -125,6 +172,53 @@ export function SignUpScreen() {
                 )}
               </button>
             </div>
+
+            {/* Caps Lock warning — password field */}
+            {capsLockOn && passwordFocused && (
+              <div className={styles.capsLockWarning} role="alert">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                Caps Lock is on
+              </div>
+            )}
+
+            {/* Real-time strength indicator — shown once user starts typing */}
+            {password.length > 0 && (
+              <div className={styles.strengthSection}>
+                {/* Bar */}
+                <div className={styles.strengthBarTrack}>
+                  <div
+                    className={`${styles.strengthBarFill} ${strengthClass}`}
+                    style={{ width: `${(metCount / criteria.length) * 100}%` }}
+                  />
+                </div>
+                {strengthLabel && (
+                  <span className={`${styles.strengthLabel} ${strengthClass}`}>
+                    {strengthLabel}
+                  </span>
+                )}
+                {/* Per-criterion checklist */}
+                <ul className={styles.criteriaList} aria-label="Password requirements">
+                  {criteria.map((c) => {
+                    const met = c.test(password);
+                    return (
+                      <li
+                        key={c.label}
+                        className={`${styles.criteriaItem} ${met ? styles.criteriaMet : styles.criteriaUnmet}`}
+                      >
+                        <span className={styles.criteriaIcon} aria-hidden="true">
+                          {met ? '✓' : '○'}
+                        </span>
+                        {c.label}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Confirm Password input */}
@@ -137,6 +231,8 @@ export function SignUpScreen() {
                 placeholder="Confirm your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                onKeyDown={handleConfirmPasswordKeyDown}
+                onBlur={() => setConfirmCapsLockOn(false)}
                 required
               />
               <button
@@ -158,6 +254,18 @@ export function SignUpScreen() {
                 )}
               </button>
             </div>
+
+            {/* Caps Lock warning — confirm field */}
+            {confirmCapsLockOn && (
+              <div className={styles.capsLockWarning} role="alert">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                Caps Lock is on
+              </div>
+            )}
           </div>
 
           {/* Role Selection Grid */}
