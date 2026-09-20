@@ -12,7 +12,7 @@ interface LocationState {
 export function ProfilePictureUploadScreen() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -62,6 +62,9 @@ export function ProfilePictureUploadScreen() {
 
     try {
       await updateAvatarUrl(user.id, selectedFile);
+      // Defensively refresh context now so any future field additions to the
+      // User type (e.g. avatar_url) are picked up immediately without a re-login.
+      await refreshProfile();
       navigate(returnTo);
     } catch (err: any) {
       console.error('Error uploading avatar:', err);

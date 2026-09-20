@@ -19,6 +19,7 @@ interface AuthProviderProps {
 interface ProfileData {
   role: UserRole;
   onboardingComplete: boolean | null;
+  fullName: string | null;
 }
 
 /**
@@ -30,7 +31,7 @@ interface ProfileData {
 async function resolveProfile(userId: string, metadataRole: UserRole | undefined): Promise<ProfileData> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('role, onboarding_complete')
+    .select('role, onboarding_complete, full_name')
     .eq('id', userId)
     .single();
 
@@ -38,12 +39,13 @@ async function resolveProfile(userId: string, metadataRole: UserRole | undefined
     // Profile row not yet created (race condition) — fall back to JWT metadata.
     // This path is reachable briefly after signup before the DB trigger completes.
     console.warn('[AuthProvider] profiles.role unavailable, falling back to user_metadata.role:', error?.message);
-    return { role: metadataRole as UserRole, onboardingComplete: null };
+    return { role: metadataRole as UserRole, onboardingComplete: null, fullName: null };
   }
 
   return {
     role: data.role as UserRole,
-    onboardingComplete: data.onboarding_complete
+    onboardingComplete: data.onboarding_complete,
+    fullName: data.full_name ?? null,
   };
 }
 
@@ -122,7 +124,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const refreshProfile = async () => {
     if (!user?.id) return;
     const profile = await resolveProfile(user.id, user.role);
-    setUser(prev => prev ? { ...prev, role: profile.role } : prev);
+    setUser(prev =>
+      prev
+        ? {
+            ...prev,
+            role: profile.role,
+            // Re-read full_name from DB so context stays current after Edit Profile saves.
+            // Falls back to existing cached name if the DB returned null (shouldn't happen
+            // for an established user, but guards against the race-condition fallback path).
+            name: profile.fullName ?? prev.name,
+          }
+        : prev
+    );
     setOnboardingComplete(profile.onboardingComplete);
   };
 

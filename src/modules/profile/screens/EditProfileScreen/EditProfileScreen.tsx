@@ -12,7 +12,7 @@ import {
 import styles from './EditProfileScreen.module.css';
 
 export function EditProfileScreen() {
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -164,7 +164,10 @@ export function EditProfileScreen() {
         dominantFoot: dominantFoot || null,
       });
       
-      // 3. Navigate back to profile
+      // 3. Refresh auth context so user.name is current for the rest of the session
+      await refreshProfile();
+
+      // 4. Navigate back to profile
       navigate(ROUTES.PROFILE);
     } catch (err: any) {
       setError(err.message || 'Failed to update profile.');

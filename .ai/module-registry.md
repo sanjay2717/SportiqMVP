@@ -187,13 +187,17 @@ Route: `/events` and `/events/create` (registered, Protected). This module is fu
 
 ## Known Open Issues (Confirmed 2026-09-20 — Do Not Fix Without Explicit Operator Task)
 
-### BUG-1: refreshProfile() not called after ProfilePictureUploadScreen save
-**Severity:** Low (currently masked). **Screen:** `ProfilePictureUploadScreen.tsx`
-After `updateAvatarUrl()` succeeds, the screen navigates to `returnTo` without calling `refreshProfile()`. The `User` type in `src/core/auth/types.ts` caches only `id`, `name` (= full_name), `email`, `role` — `avatar_url` is NOT in the User interface. `refreshProfile()` itself only re-fetches `role` and `onboarding_complete`. Net result: avatar_url stale-context is currently masked because no component reads avatar_url from context. However: **if avatar_url is ever added to the User type** (a likely future step), this screen will immediately exhibit stale-avatar symptoms (TopBar avatar won't update until next login). Fix scope: add `refreshProfile()` call after upload; also extend `refreshProfile()` to re-read `full_name` and `avatar_url` from the profiles table.
+### ~~BUG-1~~: refreshProfile() not called after ProfilePictureUploadScreen save — **✅ RESOLVED 2026-09-20**
+**Severity:** Low (was masked). **Screen:** `ProfilePictureUploadScreen.tsx`
+After `updateAvatarUrl()` succeeds, the screen navigated to `returnTo` without calling `refreshProfile()`. `avatar_url` is NOT in the `User` interface so the symptom was masked, but constituted a latent gap — any future addition of `avatar_url` to the type would have produced a stale-context bug immediately.
+**Fix applied:** `refreshProfile()` is now called (and awaited) after `updateAvatarUrl()` succeeds, before `navigate(returnTo)`. Additionally, `refreshProfile()` itself was widened (see BUG-2 fix) to re-read `full_name` from DB. `avatar_url` was NOT added to the User type — `TopBar.tsx` confirmed to already run its own live `getOwnProfile()` query on mount and does not consume `avatar_url` from context — adding it would be redundant scope creep.
 
-### BUG-2: refreshProfile() not called after EditProfileScreen save — name changes do not propagate to context
-**Severity:** Medium. **Screen:** `EditProfileScreen.tsx`
-After `updateEditProfile()` succeeds, the screen navigates to `ROUTES.PROFILE` without calling `refreshProfile()`. `full_name` IS in the User type (`user.name`). **Concrete symptom:** A name change made in Edit Profile does NOT update `user.name` in AuthContext for the remainder of the session. Any screen or component reading `user.name` directly from context (e.g., Settings header) will display the old name until next login/reload. **Action needed (separate task):** Call `refreshProfile()` after `handleSave()` success AND extend `refreshProfile()` in AuthProvider to also re-read `full_name` from the profiles table and write it back to `user.name` in context.
+### ~~BUG-2~~: refreshProfile() not called after EditProfileScreen save — name changes did not propagate — **✅ RESOLVED 2026-09-20**
+**Severity:** Medium (was active). **Screen:** `EditProfileScreen.tsx`
+After `updateEditProfile()` succeeded, the screen navigated without calling `refreshProfile()`. `full_name` IS in the `User` type as `user.name`, so a name change was invisible to the rest of the session (Settings header, any component reading `user.name` from context).
+**Fix applied (two-part):**
+1. `AuthProvider.tsx`: `resolveProfile()` now fetches `full_name` from the profiles row alongside `role` and `onboarding_complete`. `refreshProfile()` now writes `profile.fullName ?? prev.name` back into `user.name` in context.
+2. `EditProfileScreen.tsx`: `refreshProfile()` is now called (and awaited) after both the avatar upload and text field save succeed, before `navigate(ROUTES.PROFILE)`. Name changes now propagate within the session without a re-login.
 
 ### BUG-3: EditProfileScreen height/weight fields have no numeric-only keyboard guard
 **Severity:** Low–Medium. **Screen:** `EditProfileScreen.tsx` (Physical Stats section, Athlete role only, lines 411–433)
