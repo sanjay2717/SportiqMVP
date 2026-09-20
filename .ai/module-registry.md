@@ -2,8 +2,8 @@
 
 **Authoritative Stitch Project ID:** `3941284064310403069` — SportIQ Mobile Design System
 **Governance rule:** See `.ai/stitch-workflow.md` → Project Governance section. Single project, no remixing, read-only shared MCP access for non-architects.
-**Last synced:** 2026-08-04
-**Source inventories:** Full codebase state inventory + full Stitch workspace inventory, originally produced 2026-07-25; Government Dashboard status updated 2026-08-04 post-rebuild.
+**Last synced:** 2026-09-20
+**Source inventories:** Full codebase state inventory + full Stitch workspace inventory, originally produced 2026-07-25; Government Dashboard status updated 2026-08-04 post-rebuild; nav routing, Events Stitch tracing, refreshProfile coverage, Edit Profile numeric guards, and APK mechanism audited 2026-09-20.
 
 ---
 
@@ -154,12 +154,13 @@ Ownership resolved: "Profile Settings" (`f53e82b64d484729a86a69d17e0619cd`) belo
 | Athlete Dashboard | `6e6713d235b04d0eb2b65d50e0b87179` *(repurposed Home Feed)* | ✅ DONE — Rebuilt/Restored | Displays social feed content (posts, match cards, likes/comments). Uses static demo data (`// STATIC DEMO`). Note: The performance-stats content previously shown here is preserved separately at `/profile/statistics` (`StatisticsScreen.tsx`, Stitch ID `a5ab76d056d5477d8dd8f2e0ba0ed81c`). |
 | Coach Dashboard | `c806e8b69788433483ffab466ad4bd71` | ✅ DONE — Exact-fidelity rebuild | Partially real: Total Athletes stat executes real Supabase query (`getTotalAthletesCount()`) with mock fallback when null/error; all other stats, schedule, Academy Chart, and Recent Activity use `COACH_MOCK_DATA`. Quick Action `MY_ATHLETES` routes to real `CoachAthleteSearchScreen`. |
 | Organiser Dashboard | `03c76d2b022749369496ed362c229f98` | ✅ DONE — Exact-fidelity rebuild | Real with mock fallback: Upcoming Events executes real `getUpcomingEvents()` Supabase service query with `ORGANISER_MOCK_DATA.upcomingEvents` fallback when empty or error; Bento KPI stats, Quick Actions, Active Tournaments, and Recent Activity use `ORGANISER_MOCK_DATA`. Quick Action `CREATE_EVENT` routes to real `CreateEventScreen`. |
-| Government Dashboard | `8e35604d174d41f1bc256072de7c7f53` | ✅ DONE — Exact-fidelity rebuild | **Real with mock fallback**: All 4 KPI stats (Total Registered Athletes, Verified Coaches, Organizations, Active Events) execute real Supabase aggregate queries via `getGovernmentAnalytics()` in `analyticsService.ts`; when `analytics` is null (loading/error) they fall back to `GOVERNMENT_MOCK_DATA.stats` values. Registration Trend chart renders real `athletesByDistrict` data (empty state with "No district data available" message when none). Top Sports renders real `athletesBySport` data with `GOVERNMENT_MOCK_DATA.topSports` fallback when empty. Recent Activity always uses `GOVERNMENT_MOCK_DATA.activities` (no real pipeline yet). Quick Actions: "Athletes" → real `CoachAthleteSearchScreen` (`ROUTES.ATHLETE_DIRECTORY`); "Organizations" → real `OrganizationDirectoryScreen` (`ROUTES.ORGANIZATION_DIRECTORY`); "Report" → `PlaceholderScreen` (`ROUTES.REPORTS`); "Leaderboards" → `PlaceholderScreen` (`ROUTES.LEADERBOARDS`). Government nav "Reports & Analytics" tab → `PlaceholderScreen` (`ROUTES.ANALYTICS`). |
+| Government Dashboard | `8e35604d174d41f1bc256072de7c7f53` | ✅ DONE — Exact-fidelity rebuild | **Real with mock fallback**: All 4 KPI stats (Total Registered Athletes, Verified Coaches, Organizations, Active Events) execute real Supabase aggregate queries via `getGovernmentAnalytics()` in `analyticsService.ts`; when `analytics` is null (loading/error) they fall back to `GOVERNMENT_MOCK_DATA.stats` values. Registration Trend chart renders real `athletesByDistrict` data (empty state with "No district data available" message when none). Top Sports renders real `athletesBySport` data with `GOVERNMENT_MOCK_DATA.topSports` fallback when empty. Recent Activity always uses `GOVERNMENT_MOCK_DATA.activities` (no real pipeline yet). Quick Actions: "Athletes" → real `CoachAthleteSearchScreen` (`ROUTES.ATHLETE_DIRECTORY`); "Organizations" → real `OrganizationDirectoryScreen` (`ROUTES.ORGANIZATION_DIRECTORY`); "Report" → `PlaceholderScreen` (`ROUTES.REPORTS`); "Leaderboards" → `PlaceholderScreen` (`ROUTES.LEADERBOARDS`). **Government nav routing confirmed 2026-09-20 (read from live code):** `navigationByRole[Government]` has 5 items: Dashboard (`/`), Athletes (`ROUTES.ATHLETE_DIRECTORY` → `CoachAthleteSearchScreen` ✅), **Reports & Analytics** (`ROUTES.ANALYTICS` → `PlaceholderScreen` ⚠️ — `GovernmentAnalyticsScreen` exists on disk but is NOT linked; AppRouter.tsx L300 renders PlaceholderScreen for `/analytics`), Profile (`/profile`), Announcement (`ROUTES.ANNOUNCEMENTS` → `AnnouncementsScreen` ✅). There is NO "Announcements" (plural) nav item; the label in config.ts is "Announcement" (singular). |
 
 #### Unlinked-But-Present Demo & Secondary Screens on Disk
 The following files exist on disk in `src/modules/dashboard/screens/` but are explicitly **unlinked from routing** in `AppRouter.tsx` (their corresponding routes render `PlaceholderScreen`). They contain static demo or secondary content and are not currently reachable:
-- `CreateTournamentScreen` and `TeamManagementScreen` (Organiser role demo screens; `ROUTES.CREATE_TOURNAMENT` and `ROUTES.TEAM_MANAGEMENT` map to `PlaceholderScreen`).
-- `ReportsScreen`, `LeaderboardsScreen`, and `GovernmentAnalyticsScreen` (`ROUTES.REPORTS`, `ROUTES.LEADERBOARDS`, `ROUTES.ANALYTICS` map to `PlaceholderScreen`).
+- `CreateTournamentScreen` — **CORRECTION 2026-09-20**: `ROUTES.CREATE_TOURNAMENT` (`/tournaments/create`) IS wired to `CreateTournamentScreen` directly in AppRouter.tsx L285. Not a PlaceholderScreen.
+- `TeamManagementScreen` — `ROUTES.TEAM_MANAGEMENT` maps to `MyCoachesScreen` (not PlaceholderScreen). The screen name in registry was stale.
+- `ReportsScreen`, `LeaderboardsScreen`, and `GovernmentAnalyticsScreen` (`ROUTES.REPORTS`, `ROUTES.LEADERBOARDS`, `ROUTES.ANALYTICS` map to `PlaceholderScreen`). ✅ Confirmed from AppRouter.tsx L292-L293, L300.
 
 #### Athlete Role Custom Navigation & Header (Operator-Authored)
 Unlike Coach, Organiser, and Government roles—which use Stitch-derived dashboards and standard 5-tab navigation—the Athlete role uses custom **operator-authored content (not Stitch-sourced)**:
@@ -178,10 +179,26 @@ Route: `/events` and `/events/create` (registered, Protected). This module is fu
 
 | Screen Name | Screen ID | Build Status | Notes |
 |---|---|---|---|
-| Events List | N/A | ✅ Built — EventsListScreen.tsx | Displays real events from Supabase. No Stitch trace (Law Two Exception). |
-| Create Event | N/A | ✅ Built — CreateEventScreen.tsx | Real form inserting into Supabase. Promoted from placeholder. No Stitch trace (Law Two Exception). |
+| Events List | N/A | ✅ Built — EventsListScreen.tsx | Displays real events from Supabase. No Stitch trace (Law Two Exception — all three screens in this module). |
+| Create Event | N/A | ✅ Built — CreateEventScreen.tsx | Real form inserting into Supabase. No Stitch trace (Law Two Exception). |
+| Event Details | N/A | ✅ Built — EventDetailsScreen.tsx | Displays real event data via `getEventById()`. Bento-grid admin layout with skeleton loading. Registrations list is static mock (2 hardcoded items, no real registrations table). **No Stitch trace** — Law Two Exception covers all three screens. The operator-referenced Screen ID `293201b80ebe4f2eb8c8277fd3769d32` ("Admin" variant) does NOT appear anywhere in EventDetailsScreen.tsx source — confirmed by grep. |
 
 ---
+
+## Known Open Issues (Confirmed 2026-09-20 — Do Not Fix Without Explicit Operator Task)
+
+### BUG-1: refreshProfile() not called after ProfilePictureUploadScreen save
+**Severity:** Low (currently masked). **Screen:** `ProfilePictureUploadScreen.tsx`
+After `updateAvatarUrl()` succeeds, the screen navigates to `returnTo` without calling `refreshProfile()`. The `User` type in `src/core/auth/types.ts` caches only `id`, `name` (= full_name), `email`, `role` — `avatar_url` is NOT in the User interface. `refreshProfile()` itself only re-fetches `role` and `onboarding_complete`. Net result: avatar_url stale-context is currently masked because no component reads avatar_url from context. However: **if avatar_url is ever added to the User type** (a likely future step), this screen will immediately exhibit stale-avatar symptoms (TopBar avatar won't update until next login). Fix scope: add `refreshProfile()` call after upload; also extend `refreshProfile()` to re-read `full_name` and `avatar_url` from the profiles table.
+
+### BUG-2: refreshProfile() not called after EditProfileScreen save — name changes do not propagate to context
+**Severity:** Medium. **Screen:** `EditProfileScreen.tsx`
+After `updateEditProfile()` succeeds, the screen navigates to `ROUTES.PROFILE` without calling `refreshProfile()`. `full_name` IS in the User type (`user.name`). **Concrete symptom:** A name change made in Edit Profile does NOT update `user.name` in AuthContext for the remainder of the session. Any screen or component reading `user.name` directly from context (e.g., Settings header) will display the old name until next login/reload. **Action needed (separate task):** Call `refreshProfile()` after `handleSave()` success AND extend `refreshProfile()` in AuthProvider to also re-read `full_name` from the profiles table and write it back to `user.name` in context.
+
+### BUG-3: EditProfileScreen height/weight fields have no numeric-only keyboard guard
+**Severity:** Low–Medium. **Screen:** `EditProfileScreen.tsx` (Physical Stats section, Athlete role only, lines 411–433)
+The `onKeyDown` numeric filter applied to `PersonalInformationScreen` (onboarding) was NOT applied to the equivalent `heightCm` and `weightKg` inputs in `EditProfileScreen`. Both are `type="number"` with no explicit key filter, so `e`, `+`, `-` remain typeable.
+**Candidate fix (operator to scope):** Extract `handleNumericKeyDown` from `PersonalInformationScreen` into `src/shared/utils/` per Law Four, and apply to both screens. Do not extract or build without an explicit operator task.
 
 ## Deferred Module Design Assets
 
