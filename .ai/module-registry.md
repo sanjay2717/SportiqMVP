@@ -199,10 +199,10 @@ After `updateEditProfile()` succeeded, the screen navigated without calling `ref
 1. `AuthProvider.tsx`: `resolveProfile()` now fetches `full_name` from the profiles row alongside `role` and `onboarding_complete`. `refreshProfile()` now writes `profile.fullName ?? prev.name` back into `user.name` in context.
 2. `EditProfileScreen.tsx`: `refreshProfile()` is now called (and awaited) after both the avatar upload and text field save succeed, before `navigate(ROUTES.PROFILE)`. Name changes now propagate within the session without a re-login.
 
-### BUG-3: EditProfileScreen height/weight fields have no numeric-only keyboard guard
-**Severity:** Low–Medium. **Screen:** `EditProfileScreen.tsx` (Physical Stats section, Athlete role only, lines 411–433)
+### ~~BUG-3~~: EditProfileScreen height/weight fields have no numeric-only keyboard guard — **✅ RESOLVED 2026-09-20**
+**Severity:** Low–Medium (was active). **Screen:** `EditProfileScreen.tsx` (Physical Stats section, Athlete role only, lines 411–433)
 The `onKeyDown` numeric filter applied to `PersonalInformationScreen` (onboarding) was NOT applied to the equivalent `heightCm` and `weightKg` inputs in `EditProfileScreen`. Both are `type="number"` with no explicit key filter, so `e`, `+`, `-` remain typeable.
-**Candidate fix (operator to scope):** Extract `handleNumericKeyDown` from `PersonalInformationScreen` into `src/shared/utils/` per Law Four, and apply to both screens. Do not extract or build without an explicit operator task.
+**Fix applied:** Extracted the inline `handleNumericKeyDown` logic from `PersonalInformationScreen` into a new, reusable shared hook at `src/shared/hooks/useNumericInput.ts`. Refactored `PersonalInformationScreen` to use this hook, and applied it to the `heightCm` and `weightKg` fields in `EditProfileScreen`. Both screens now reject non-numeric input identically. *Note: this shared hook can be reused in the future (e.g., if Playing Information's years_of_experience field requires it).*
 
 ## Deferred Module Design Assets
 

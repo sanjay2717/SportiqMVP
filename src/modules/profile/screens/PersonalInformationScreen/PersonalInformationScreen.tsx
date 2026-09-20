@@ -4,6 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
 import { updatePersonalInformation } from '../../services/profileService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
+import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import styles from './PersonalInformationScreen.module.css';
 
 export function PersonalInformationScreen() {
@@ -61,31 +62,9 @@ export function PersonalInformationScreen() {
     }));
   };
 
-  const handleNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, isDecimalAllowed = false) => {
-    // Allow navigation/control keys
-    if (
-      ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) ||
-      e.ctrlKey || e.metaKey || e.altKey
-    ) {
-      return;
-    }
-
-    // Allow decimal point if supported and not already present
-    if (isDecimalAllowed && e.key === '.') {
-      if (e.currentTarget.value.includes('.')) {
-        e.preventDefault();
-      }
-      return;
-    }
-
-    // Block non-numeric characters (e.g., 'e', '-', '+')
-    if (!/^[0-9]$/.test(e.key)) {
-      e.preventDefault();
-      setError('Enter numbers only.');
-    } else {
-      if (error === 'Enter numbers only.') setError('');
-    }
-  };
+  const handleAgeKeyDown = useNumericInput(setError, false);
+  const handleHeightKeyDown = useNumericInput(setError, false);
+  const handleWeightKeyDown = useNumericInput(setError, true);
 
   const handleContinue = async () => {
     setError('');
@@ -236,7 +215,7 @@ export function PersonalInformationScreen() {
                     placeholder="--"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    onKeyDown={(e) => handleNumericKeyDown(e, false)}
+                    onKeyDown={handleAgeKeyDown}
                     required
                   />
                   <span className={styles.metricUnit}>yrs</span>
@@ -258,7 +237,7 @@ export function PersonalInformationScreen() {
                     placeholder="--"
                     value={height}
                     onChange={(e) => setHeight(e.target.value)}
-                    onKeyDown={(e) => handleNumericKeyDown(e, false)}
+                    onKeyDown={handleHeightKeyDown}
                     required
                   />
                   <span className={styles.metricUnit}>cm</span>
@@ -281,7 +260,7 @@ export function PersonalInformationScreen() {
                     placeholder="--"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    onKeyDown={(e) => handleNumericKeyDown(e, true)}
+                    onKeyDown={handleWeightKeyDown}
                     required
                   />
                   <span className={styles.metricUnit}>kg</span>

@@ -9,6 +9,7 @@ import {
   updateAvatarUrl,
   getOrganisers,
 } from '../../services/profileService';
+import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import styles from './EditProfileScreen.module.css';
 
 export function EditProfileScreen() {
@@ -41,6 +42,9 @@ export function EditProfileScreen() {
   const [heightCm, setHeightCm] = useState<string>('');
   const [weightKg, setWeightKg] = useState<string>('');
   const [dominantFoot, setDominantFoot] = useState<string>(''); // 'left' | 'right' | 'both' | ''
+
+  const handleHeightKeyDown = useNumericInput(setError, false);
+  const handleWeightKeyDown = useNumericInput(setError, true);
 
   const [organisersList, setOrganisersList] = useState<{ id: string; full_name: string }[]>([]);
   
@@ -420,6 +424,7 @@ export function EditProfileScreen() {
                 placeholder="e.g. 175"
                 value={heightCm}
                 onChange={e => setHeightCm(e.target.value)}
+                onKeyDown={handleHeightKeyDown}
               />
             </div>
             <div className={styles.formGroup}>
@@ -433,6 +438,7 @@ export function EditProfileScreen() {
                 placeholder="e.g. 72"
                 value={weightKg}
                 onChange={e => setWeightKg(e.target.value)}
+                onKeyDown={handleWeightKeyDown}
               />
             </div>
             <div className={styles.formGroupFull}>
