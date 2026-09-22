@@ -107,6 +107,7 @@
   /* ========================================
      Border Radius (Stitch scale)
      ======================================== */
+  --app-shell-max-width: 30rem; /* 480px */
   --radius-sm:   0.25rem;  /*  4px */
   --radius-md:   0.5rem;   /*  8px — buttons / inputs */
   --radius-lg:   0.75rem;  /* 12px */
