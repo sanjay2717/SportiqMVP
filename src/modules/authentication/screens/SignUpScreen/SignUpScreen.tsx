@@ -135,6 +135,11 @@ export function SignUpScreen() {
               </div>
             )}
 
+            {/* NON-STITCH EXCEPTION (Law Two): the password strength rules and the
+                Caps Lock indicator below are not present in the Stitch Sign Up
+                design (screen 1ecbe3fbb0e64da187c25f35ed61722b, re-checked
+                2026-09-22). Built directly against tokens.css per project
+                convention for functionality Stitch does not cover. */}
             {/* Real-time requirements indicator */}
             <div className={styles.strengthSection}>
               {/* Per-criterion checklist */}
