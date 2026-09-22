@@ -266,60 +266,19 @@
   margin-top: var(--spacing-1);
 }
 
+.warningIcon {
+  font-family: 'Material Symbols Outlined';
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 /* ── Password strength section ───────────────────────────────────────────── */
 .strengthSection {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
   margin-top: var(--spacing-2);
-}
-
-.strengthBarTrack {
-  width: 100%;
-  height: 4px;
-  background-color: var(--color-neutral-300);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-}
-
-.strengthBarFill {
-  height: 100%;
-  border-radius: var(--radius-full);
-  transition: width var(--duration-normal) var(--easing-default), background-color var(--duration-normal) var(--easing-default);
-}
-
-.strengthWeak .strengthBarFill,
-.strengthBarFill.strengthWeak {
-  background-color: var(--color-error);
-}
-
-.strengthMedium .strengthBarFill,
-.strengthBarFill.strengthMedium {
-  background-color: var(--color-warning);
-}
-
-.strengthStrong .strengthBarFill,
-.strengthBarFill.strengthStrong {
-  background-color: var(--color-success);
-}
-
-.strengthLabel {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-}
-
-.strengthLabel.strengthWeak {
-  color: var(--color-error);
-}
-
-.strengthLabel.strengthMedium {
-  color: var(--color-warning);
-}
-
-.strengthLabel.strengthStrong {
-  color: var(--color-success);
 }
 
 /* ── Criteria checklist ──────────────────────────────────────────────────── */
@@ -342,10 +301,12 @@
 }
 
 .criteriaIcon {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
+  font-family: 'Material Symbols Outlined';
+  font-size: 16px; /* Material Symbol size */
+  font-weight: var(--font-weight-regular);
   min-width: var(--spacing-4);
   text-align: center;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 .criteriaMet {
@@ -353,6 +314,9 @@
 }
 
 .criteriaUnmet {
-  color: var(--color-text-tertiary);
+  color: var(--color-error);
 }
 
+.criteriaNeutral {
+  color: var(--color-text-tertiary);
+}
