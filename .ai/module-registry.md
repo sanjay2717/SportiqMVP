@@ -2,8 +2,8 @@
 
 **Authoritative Stitch Project ID:** `3941284064310403069` — SportIQ Mobile Design System
 **Governance rule:** See `.ai/stitch-workflow.md` → Project Governance section. Single project, no remixing, read-only shared MCP access for non-architects.
-**Last synced:** 2026-09-20
-**Source inventories:** Full codebase state inventory + full Stitch workspace inventory, originally produced 2026-07-25; Government Dashboard status updated 2026-08-04 post-rebuild; nav routing, Events Stitch tracing, refreshProfile coverage, Edit Profile numeric guards, and APK mechanism audited 2026-09-20.
+**Last synced:** 2026-09-22
+**Source inventories:** Full codebase state inventory + full Stitch workspace inventory, originally produced 2026-07-25; Government Dashboard status updated 2026-08-04 post-rebuild; nav routing, Events Stitch tracing, refreshProfile coverage, Edit Profile numeric guards, and APK mechanism audited 2026-09-20. Password rules, avatar storage rules, service_role DB grants, and token standardisation (Type A/B pass) updated 2026-09-22.
 
 ---
 
@@ -52,9 +52,9 @@ AMBIGUITY — Three Profile View Screens: Own Profile, Public Profile, and Profi
 AMBIGUITY — Two Achievements Screens: "Achievements" (`b25601c5f3a14d5d8b77068b1c7a5d54`, 780x2126) is a standalone full page. "Achievements Section" (`4a2fe79c7eff405da3579fdbb7e545eb`, 780x3940) is an embedded section likely rendered inside another screen (e.g., Own Profile). These are not the same and should not be conflated.
 
 RESOLVED 2026-07-25 — Onboarding Wizard Step Structure: A Stitch diagnostic revealed conflicting "Step X of Y" labels across onboarding screens (Create Sports Profile showed Step 1/4; Playing Information showed Step 3/4; Profile Picture Upload showed Step 1/5 — irreconcilable without operator input). Resolution per operator decision 2026-07-25:
-- The **required wizard is 4 steps**: Create Sports Profile (1/4) → Personal Information (2/4) → Playing Information (3/4) → Profile Completion (4/4, terminal).
+- The **required wizard is 4 steps**: Create Sports Profile (1/4) → Personal Information (2/4, contains age/height/weight/location) → Playing Information (3/4, position/dominant foot/experience) → Profile Completion (4/4, terminal).
 - **Profile Picture Upload is optional and reusable** — inserted in the flow after Create Sports Profile, but skippable, and NOT counted in the 4-step progress indicator. It is also intended to be callable from Edit Profile / Settings (i.e., not onboarding-exclusive).
-- **Full resolved screen order**: Select Sports (pre-wizard, no step counter) → Create Sports Profile (Step 1/4) → Profile Picture Upload (optional, skippable insert) → Personal Information (Step 2/4) → Playing Information (Step 3/4) → Profile Completion (Step 4/4).
+- **Full resolved screen order**: Select Sports (1) → Create Sports Profile (2) → Profile Picture Upload (3) → Personal Information (4, contains age/height/weight/location) → Playing Information (5, position/dominant foot/experience) → Profile Completion (6).
 
 | Screen Name | Screen ID | Build Status | Notes |
 |---|---|---|---|
@@ -185,7 +185,23 @@ Route: `/events` and `/events/create` (registered, Protected). This module is fu
 
 ---
 
-## Known Open Issues (Confirmed 2026-09-20 — Do Not Fix Without Explicit Operator Task)
+## Known Open Issues (Confirmed 2026-09-22 — Do Not Fix Without Explicit Operator Task)
+
+### ~~FEATURE-1~~: Sign Up password-rules feature — **✅ BUILT 2026-09-22**
+**Location:** `src/modules/authentication/screens/SignUpScreen/`, `src/modules/authentication/utils/validation.ts`, `src/modules/authentication/hooks/useCapsLockDetection.ts`
+- **Non-Stitch exception:** password rules / caps-lock UI not present in Stitch screen `1ecbe3fbb0e64da187c25f35ed61722b` (Sign Up), built against `tokens.css` directly, matching the Events-module precedent.
+- **New token added:** `--app-shell-max-width` (30rem / 480px) in `tokens.css`, reused from an existing repeated pattern across screens (flag: confirm which other screens should migrate to it in a future session — not done yet, out of scope this session).
+- **Status:** Build → audit → fix → re-audit cycle completed; both audits passed clean on final state.
+
+### BUG-4: TopBar avatar staleness
+**Severity:** Medium. **Screen:** `TopBar.tsx`
+`TopBar.tsx` fetches the user's avatar via a one-shot `useEffect` keyed on `user?.id`, which does not change mid-session. Uploading a new avatar does not refresh TopBar's displayed image unless TopBar unmounts/remounts via navigation. This is DISTINCT from BUG-1 (Profile Picture Upload → stale avatar CONTEXT), which was correctly fixed — this is a separate, still-open code path.
+**STATUS:** OPEN, not yet built or scoped for a build pass.
+
+### BUG-5: OrganizationDetailScreen.module.css invalid var() references
+**Severity:** Unknown. **Screen:** `OrganizationDetailScreen.module.css` (dashboard module)
+Contains invalid `var()` references with inline CSS fallback values (dashboard module). Discovered 2026-09-22 during an unrelated Type B check.
+**STATUS:** OPEN.
 
 ### ~~BUG-1~~: refreshProfile() not called after ProfilePictureUploadScreen save — **✅ RESOLVED 2026-09-20**
 **Severity:** Low (was masked). **Screen:** `ProfilePictureUploadScreen.tsx`
@@ -203,6 +219,13 @@ After `updateEditProfile()` succeeded, the screen navigated without calling `ref
 **Severity:** Low–Medium (was active). **Screen:** `EditProfileScreen.tsx` (Physical Stats section, Athlete role only, lines 411–433)
 The `onKeyDown` numeric filter applied to `PersonalInformationScreen` (onboarding) was NOT applied to the equivalent `heightCm` and `weightKg` inputs in `EditProfileScreen`. Both are `type="number"` with no explicit key filter, so `e`, `+`, `-` remain typeable.
 **Fix applied:** Extracted the inline `handleNumericKeyDown` logic from `PersonalInformationScreen` into a new, reusable shared hook at `src/shared/hooks/useNumericInput.ts`. Refactored `PersonalInformationScreen` to use this hook, and applied it to the `heightCm` and `weightKg` fields in `EditProfileScreen`. Both screens now reject non-numeric input identically. *Note: this shared hook can be reused in the future (e.g., if Playing Information's years_of_experience field requires it).*
+
+## Supabase / Infrastructure Notes
+
+- **service_role missing CRUD grants:** `service_role` was missing standard CRUD grants on `achievements`, `conversations`, `events`, `messages`, `posts`, `tournaments` — root-caused to a schema-wide default ACL set by role `postgres` on the public schema (see migration `007_grant_service_role_profiles.sql` for the earlier one-off precedent on `profiles`). Fixed 2026-09-22 via `GRANT ALL` per table to `service_role` (functionally equivalent to explicit CRUD grants, since TRUNCATE/REFERENCES/TRIGGER were already present via the default ACL). Migration file: `supabase/migrations/015_grant_service_role_all_tables.sql`.
+  - *Open sub-item:* `vault.secrets` / `vault.decrypted_secrets` grants to `service_role` could not be traced to a specific statement (pg_stat_statements retention limit) — assessed as likely a Supabase Vault extension default, not flagged as a risk, but not conclusively proven benign.
+
+- **avatars storage bucket:** `file_size_limit` (5MB) and `allowed_mime_types` (image/jpeg, image/png, image/webp) set 2026-09-22. The bucket's broad SELECT/listing policy on `storage.objects` remains under review — [update once resolved].
 
 ## Deferred Module Design Assets
 
