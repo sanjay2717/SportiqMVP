@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@core/auth/AuthProvider';
-import { getOwnProfile } from '@modules/profile/services/profileService';
 import { ROUTES } from '@routing/routes';
 import styles from './TopBar.module.css';
 
@@ -12,24 +10,6 @@ interface TopBarProps {
 export function TopBar({ showSearch = false }: TopBarProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!user?.id) return;
-    let isMounted = true;
-    getOwnProfile(user.id)
-      .then((profile) => {
-        if (isMounted && profile?.avatar_url) {
-          setAvatarUrl(profile.avatar_url);
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to fetch avatar_url for TopBar:', err);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [user?.id]);
 
   return (
     <header className={styles.topBar}>
@@ -61,9 +41,9 @@ export function TopBar({ showSearch = false }: TopBarProps) {
           aria-label="Profile"
           type="button"
         >
-          {avatarUrl ? (
+          {user?.avatar_url ? (
             <img 
-              src={avatarUrl} 
+              src={user.avatar_url} 
               alt="Profile avatar" 
               className={styles.avatarImg} 
             />

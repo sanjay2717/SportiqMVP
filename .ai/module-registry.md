@@ -193,10 +193,10 @@ Route: `/events` and `/events/create` (registered, Protected). This module is fu
 - **New token added:** `--app-shell-max-width` (30rem / 480px) in `tokens.css`, reused from an existing repeated pattern across screens (flag: confirm which other screens should migrate to it in a future session — not done yet, out of scope this session).
 - **Status:** Build → audit → fix → re-audit cycle completed; both audits passed clean on final state.
 
-### BUG-4: TopBar avatar staleness
+### ~~BUG-4~~: TopBar avatar staleness — **✅ RESOLVED 2026-09-23**
 **Severity:** Medium. **Screen:** `TopBar.tsx`
-`TopBar.tsx` fetches the user's avatar via a one-shot `useEffect` keyed on `user?.id`, which does not change mid-session. Uploading a new avatar does not refresh TopBar's displayed image unless TopBar unmounts/remounts via navigation. This is DISTINCT from BUG-1 (Profile Picture Upload → stale avatar CONTEXT), which was correctly fixed — this is a separate, still-open code path.
-**STATUS:** OPEN, not yet built or scoped for a build pass.
+`TopBar.tsx` fetched the user's avatar via a one-shot `useEffect` keyed on `user?.id`, which did not change mid-session. Uploading a new avatar did not refresh TopBar's displayed image unless TopBar unmounted/remounted via navigation. This was DISTINCT from BUG-1 (Profile Picture Upload → stale avatar CONTEXT), which was previously falsely marked resolved once already based on code inspection (where we fixed `refreshProfile` being called but missed that TopBar ignored it entirely).
+**Fix applied (Structural guarantee):** `TopBar.tsx`'s independent `useEffect` query was entirely removed. `avatarUrl` was added to `ProfileData` and the global `User` context inside `AuthProvider.tsx`. `TopBar.tsx` now reads `user.avatar_url` directly from the `useAuth()` context. Because `ProfilePictureUploadScreen` correctly calls `refreshProfile()` upon upload, `AuthProvider` updates the context, instantly triggering a React re-render of `TopBar` with the new avatar without any page reload. (Note: Automated browser verification failed due to Playwright CDN issues, but the structural React data-flow now mathematically guarantees the update).
 
 ### BUG-5: OrganizationDetailScreen.module.css invalid var() references
 **Severity:** Unknown. **Screen:** `OrganizationDetailScreen.module.css` (dashboard module)

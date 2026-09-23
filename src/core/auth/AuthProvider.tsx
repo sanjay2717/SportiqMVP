@@ -20,6 +20,7 @@ interface ProfileData {
   role: UserRole;
   onboardingComplete: boolean | null;
   fullName: string | null;
+  avatarUrl: string | null;
 }
 
 /**
@@ -31,7 +32,7 @@ interface ProfileData {
 async function resolveProfile(userId: string, metadataRole: UserRole | undefined): Promise<ProfileData> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('role, onboarding_complete, full_name')
+    .select('role, onboarding_complete, full_name, avatar_url')
     .eq('id', userId)
     .single();
 
@@ -39,13 +40,14 @@ async function resolveProfile(userId: string, metadataRole: UserRole | undefined
     // Profile row not yet created (race condition) — fall back to JWT metadata.
     // This path is reachable briefly after signup before the DB trigger completes.
     console.warn('[AuthProvider] profiles.role unavailable, falling back to user_metadata.role:', error?.message);
-    return { role: metadataRole as UserRole, onboardingComplete: null, fullName: null };
+    return { role: metadataRole as UserRole, onboardingComplete: null, fullName: null, avatarUrl: null };
   }
 
   return {
     role: data.role as UserRole,
     onboardingComplete: data.onboarding_complete,
     fullName: data.full_name ?? null,
+    avatarUrl: data.avatar_url ?? null,
   };
 }
 
@@ -67,6 +69,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           name: session.user.user_metadata?.full_name || '',
           email: session.user.email || '',
           role: profile.role,
+          avatar_url: profile.avatarUrl,
         });
         setOnboardingComplete(profile.onboardingComplete);
       }
@@ -85,6 +88,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           name: session.user.user_metadata?.full_name || '',
           email: session.user.email || '',
           role: profile.role,
+          avatar_url: profile.avatarUrl,
         });
         setOnboardingComplete(profile.onboardingComplete);
       } else {
@@ -133,6 +137,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             // Falls back to existing cached name if the DB returned null (shouldn't happen
             // for an established user, but guards against the race-condition fallback path).
             name: profile.fullName ?? prev.name,
+            avatar_url: profile.avatarUrl ?? prev.avatar_url,
           }
         : prev
     );
