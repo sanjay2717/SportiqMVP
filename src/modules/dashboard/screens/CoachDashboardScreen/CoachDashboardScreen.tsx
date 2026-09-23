@@ -3,10 +3,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { COACH_MOCK_DATA } from '../../constants/mockData';
 import { getTotalAthletesCount } from '../../services/athleteSearchService';
+import { useAuth } from '../../../../core/auth/AuthProvider';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 
 export function CoachDashboardScreen() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [totalAthletes, setTotalAthletes] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,7 +28,7 @@ export function CoachDashboardScreen() {
       {/* Welcome Section */}
       <section className={styles.welcomeSection}>
         <div>
-          <h1 className={styles.greeting}>{COACH_MOCK_DATA.greeting}</h1>
+          <h1 className={styles.greeting}>Morning, {user?.name || 'Coach'}</h1>
           <p className={styles.subtitle}>{COACH_MOCK_DATA.subtitle}</p>
         </div>
         <div className={styles.newSessionBtnWrap}>
@@ -54,7 +56,13 @@ export function CoachDashboardScreen() {
             );
           }
 
-          const displayValue = stat.id === '1' ? (totalAthletes ?? 0) : stat.value;
+          let displayValue: string | number = 0;
+          if (stat.id === '1') {
+            displayValue = totalAthletes ?? 0;
+          } else {
+            // STATIC DEMO DATA — not wired to real metrics, no metrics pipeline exists yet.
+            displayValue = '-';
+          }
           const needsFade = stat.id === '1';
 
           return (
@@ -132,31 +140,10 @@ export function CoachDashboardScreen() {
                 {COACH_MOCK_DATA.scheduleActionText}
               </button>
             </div>
-            <div className={styles.scheduleCard}>
-              <ul className={styles.scheduleList}>
-                {COACH_MOCK_DATA.schedule.map((item, index) => {
-                  let borderClass = styles.scheduleItemTransparent;
-                  if (index === 0) borderClass = styles.scheduleItemPrimary;
-                  else if (index === 1) borderClass = styles.scheduleItemSecondary;
-
-                  return (
-                    <li key={item.id} className={`${styles.scheduleItem} ${borderClass}`}>
-                      <div className={styles.scheduleTimeBox}>
-                        <span className={styles.scheduleTimeText}>{item.time}</span>
-                      </div>
-                      <div className={styles.scheduleContent}>
-                        <h4 className={styles.scheduleTitle}>{item.title}</h4>
-                        <div className={styles.scheduleLocation}>
-                          <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                            {item.iconName || 'location_on'}
-                          </span>
-                          <span>{item.location}</span>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+            <div className={styles.scheduleCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-10) var(--spacing-6)', textAlign: 'center', backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: 'var(--radius-lg)' }}>
+              {/* STATIC DEMO DATA — not wired to real schedule, no schedule pipeline exists yet. */}
+              <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>calendar_today</span>
+              <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)' }}>Schedule coming soon</p>
             </div>
           </section>
         </div>
@@ -171,43 +158,10 @@ export function CoachDashboardScreen() {
                 <span className="material-symbols-outlined">more_horiz</span>
               </button>
             </div>
-            <div className={styles.performanceCard}>
-              <div className={styles.legendRow}>
-                {COACH_MOCK_DATA.performance.legend.map((item, idx) => (
-                  <div key={idx} className={styles.legendItem}>
-                    <div className={idx === 0 ? styles.legendDotPrimary : styles.legendDotSecondary} />
-                    <span className={styles.legendLabel}>{item.label}</span>
-                  </div>
-                ))}
-              </div>
-              <div className={styles.chartArea}>
-                <div className={styles.yAxis}>
-                  {COACH_MOCK_DATA.performance.yAxis.map((label, idx) => (
-                    <span key={idx}>{label}</span>
-                  ))}
-                </div>
-                <div className={styles.barsContainer}>
-                  {COACH_MOCK_DATA.performance.bars.map((bar, idx) => (
-                    <div key={idx} className={styles.barPair}>
-                      <div
-                        className={styles.barSecondary}
-                        style={{ height: `${bar.secondary}%` }}
-                        title={bar.secondaryLabel}
-                      />
-                      <div
-                        className={styles.barPrimary}
-                        style={{ height: `${bar.primary}%` }}
-                        title={bar.primaryLabel}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className={styles.xAxis}>
-                  {COACH_MOCK_DATA.performance.xAxis.map((label, idx) => (
-                    <span key={idx}>{label}</span>
-                  ))}
-                </div>
-              </div>
+            <div className={styles.performanceCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-10) var(--spacing-6)', textAlign: 'center', backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: 'var(--radius-lg)', minHeight: '300px' }}>
+              {/* STATIC DEMO DATA — not wired to real performance, no performance pipeline exists yet. */}
+              <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>insights</span>
+              <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)' }}>Performance analytics coming soon</p>
             </div>
           </section>
 
@@ -216,23 +170,10 @@ export function CoachDashboardScreen() {
             <div className={styles.sectionHeader}>
               <h3 className={styles.sectionTitle}>{COACH_MOCK_DATA.activityTitle}</h3>
             </div>
-            <div className={styles.activityCard}>
-              <div className={styles.activityList}>
-                {COACH_MOCK_DATA.activities.map((activity) => (
-                  <div key={activity.id} className={styles.activityItem}>
-                    <div className={styles.activityAvatar}>
-                      {activity.initials || 'SP'}
-                    </div>
-                    <div className={styles.activityContent}>
-                      <div className={styles.activityTitleRow}>
-                        <h4 className={styles.activityName}>{activity.title}</h4>
-                        <span className={styles.activityTime}>{activity.timestamp}</span>
-                      </div>
-                      <p className={styles.activityDesc}>{activity.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className={styles.activityCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-10) var(--spacing-6)', textAlign: 'center', backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: 'var(--radius-lg)' }}>
+              {/* STATIC DEMO DATA — not wired to real activity, no activity pipeline exists yet. */}
+              <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>history</span>
+              <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)' }}>Activity tracking coming soon</p>
             </div>
           </section>
         </div>

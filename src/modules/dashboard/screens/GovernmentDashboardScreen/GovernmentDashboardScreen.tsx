@@ -1,7 +1,7 @@
 import styles from './GovernmentDashboardScreen.module.css';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GOVERNMENT_MOCK_DATA } from '../../constants/mockData';
+
 import { getGovernmentAnalytics, DashboardAnalytics } from '../../services/analyticsService';
 import { ROUTES } from '../../../../routing/routes';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';

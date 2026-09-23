@@ -24,20 +24,24 @@ export function StatisticsScreen() {
       <div className={styles.impactCard}>
         <div className={styles.impactHeader}>
           <span className={styles.impactTitle}>Impact Score</span>
-          <span className={styles.impactValue}>{ATHLETE_MOCK_DATA.impactScore}</span>
+          {/* STATIC DEMO DATA — not wired to real scores, no score pipeline exists yet. */}
+          <span className={styles.impactValue}>-</span>
         </div>
         <div className={styles.rankGrid}>
           <div className={styles.rankItem}>
             <span className={styles.rankLabel}>District Rank</span>
-            <span className={styles.rankValue}>#{ATHLETE_MOCK_DATA.districtRank}</span>
+            {/* STATIC DEMO DATA — not wired to real ranks, no rank pipeline exists yet. */}
+            <span className={styles.rankValue}>-</span>
           </div>
           <div className={styles.rankItem}>
             <span className={styles.rankLabel}>State Rank</span>
-            <span className={styles.rankValue}>#{ATHLETE_MOCK_DATA.stateRank}</span>
+            {/* STATIC DEMO DATA — not wired to real ranks, no rank pipeline exists yet. */}
+            <span className={styles.rankValue}>-</span>
           </div>
           <div className={styles.rankItem}>
             <span className={styles.rankLabel}>Consistency</span>
-            <span className={styles.rankValue}>{ATHLETE_MOCK_DATA.consistency}</span>
+            {/* STATIC DEMO DATA — not wired to real consistency, no consistency pipeline exists yet. */}
+            <span className={styles.rankValue}>-</span>
           </div>
         </div>
       </div>
@@ -45,29 +49,19 @@ export function StatisticsScreen() {
       <section className={styles.section}>
         <ProfileSectionHeader title="Key Performance Indicators" />
         <div className={styles.kpiGrid}>
+          {/* STATIC DEMO DATA — not wired to real KPIs, no KPI pipeline exists yet. */}
           {ATHLETE_MOCK_DATA.stats.map(stat => (
-            <DashboardStatCard key={stat.id} data={stat} />
+            <DashboardStatCard key={stat.id} data={{ ...stat, value: '-' }} />
           ))}
         </div>
       </section>
 
       <section className={styles.section}>
         <ProfileSectionHeader title="Upcoming Training" />
-        <div className={styles.trainingCard}>
-          <div className={styles.trainingHeader}>
-            <h3 className={styles.trainingTitle}>{ATHLETE_MOCK_DATA.upcomingTraining.title}</h3>
-            <span className={styles.trainingCoach}>Coach: {ATHLETE_MOCK_DATA.upcomingTraining.coach}</span>
-          </div>
-          <div className={styles.trainingDetails}>
-            <div className={styles.trainingDetail}>
-              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>schedule</span>
-              <span>{ATHLETE_MOCK_DATA.upcomingTraining.time}</span>
-            </div>
-            <div className={styles.trainingDetail}>
-              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>location_on</span>
-              <span>{ATHLETE_MOCK_DATA.upcomingTraining.location}</span>
-            </div>
-          </div>
+        <div className={styles.trainingCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-8) var(--spacing-6)', textAlign: 'center', backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: 'var(--radius-lg)' }}>
+          {/* STATIC DEMO DATA — not wired to real training, no training pipeline exists yet. */}
+          <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>calendar_today</span>
+          <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)' }}>Training schedule coming soon</p>
         </div>
       </section>
 
@@ -77,18 +71,10 @@ export function StatisticsScreen() {
           actionText="View All" 
           onActionClick={() => navigate(ROUTES.ACHIEVEMENTS)} 
         />
-        <div className={styles.achievementsList}>
-          {ATHLETE_MOCK_DATA.achievements.map(ach => (
-            <div key={ach.id} className={styles.achievementItem}>
-              <div className={styles.achievementIcon}>
-                <span className="material-symbols-outlined">{ach.iconName}</span>
-              </div>
-              <div className={styles.achievementContent}>
-                <span className={styles.achievementTitle}>{ach.title}</span>
-                <span className={styles.achievementDate}>{ach.date}</span>
-              </div>
-            </div>
-          ))}
+        <div className={styles.achievementsList} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-8) var(--spacing-6)', textAlign: 'center', backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: 'var(--radius-lg)' }}>
+          {/* STATIC DEMO DATA — not wired to real achievements, no achievements pipeline exists yet. */}
+          <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>emoji_events</span>
+          <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)' }}>Achievements coming soon</p>
         </div>
       </section>
     </div>

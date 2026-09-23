@@ -90,19 +90,13 @@ export function OrganiserDashboardScreen() {
             </div>
             <div className={styles.statBottom}>
               <div className={styles.statBottomRow}>
-                <span className={styles.statNumber}>{stat.value}</span>
+                {/* STATIC DEMO DATA — not wired to real metrics, no metrics pipeline exists yet. */}
+                <span className={styles.statNumber}>-</span>
                 {stat.badge && (
                   <button className={styles.reviewBtn}>{stat.badge.text}</button>
                 )}
               </div>
-              {stat.trend && (
-                <div className={styles.trendRow}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                    arrow_upward
-                  </span>
-                  <span>{stat.trend.value}</span>
-                </div>
-              )}
+              {/* STATIC DEMO DATA — not wired to real trends, no trend pipeline exists yet. */}
             </div>
           </div>
         ))}
@@ -240,39 +234,10 @@ export function OrganiserDashboardScreen() {
                 {ORGANISER_MOCK_DATA.tournamentsTitle}
               </h3>
             </div>
-            <div className={styles.tournamentCard}>
-              {ORGANISER_MOCK_DATA.tournaments.map((tournament) => (
-                <div key={tournament.id} className={styles.tournamentItem}>
-                  <div className={styles.tournamentIconWrap}>
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      {tournament.iconName}
-                    </span>
-                  </div>
-                  <div className={styles.tournamentContent}>
-                    <h4 className={styles.tournamentTitle}>{tournament.title}</h4>
-                    <div className={styles.tournamentMetaRow}>
-                      <span
-                        className={
-                          tournament.status === 'Live'
-                            ? styles.badgeLive
-                            : styles.badgeScheduled
-                        }
-                      >
-                        {tournament.status}
-                      </span>
-                      <span className={styles.tournamentDesc}>
-                        {tournament.description}
-                      </span>
-                    </div>
-                  </div>
-                  <button className={styles.chevronBtn}>
-                    <span className="material-symbols-outlined">chevron_right</span>
-                  </button>
-                </div>
-              ))}
+            <div className={styles.tournamentCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-10) var(--spacing-6)', textAlign: 'center', backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: 'var(--radius-lg)' }}>
+              {/* STATIC DEMO DATA — not wired to real tournaments, no tournament pipeline exists yet. */}
+              <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>emoji_events</span>
+              <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)' }}>Tournaments coming soon</p>
             </div>
           </section>
         </div>
@@ -288,15 +253,10 @@ export function OrganiserDashboardScreen() {
                 <span className="material-symbols-outlined">filter_list</span>
               </button>
             </div>
-            <div className={styles.timelineContainer}>
-              {ORGANISER_MOCK_DATA.activities.map((activity, index) => (
-                <div key={activity.id} className={styles.timelineItem}>
-                  <div className={getTimelineDotClassName(index)} />
-                  <span className={styles.timelineTime}>{activity.timestamp}</span>
-                  <div className={styles.timelineTitle}>{activity.title}</div>
-                  <p className={styles.timelineDesc}>{activity.description}</p>
-                </div>
-              ))}
+            <div className={styles.timelineContainer} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-10) var(--spacing-6)', textAlign: 'center' }}>
+              {/* STATIC DEMO DATA — not wired to real activity, no activity pipeline exists yet. */}
+              <span className="material-symbols-outlined" style={{ fontSize: '48px', color: 'var(--color-neutral-400)', marginBottom: 'var(--spacing-4)' }}>history</span>
+              <p style={{ color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-body-lg)' }}>Activity tracking coming soon</p>
             </div>
             <button className={styles.viewFullLogBtn}>
               {ORGANISER_MOCK_DATA.activitiesActionText}
