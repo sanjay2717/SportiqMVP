@@ -8,6 +8,7 @@ export const ROUTES = {
   PRIVACY: '/privacy',
   TERMS: '/terms',
   HOME: '/',
+  AUTH_CALLBACK: '/auth/callback',
   PROFILE: '/profile',
   SEARCH: '/search',
   MESSAGES: '/messages',

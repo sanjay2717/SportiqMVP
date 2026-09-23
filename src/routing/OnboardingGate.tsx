@@ -19,7 +19,10 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     );
   }
 
-  if (user?.role === UserRole.Athlete && onboardingComplete === false) {
+  if (
+    (user?.role === UserRole.Athlete && onboardingComplete === false) ||
+    (!user?.role)
+  ) {
     return <Navigate to={ROUTES.SELECT_SPORTS} replace />;
   }
 

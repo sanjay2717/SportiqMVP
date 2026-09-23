@@ -145,6 +145,14 @@ export function AppRouter() {
             </PublicRoute>
           }
         />
+        <Route
+          path={ROUTES.AUTH_CALLBACK}
+          element={
+            <PublicRoute>
+              <PlaceholderScreen title="Logging In..." description="Please wait..." />
+            </PublicRoute>
+          }
+        />
 
         {/* Protected App Routes */}
         <Route
