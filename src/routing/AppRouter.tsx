@@ -4,7 +4,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { OnboardingGate } from './OnboardingGate';
 import { useAuth } from '../core/auth/AuthProvider';
 import { WelcomeScreen, SplashScreen, LoginScreen, SignUpScreen, VerifyEmailScreen, ForgotPasswordScreen, ResetPasswordScreen, SelectRoleScreen, PrivacyPolicyScreen, TermsOfServiceScreen } from '../modules/authentication/screens';
-import { SelectSportsScreen, CreateSportsProfileScreen, ProfilePictureUploadScreen, PersonalInformationScreen, PlayingInformationScreen, ProfileCompletionScreen, OwnProfileScreen, AthletePublicProfileScreen, StatisticsScreen, EditProfileScreen, AchievementsGalleryScreen, AchievementForm } from '../modules/profile/screens';
+import { SelectSportsScreen, CreateSportsProfileScreen, PersonalInformationScreen, PlayingInformationScreen, ProfileCompletionScreen, OwnProfileScreen, AthletePublicProfileScreen, StatisticsScreen, EditProfileScreen, AchievementsGalleryScreen, AchievementForm } from '../modules/profile/screens';
 import { PlaceholderScreen } from '@shared/components/PlaceholderScreen';
 import { AppLayout } from '@shared/layouts/AppLayout';
 import { UserRole } from '../core/auth/types';
@@ -211,14 +211,7 @@ export function AppRouter() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path={ROUTES.PROFILE_PICTURE_UPLOAD}
-          element={
-            <ProtectedRoute>
-              <ProfilePictureUploadScreen />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path={ROUTES.PERSONAL_INFORMATION}
           element={

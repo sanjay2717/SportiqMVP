@@ -1,6 +1,5 @@
 export * from './SelectSportsScreen/SelectSportsScreen';
 export * from './CreateSportsProfileScreen/CreateSportsProfileScreen';
-export * from './ProfilePictureUploadScreen/ProfilePictureUploadScreen';
 export * from './PersonalInformationScreen/PersonalInformationScreen';
 export * from './PlayingInformationScreen/PlayingInformationScreen';
 export * from './ProfileCompletionScreen/ProfileCompletionScreen';

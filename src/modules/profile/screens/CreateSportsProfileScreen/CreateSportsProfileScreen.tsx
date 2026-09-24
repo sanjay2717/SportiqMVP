@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
-import { updateProfileOnboarding } from '../../services/profileService';
+import { updateProfileOnboarding, updateAvatarUrl } from '../../services/profileService';
 import { ROUTES } from '../../../../routing/routes';
 import styles from './CreateSportsProfileScreen.module.css';
 
@@ -12,7 +12,7 @@ interface LocationState {
 export function CreateSportsProfileScreen() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   
   // Extract passed state
   const state = location.state as LocationState | null;
@@ -29,6 +29,9 @@ export function CreateSportsProfileScreen() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
@@ -36,7 +39,13 @@ export function CreateSportsProfileScreen() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError('File must be smaller than 5MB');
+        return;
+      }
+      setSelectedFile(file);
       setAvatarPreview(URL.createObjectURL(file));
+      setError('');
     }
   };
   
@@ -49,6 +58,13 @@ export function CreateSportsProfileScreen() {
       navigate(ROUTES.LOGIN);
     }
   }, [user, navigate]);
+
+  // Handle Google Avatar Prefill
+  useEffect(() => {
+    if (user?.avatar_url && user.avatar_url.includes('googleusercontent.com')) {
+      setAvatarPreview(user.avatar_url);
+    }
+  }, [user?.avatar_url]);
 
   // Optionally split full name to pre-fill
   useEffect(() => {
@@ -85,27 +101,61 @@ export function CreateSportsProfileScreen() {
     setIsSubmitting(true);
 
     try {
-      // 1. Update the Supabase row with selected sports and bio.
-      // Note: avatar_url is NOT persisted here — Supabase Storage upload
-      // is a separate future task (see profileService.ts + README).
+      if (selectedFile) {
+        await updateAvatarUrl(user.id, selectedFile);
+      }
+      
       await updateProfileOnboarding(user.id, {
         selectedSports: initialSports,
         bio,
       });
 
+      if (selectedFile) {
+        await refreshProfile();
+      }
+
       sessionStorage.removeItem('sportiq_onboarding_selected_sports');
 
-      // 2. Navigate to Profile Picture Upload (optional insert), passing
-      // the next required step as the returnTo target so it knows where to go.
-      navigate(ROUTES.PROFILE_PICTURE_UPLOAD, {
-        state: { returnTo: ROUTES.PERSONAL_INFORMATION }
-      });
+      setShowConfirmation(true);
     } catch (err: any) {
       setError(err.message || 'Failed to save profile. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // Profile Created Confirmation view
+  if (showConfirmation) {
+    return (
+      <div className={styles.container}>
+        <main className={styles.mainContent} style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <div className={`${styles.formArea} animate-fade-in`} style={{ textAlign: 'center', alignItems: 'center' }}>
+            <div className={`animate-pulse ${styles.avatarCircle}`} style={{ width: 120, height: 120, margin: '0 auto 24px' }}>
+              {avatarPreview ? (
+                <img src={avatarPreview} alt="Avatar preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <span className={`material-symbols-outlined ${styles.avatarIcon}`} style={{ fontSize: 64 }}>person</span>
+              )}
+            </div>
+            <h1 className={styles.title} style={{ marginBottom: 8 }}>Profile Created!</h1>
+            <p className={styles.subtitle} style={{ marginBottom: 32 }}>
+              Welcome to SportIQ, {firstName} {lastName}.
+              <br />
+              {primaryRole && `Your role is set to ${primaryRole}.`}
+            </p>
+            <button 
+              className={styles.primaryBtn} 
+              type="button" 
+              onClick={() => navigate(ROUTES.PERSONAL_INFORMATION)}
+              style={{ width: 'auto', padding: '0 32px' }}
+            >
+              Continue Setup
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

@@ -19,7 +19,6 @@ export const ROUTES = {
   SETTINGS: '/settings',
   SELECT_SPORTS: '/select-sports',
   CREATE_SPORTS_PROFILE: '/create-sports-profile',
-  PROFILE_PICTURE_UPLOAD: '/profile-picture-upload',
   PERSONAL_INFORMATION: '/personal-information',
   PLAYING_INFORMATION: '/playing-information',
   PROFILE_COMPLETION: '/profile-completion',
