@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../../../core/auth/AuthProvider';
+import { ROUTES } from '../../../../routing/routes';
 import styles from './SettingsScreen.module.css';
 
 interface MenuItemProps {
@@ -38,6 +39,7 @@ export function SettingsScreen() {
   const handleLogout = async () => {
     try {
       await signOut();
+      navigate(ROUTES.LOGIN);
     } catch (error) {
       console.error('Failed to logout:', error);
     }

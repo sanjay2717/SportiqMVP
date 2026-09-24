@@ -145,6 +145,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const signOut = async () => {
+    sessionStorage.removeItem('sportiq_onboarding_personal_info');
+    sessionStorage.removeItem('sportiq_onboarding_playing_info');
+    sessionStorage.removeItem('sportiq_onboarding_selected_sports');
     await supabase.auth.signOut();
     setUser(null);
   };

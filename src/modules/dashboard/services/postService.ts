@@ -29,13 +29,9 @@ export const postService = {
   },
 
   async createPost(payload: { content: string; image_url?: string; sport?: string }): Promise<Post> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
-
     const { data, error } = await supabase
       .from('posts')
       .insert({
-        author_id: user.id,
         content: payload.content,
         image_url: payload.image_url || null,
         sport: payload.sport || null,
