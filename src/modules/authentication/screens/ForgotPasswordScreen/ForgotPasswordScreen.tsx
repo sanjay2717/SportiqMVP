@@ -81,6 +81,9 @@ export function ForgotPasswordScreen() {
               <p className={styles.subtitle}>
                 If an account exists for <strong>{email}</strong>, you will receive a password reset link shortly.
               </p>
+              <p className={styles.subtitle} style={{ marginTop: 'var(--spacing-4)' }}>
+                Didn't see it? Check your spam or junk folder — the link usually arrives within a few minutes.
+              </p>
               <div className={styles.backToLoginContainer}>
                 <Link to={ROUTES.LOGIN} className={styles.backToLoginLink}>
                   <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>arrow_back</span>
