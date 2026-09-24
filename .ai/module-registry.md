@@ -51,11 +51,9 @@ AMBIGUITY — Three Profile View Screens: Own Profile, Public Profile, and Profi
 
 AMBIGUITY — Two Achievements Screens: "Achievements" (`b25601c5f3a14d5d8b77068b1c7a5d54`, 780x2126) is a standalone full page. "Achievements Section" (`4a2fe79c7eff405da3579fdbb7e545eb`, 780x3940) is an embedded section likely rendered inside another screen (e.g., Own Profile). These are not the same and should not be conflated.
 
-RESOLVED 2026-07-25 — Onboarding Wizard Step Structure: A Stitch diagnostic revealed conflicting "Step X of Y" labels across onboarding screens (Create Sports Profile showed Step 1/4; Playing Information showed Step 3/4; Profile Picture Upload showed Step 1/5 — irreconcilable without operator input). Resolution per operator decision 2026-07-25:
+RESOLVED 2026-09-24 — Onboarding Wizard Step Structure:
 - The **required wizard is 4 steps**: Create Sports Profile (1/4) → Personal Information (2/4, contains age/height/weight/location) → Playing Information (3/4, position/dominant foot/experience) → Profile Completion (4/4, terminal).
-- **Profile Picture Upload is optional and reusable** — inserted in the flow after Create Sports Profile, but skippable, and NOT counted in the 4-step progress indicator. It is also intended to be callable from Edit Profile / Settings (i.e., not onboarding-exclusive).
-- **Full resolved screen order**: Select Sports (1) → Create Sports Profile (2) → Profile Picture Upload (3) → Personal Information (4, contains age/height/weight/location) → Playing Information (5, position/dominant foot/experience) → Profile Completion (6).
-
+- **Full resolved screen order**: Select Sports (pre-wizard) → Create Sports Profile (1/4) → Personal Information (2/4) → Playing Information (3/4) → Profile Completion (4/4).
 | Screen Name | Screen ID | Build Status | Notes |
 |---|---|---|---|
 | Own Profile | `dea731f2d6d046cba33074bea97f0dc7` | ✅ Built — OwnProfileScreen.tsx | Authenticated user's full profile — editable view. Replaced ROUTES.OWN_PROFILE with ROUTES.PROFILE |
@@ -66,7 +64,7 @@ RESOLVED 2026-07-25 — Onboarding Wizard Step Structure: A Stitch diagnostic re
 | Edit Profile | `539c8051c32e4e7787bc7233c2aa0730` | ✅ Built — EditProfileScreen.tsx | Form to update name, bio, and personal fields. Now role-aware and reachable by all four roles (displays universal fields vs Athlete-only fields). |
 | Personal Information | `ab64f6d07cdd4308b9e9d5f0524946a4` | ✅ Built — PersonalInformationScreen.tsx | Onboarding Step 2/4 — Full Name, Location (Region), Age, Height, Weight. **SCHEMA GAP RESOLVED** by migration 005. Location/Age/Height/Weight now persisted via completeOnboarding() in ProfileCompletionScreen. |
 | Playing Information | `c50b8ebdd26e49e088f221712c631fc6` | ✅ Built — PlayingInformationScreen.tsx | Onboarding Step 3/4 — Dominant Foot, Primary Position, Years of Experience. **SCHEMA GAP RESOLVED** by migration 005. Fields now persisted via completeOnboarding() in ProfileCompletionScreen. |
-| Profile Picture Upload | `447f102ffc074887858038b1db75698c` | ✅ Built — ProfilePictureUploadScreen.tsx (optional, reusable) | ⚠️ Optional/reusable — NOT counted in the 4-step progress. Inserted between Step 1 and Step 2 in onboarding; also callable from Edit Profile / Settings. |
+| Profile Picture Upload | `447f102ffc074887858038b1db75698c` | ❌ REMOVED 2026-09-24 | Merged into CreateSportsProfileScreen's existing "Profile Photo" field (which already matched Stitch's Step 1 design). The Google-avatar-prefill logic (originally built for the standalone screen) was migrated intact to CreateSportsProfileScreen. A new NON-STITCH "Profile Created" confirmation state was added after Step 1 submission. |
 | Statistics | `a5ab76d056d5477d8dd8f2e0ba0ed81c` | ✅ Built — StatisticsScreen.tsx | Static demo data, relocated from Athlete Dashboard |
 | Achievements | `b25601c5f3a14d5d8b77068b1c7a5d54` | ✅ Built — AchievementsGalleryScreen.tsx | Full standalone achievements page using real `achievements` table. |
 | Achievements Section | `4a2fe79c7eff405da3579fdbb7e545eb` | ✅ Built — AchievementForm.tsx | Form to add an achievement to the real `achievements` table. |
