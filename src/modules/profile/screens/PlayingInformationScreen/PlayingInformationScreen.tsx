@@ -192,10 +192,14 @@ export function PlayingInformationScreen() {
                 id="experience"
                 type="number"
                 min="0"
+                maxLength={2}
                 className={styles.inputField}
                 placeholder="e.g. 5"
                 value={experience}
-                onChange={(e) => setExperience(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setExperience(val.length > 2 ? val.slice(0, 2) : val);
+                }}
                 onKeyDown={handleExperienceKeyDown}
                 required
               />
