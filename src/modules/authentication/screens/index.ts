@@ -6,3 +6,4 @@ export { VerifyEmailScreen } from './VerifyEmailScreen/VerifyEmailScreen';
 export { ForgotPasswordScreen } from './ForgotPasswordScreen/ForgotPasswordScreen';
 export { PrivacyPolicyScreen } from './PrivacyPolicyScreen/PrivacyPolicyScreen';
 export { TermsOfServiceScreen } from './TermsOfServiceScreen/TermsOfServiceScreen';
+export { ResetPasswordScreen } from './ResetPasswordScreen/ResetPasswordScreen';
