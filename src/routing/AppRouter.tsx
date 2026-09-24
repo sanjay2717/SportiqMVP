@@ -3,7 +3,7 @@ import { ROUTES } from './routes';
 import { ProtectedRoute } from './ProtectedRoute';
 import { OnboardingGate } from './OnboardingGate';
 import { useAuth } from '../core/auth/AuthProvider';
-import { WelcomeScreen, SplashScreen, LoginScreen, SignUpScreen, VerifyEmailScreen, ForgotPasswordScreen, ResetPasswordScreen, PrivacyPolicyScreen, TermsOfServiceScreen } from '../modules/authentication/screens';
+import { WelcomeScreen, SplashScreen, LoginScreen, SignUpScreen, VerifyEmailScreen, ForgotPasswordScreen, ResetPasswordScreen, SelectRoleScreen, PrivacyPolicyScreen, TermsOfServiceScreen } from '../modules/authentication/screens';
 import { SelectSportsScreen, CreateSportsProfileScreen, ProfilePictureUploadScreen, PersonalInformationScreen, PlayingInformationScreen, ProfileCompletionScreen, OwnProfileScreen, AthletePublicProfileScreen, StatisticsScreen, EditProfileScreen, AchievementsGalleryScreen, AchievementForm } from '../modules/profile/screens';
 import { PlaceholderScreen } from '@shared/components/PlaceholderScreen';
 import { AppLayout } from '@shared/layouts/AppLayout';
@@ -188,6 +188,14 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <EditProfileScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.SELECT_ROLE}
+          element={
+            <ProtectedRoute>
+              <SelectRoleScreen />
             </ProtectedRoute>
           }
         />

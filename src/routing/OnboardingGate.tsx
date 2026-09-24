@@ -19,10 +19,11 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     );
   }
 
-  if (
-    (user?.role === UserRole.Athlete && onboardingComplete === false) ||
-    (!user?.role)
-  ) {
+  if (!user?.role) {
+    return <Navigate to={ROUTES.SELECT_ROLE} replace />;
+  }
+  
+  if (user?.role === UserRole.Athlete && onboardingComplete === false) {
     return <Navigate to={ROUTES.SELECT_SPORTS} replace />;
   }
 

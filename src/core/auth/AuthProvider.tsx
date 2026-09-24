@@ -17,7 +17,7 @@ interface AuthProviderProps {
 }
 
 interface ProfileData {
-  role: UserRole;
+  role: UserRole | null;
   onboardingComplete: boolean | null;
   fullName: string | null;
   avatarUrl: string | null;
@@ -29,22 +29,22 @@ interface ProfileData {
  * Falls back to user_metadata only if the profile row does not yet exist
  * (edge case: signup DB trigger hasn't fired yet).
  */
-async function resolveProfile(userId: string, metadataRole: UserRole | undefined): Promise<ProfileData> {
+async function resolveProfile(userId: string, metadataRole: UserRole | null | undefined): Promise<ProfileData> {
   const { data, error } = await supabase
     .from('profiles')
     .select('role, onboarding_complete, full_name, avatar_url')
     .eq('id', userId)
     .single();
 
-  if (error || !data?.role) {
+  if (error || !data) {
     // Profile row not yet created (race condition) — fall back to JWT metadata.
     // This path is reachable briefly after signup before the DB trigger completes.
-    console.warn('[AuthProvider] profiles.role unavailable, falling back to user_metadata.role:', error?.message);
+    console.warn('[AuthProvider] profiles row unavailable, falling back to user_metadata:', error?.message);
     return { role: metadataRole as UserRole, onboardingComplete: null, fullName: null, avatarUrl: null };
   }
 
   return {
-    role: data.role as UserRole,
+    role: (data.role as UserRole) ?? null,
     onboardingComplete: data.onboarding_complete,
     fullName: data.full_name ?? null,
     avatarUrl: data.avatar_url ?? null,

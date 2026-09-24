@@ -7,3 +7,4 @@ export { ForgotPasswordScreen } from './ForgotPasswordScreen/ForgotPasswordScree
 export { PrivacyPolicyScreen } from './PrivacyPolicyScreen/PrivacyPolicyScreen';
 export { TermsOfServiceScreen } from './TermsOfServiceScreen/TermsOfServiceScreen';
 export { ResetPasswordScreen } from './ResetPasswordScreen/ResetPasswordScreen';
+export { SelectRoleScreen } from './SelectRoleScreen/SelectRoleScreen';

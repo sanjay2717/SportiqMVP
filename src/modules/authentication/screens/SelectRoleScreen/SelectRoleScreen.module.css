@@ -1,0 +1,116 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: var(--color-bg-secondary);
+}
+
+.appShell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--app-shell-max-width);
+  background-color: var(--color-bg-primary);
+  border-left: var(--border-width-thin) solid var(--color-neutral-200);
+  border-right: var(--border-width-thin) solid var(--color-neutral-200);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-family);
+}
+
+.appBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-primary);
+  padding: var(--spacing-4);
+  padding-bottom: var(--spacing-2);
+}
+
+.appBarTitle {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-snug);
+  text-align: center;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--spacing-4);
+  gap: var(--spacing-6);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  text-align: center;
+  padding: 0 var(--spacing-4);
+}
+
+.title {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.errorAlert {
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.actionContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--spacing-4);
+  padding: 0 var(--spacing-4);
+}
+
+.submitBtn {
+  width: 100%;
+  height: var(--nav-height);
+  background-color: var(--color-primary-500);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-default);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-600);
+}
+
+.submitBtn:disabled {
+  background-color: var(--color-neutral-300);
+  cursor: not-allowed;
+}
