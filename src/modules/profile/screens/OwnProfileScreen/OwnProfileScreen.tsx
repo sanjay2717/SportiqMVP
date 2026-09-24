@@ -84,7 +84,7 @@ export function OwnProfileScreen() {
           
           <p className={styles.profileRoleTitle}>
             {profile.primary_position ? `${profile.primary_position} • ` : ''}
-            {profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
+            {profile.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : 'Not set'}
           </p>
 
           {profile.location && (

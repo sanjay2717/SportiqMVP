@@ -11,7 +11,7 @@ import styles from './AthletePublicProfileScreen.module.css';
 interface AthleteProfile {
   id: string;
   full_name: string;
-  role: string;
+  role: string | null;
   selected_sports: string[];
   age: number | null;
   location: string | null;
@@ -216,7 +216,7 @@ export function AthletePublicProfileScreen() {
               </span>
               <span className={styles.tag}>
                 <span className={`material-symbols-outlined ${styles.tagIcon}`}>sports</span>
-                {profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
+                {profile.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : 'Not set'}
               </span>
             </div>
           </div>
