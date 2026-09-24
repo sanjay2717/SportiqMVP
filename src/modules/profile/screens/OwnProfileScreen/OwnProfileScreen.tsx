@@ -103,7 +103,7 @@ export function OwnProfileScreen() {
             </button>
             <button 
               className={styles.secondaryButton} 
-              style={{ color: 'var(--color-error-500)', borderColor: 'var(--color-error-500)' }}
+              style={{ color: 'var(--color-error)', borderColor: 'var(--color-error)' }}
               onClick={async () => {
                 await signOut();
                 navigate(ROUTES.LOGIN);
