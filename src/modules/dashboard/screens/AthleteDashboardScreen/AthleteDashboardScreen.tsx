@@ -6,13 +6,6 @@ import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { ROUTES } from '../../../../routing/routes';
 import styles from './AthleteDashboardScreen.module.css';
 
-// Mock data for the Empty State "Recommended" list
-const RECOMMENDED_USERS = [
-  { id: '1', name: 'Marcus Silva', role: 'Pro Footballer', avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB_8ltiYjkyO2HcBieNQ0CmilPAGHMvnaRSHlA634xDchRHqzfl-KYJdYeh01AulSQHl7DrEQijs7UYZArdYnXs2BiZfuwfhd1LoQXzK7SVw02BEhQ-ZiUsizi6dEHG7NREP5aNA4hylyMwD-n4rgoZWwKQvPjjtVjzlUoZm5dRB-SiunhtKtlWlyqT-J4eLZAD--zZL3c8izi8J-QZ_zDHoRrmt2R8pfF0emj-Ebh9nzXwX9MCSOemXvtCalqQ1MpAMFpEDn_Yuiw' },
-  { id: '2', name: 'Elena Rostova', role: 'Head Coach', avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_B56InBNoCDn7B_Zq1uChrwy93f6poto_RC2DG4QiP71GbYXGgLZ3M0F2bzQRRKsuLoAl5_vwEc7mOuETFF3niutyNjoem4XHUDAC0I4jiD0QKuij-hEFOBvSN-PxFReWrnFAgav62_lHRu2y-qG2DQU6JnAiP8ii-2ry6l3iXHXIauiF50u5UCqfroWnNbzpwPxu4DY43oQ6jFA4bfcRttxOruDGRdVpH8RkzYRpdevj6GYDKPT4c6xcCRZLXUJRlpetmcGnKt4' },
-  { id: '3', name: 'David Chen', role: 'Rising Star', avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAS0e6TA60ws3SlyKE0nh1lC1tPOIRLecV_chxB4LBZVDVVTyF4Yx05v-Oijb82OWewNXnmtT02YYuFlwl7hdfysbwY1_F2pRq0FXRaPLGAmnKXxFJEwPAtrOaTXQHDQTWRDEEIS1DXs5eaLCRha6GkM9A16FZ3Fqj0-gqShI5leGG-eEH4eEs__5G1lT1TzsBtXEo6TeN0t-KmK2yyU3NeIvwyKj5QFVfohIMe19JtkZXSS4ryDeN7CQz44bLW2GnHAZXHEVq6qoI' },
-  { id: '4', name: 'Apex Academy', role: 'Institution', avatar: null }
-];
 
 export function AthleteDashboardScreen() {
   const { user } = useAuth();
@@ -110,29 +103,6 @@ export function AthleteDashboardScreen() {
               <button className={styles.emptyAction} onClick={() => navigate(ROUTES.NETWORK)}>
                 Discover Network
               </button>
-            </div>
-
-            <div className={styles.recommendedSection}>
-              <div className={styles.recommendedHeader}>
-                <h3 className={styles.recommendedTitle}>Recommended for you</h3>
-                <button className={styles.viewAllBtn} onClick={() => navigate(ROUTES.NETWORK)}>View all</button>
-              </div>
-              <div className={styles.recommendedList}>
-                {RECOMMENDED_USERS.map(ru => (
-                  <div key={ru.id} className={styles.recommendedCard}>
-                    <div className={styles.recommendedAvatar}>
-                      {ru.avatar ? (
-                        <img src={ru.avatar} alt={ru.name} />
-                      ) : (
-                        <span className="material-symbols-outlined">domain</span>
-                      )}
-                    </div>
-                    <h4 className={styles.recommendedName}>{ru.name}</h4>
-                    <p className={styles.recommendedRole}>{ru.role}</p>
-                    <button className={styles.followBtn}>Follow</button>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         ) : (
