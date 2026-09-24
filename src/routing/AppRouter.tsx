@@ -147,11 +147,7 @@ export function AppRouter() {
         />
         <Route
           path={ROUTES.RESET_PASSWORD}
-          element={
-            <PublicRoute>
-              <ResetPasswordScreen />
-            </PublicRoute>
-          }
+          element={<ResetPasswordScreen />}
         />
         <Route
           path={ROUTES.AUTH_CALLBACK}

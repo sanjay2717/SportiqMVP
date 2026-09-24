@@ -13,6 +13,7 @@ export function ResetPasswordScreen() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [sessionValid, setSessionValid] = useState<boolean | null>(null);
 
   const { capsLockOn, handleKeyDown, handleKeyUp, clearCapsLock } = useCapsLockDetection();
 
@@ -30,20 +31,31 @@ export function ResetPasswordScreen() {
   const isPasswordValid = Object.values(validationResults).every(Boolean);
 
   useEffect(() => {
-    // Listen for the PASSWORD_RECOVERY event to ensure they arrived via a valid reset link.
-    // Note: Supabase automatically parses the URL hash fragment (#access_token=...&type=recovery)
-    // and establishes a session.
+    let timeoutId: ReturnType<typeof setTimeout>;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         // Valid recovery session established
+        setSessionValid(true);
         setError('');
-      } else if (!session) {
-        // If there's no session at all, the link might be invalid or expired.
-        // We will show an error if they try to submit without a session.
+        clearTimeout(timeoutId);
       }
     });
 
+    // Fallback: If no PASSWORD_RECOVERY event fires within 3 seconds, 
+    // proactively block the user and assume the link is dead/missing.
+    timeoutId = setTimeout(() => {
+      setSessionValid((prev) => {
+        if (prev === null) {
+          setError('Your password reset link is invalid or has expired.');
+          return false;
+        }
+        return prev;
+      });
+    }, 3000);
+
     return () => {
+      clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
   }, []);
@@ -64,6 +76,10 @@ export function ResetPasswordScreen() {
       if (error) {
         throw error;
       }
+      
+      // Explicitly sign the user out to destroy the temporary recovery session
+      // before they are sent back to the normal Login screen.
+      await supabase.auth.signOut();
       
       setIsSuccess(true);
     } catch (err: any) {
@@ -125,25 +141,31 @@ export function ResetPasswordScreen() {
                 </div>
               )}
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.label}>New Password</label>
-                <div className={styles.inputContainer}>
-                  <input
-                    type="password"
-                    className={styles.input}
-                    placeholder="Enter new password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onFocus={() => setPasswordFocused(true)}
-                    onBlur={() => {
-                      setPasswordFocused(false);
-                      clearCapsLock();
-                    }}
-                    onKeyDown={handleKeyDown}
-                    onKeyUp={handleKeyUp}
-                    required
-                  />
+              {sessionValid !== true ? (
+                <div style={{ textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-text-secondary)' }}>
+                  {error ? null : 'Validating reset link...'}
                 </div>
+              ) : (
+                <>
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.label}>New Password</label>
+                    <div className={styles.inputContainer}>
+                      <input
+                        type="password"
+                        className={styles.input}
+                        placeholder="Enter new password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onFocus={() => setPasswordFocused(true)}
+                        onBlur={() => {
+                          setPasswordFocused(false);
+                          clearCapsLock();
+                        }}
+                        onKeyDown={handleKeyDown}
+                        onKeyUp={handleKeyUp}
+                        required
+                      />
+                    </div>
 
                 {capsLockOn && passwordFocused && (
                   <div className={styles.capsLockWarning} role="alert" aria-live="polite">
@@ -184,7 +206,9 @@ export function ResetPasswordScreen() {
                 >
                   {isSubmitting ? 'Updating...' : 'Update Password'}
                 </button>
-              </div>
+                  </div>
+                </>
+              )}
             </form>
           )}
         </main>
