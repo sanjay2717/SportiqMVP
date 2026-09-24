@@ -4,6 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
 import { SPORTS_LIST } from '../../../../shared/constants/sports';
 import { POSITIONS_BY_SPORT } from '../../../../shared/constants/positions';
+import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import styles from './PlayingInformationScreen.module.css';
 
 export function PlayingInformationScreen() {
@@ -28,6 +29,7 @@ export function PlayingInformationScreen() {
   const [dominantFoot, setDominantFoot] = useState(initialState.dominantFoot || '');
   const [position, setPosition] = useState(initialState.position || '');
   const [experience, setExperience] = useState(initialState.experience || '');
+  const [error, setError] = useState('');
 
   const [selectedSports] = useState<string[]>(() => {
     const saved = sessionStorage.getItem('sportiq_onboarding_selected_sports');
@@ -69,6 +71,8 @@ export function PlayingInformationScreen() {
   const handleBack = () => {
     navigate(-1);
   };
+
+  const handleExperienceKeyDown = useNumericInput(setError, false);
 
   const saveStopgapToSession = () => {
     sessionStorage.setItem('sportiq_onboarding_playing_info', JSON.stringify({
@@ -118,6 +122,13 @@ export function PlayingInformationScreen() {
             <h2 className={styles.title}>Playing Information</h2>
             <p className={styles.subtitle}>Help coaches and scouts understand your on-field profile.</p>
           </div>
+
+          {error && (
+            <div className={styles.errorAlert}>
+              <span className={`material-symbols-outlined ${styles.errorIcon}`}>error</span>
+              <span>{error}</span>
+            </div>
+          )}
 
           {/* Form */}
           <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleNextStep(); }}>
@@ -185,6 +196,7 @@ export function PlayingInformationScreen() {
                 placeholder="e.g. 5"
                 value={experience}
                 onChange={(e) => setExperience(e.target.value)}
+                onKeyDown={handleExperienceKeyDown}
                 required
               />
             </div>

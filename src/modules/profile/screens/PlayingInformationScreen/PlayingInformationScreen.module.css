@@ -151,6 +151,25 @@
   color: var(--color-text-secondary);
 }
 
+.errorAlert {
+  background-color: color-mix(in srgb, var(--color-error) 12%, transparent);
+  border-left: 4px solid var(--color-error);
+  padding: 1rem;
+  margin-bottom: var(--spacing-6);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+}
+
+.errorIcon {
+  color: var(--color-error);
+  font-size: 1.25rem;
+}
+
 /* Form */
 .form {
   display: flex;
