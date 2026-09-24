@@ -58,13 +58,6 @@ export async function updatePersonalInformation(
     throw error;
   }
 
-  // Stopgap schema warning for unpersisted fields
-  if (payload.location || payload.age || payload.height || payload.weight) {
-    console.warn(
-      'SCHEMA GAP: Location, Age, Height, and Weight cannot be persisted to Supabase yet. ' +
-      'Ensure they are handled client-side (e.g. sessionStorage) pending a database migration.'
-    );
-  }
 }
 
 /**

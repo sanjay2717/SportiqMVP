@@ -144,13 +144,6 @@ export function PersonalInformationScreen() {
           <p className={styles.subtitle}>Set up your athletic profile for personalized insights.</p>
         </div>
 
-        {/* Warning Alert for Stopgap */}
-        <div className={styles.warningAlert}>
-          <span className={`material-symbols-outlined ${styles.warningIcon}`} data-icon="warning">warning</span>
-          <span className={styles.warningText}>
-            Notice: Location, Age, Height, and Weight will be temporarily saved locally for this session pending a database upgrade.
-          </span>
-        </div>
 
         {error && (
           <div className={styles.errorAlert}>
