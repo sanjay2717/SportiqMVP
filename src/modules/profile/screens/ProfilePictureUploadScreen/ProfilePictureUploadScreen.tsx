@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { updateAvatarUrl } from '../../services/profileService';
 import { ROUTES } from '../../../../routing/routes';
+import { supabase } from '../../../../core/database/supabaseClient';
 import styles from './ProfilePictureUploadScreen.module.css';
 
 interface LocationState {
@@ -18,7 +19,16 @@ export function ProfilePictureUploadScreen() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSkipping, setIsSkipping] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasPrefilledGoogleAvatar, setHasPrefilledGoogleAvatar] = useState(false);
+
+  React.useEffect(() => {
+    if (user?.avatar_url && user.avatar_url.includes('googleusercontent.com')) {
+      setPreviewUrl(user.avatar_url);
+      setHasPrefilledGoogleAvatar(true);
+    }
+  }, [user?.avatar_url]);
 
   // Read returnTo from state, default to Personal Information
   const state = location.state as LocationState | null;
@@ -47,31 +57,45 @@ export function ProfilePictureUploadScreen() {
     fileInputRef.current?.click();
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    if (hasPrefilledGoogleAvatar && user) {
+      setIsSkipping(true);
+      try {
+        await supabase.from('profiles').update({ avatar_url: null }).eq('id', user.id);
+        await refreshProfile();
+      } catch (err) {
+        console.error('Failed to clear prefilled avatar on skip:', err);
+      } finally {
+        setIsSkipping(false);
+      }
+    }
     navigate(returnTo);
   };
 
+  const canProceed = !!selectedFile || hasPrefilledGoogleAvatar;
+
   const handleNext = async () => {
-    if (!selectedFile || !user) {
+    if (!canProceed || !user) {
       handleSkip();
       return;
     }
 
-    setIsSubmitting(true);
-    setError(null);
+    if (selectedFile) {
+      setIsSubmitting(true);
+      setError(null);
 
-    try {
-      await updateAvatarUrl(user.id, selectedFile);
-      // Defensively refresh context now so any future field additions to the
-      // User type (e.g. avatar_url) are picked up immediately without a re-login.
-      await refreshProfile();
+      try {
+        await updateAvatarUrl(user.id, selectedFile);
+        await refreshProfile();
+        navigate(returnTo);
+      } catch (err: any) {
+        console.error('Error uploading avatar:', err);
+        setError(err.message || 'Failed to upload photo. Please check your connection and try again.');
+        setIsSubmitting(false);
+      }
+    } else {
+      // Proceeding with prefilled Google avatar
       navigate(returnTo);
-    } catch (err: any) {
-      console.error('Error uploading avatar:', err);
-      // Graceful error handling, specifically expecting bucket issues since it's not created yet.
-      setError(err.message || 'Failed to upload photo. Please check your connection and try again.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -195,17 +219,17 @@ export function ProfilePictureUploadScreen() {
           <button
             type="button"
             onClick={handleSkip}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isSkipping}
             className={styles.skipButton}
           >
-            Skip
+            {isSkipping ? 'Skipping...' : 'Skip'}
           </button>
           
           <button
             type="button"
             onClick={handleNext}
-            disabled={!selectedFile || isSubmitting}
-            className={`${styles.nextButton} ${selectedFile && !isSubmitting ? styles.nextButtonActive : styles.nextButtonDisabled}`}
+            disabled={!canProceed || isSubmitting || isSkipping}
+            className={`${styles.nextButton} ${canProceed && !isSubmitting && !isSkipping ? styles.nextButtonActive : styles.nextButtonDisabled}`}
           >
             {isSubmitting ? 'Saving...' : 'Next'}
             {!isSubmitting && (
