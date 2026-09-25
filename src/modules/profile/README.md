@@ -8,7 +8,6 @@ This module encompasses the user's Profile flows, including the onboarding seque
 |---|---|---|---|
 | Select Sports | `/select-sports` | `9dcf3c98d6014b138364c73940b03698` | Multi-select grid for sports of interest during onboarding. First step in the sequence. |
 | Create Sports Profile | `/create-sports-profile` | `36a44b1ec6244d9db3556da84ddc7948` | Gathers basic professional info (name, role, bio, photo). Second step. |
-| Profile Picture Upload | `/profile-picture-upload` | `447f102ffc074887858038b1db75698c` | Optional insert for photo upload. |
 | Personal Information | `/personal-information` | `ab64f6d07cdd4308b9e9d5f0524946a4` | Gathers location and physical metrics. Second step. |
 | Playing Information | `/playing-information` | `c50b8ebdd26e49e088f221712c631fc6` | Gathers dominant foot, primary position, and years of experience. Third step. |
 | Playing Information | `/playing-information` | `c50b8ebdd26e49e088f221712c631fc6` | Gathers dominant foot, primary position, and years of experience. Third step. |
@@ -20,18 +19,17 @@ This module encompasses the user's Profile flows, including the onboarding seque
 
 ## Onboarding Wizard Structure (Resolved 2026-07-25)
 
-The wizard is **4 required steps**, with one optional/reusable screen inserted after Step 1. Full resolved order:
+The wizard is exactly **4 sequential steps**, plus the pre-wizard selection. Full resolved order:
 
 | Position | Screen | Status | Step Counter |
 |---|---|---|---|
 | Pre-wizard | **Select Sports** | ✅ Built | None (separate 35% bar) |
-| Required Step 1/4 | **Create Sports Profile** | ✅ Built | Step 1 of 4 |
-| Optional insert | **Profile Picture Upload** | ✅ Built | Not counted — optional & skippable; also reusable from Edit Profile / Settings |
-| Required Step 2/4 | **Personal Information** | ✅ Built | Step 2 of 4 |
-| Required Step 3/4 | **Playing Information** | ✅ Built | Step 3 of 4 |
-| Required Step 4/4 | **Profile Completion** | ✅ Built | Step 4 of 4 (terminal screen) |
+| Step 1/4 | **Create Sports Profile** | ✅ Built | Step 1 of 4 |
+| Step 2/4 | **Personal Information** | ✅ Built | Step 2 of 4 |
+| Step 3/4 | **Playing Information** | ✅ Built | Step 3 of 4 |
+| Step 4/4 | **Profile Completion** | ✅ Built | Step 4 of 4 (terminal screen) |
 
-> **✅ Core 4-step onboarding wizard is now fully built end-to-end.** All four required steps (Create Sports Profile, Personal Information, Playing Information, Profile Completion) plus the optional Profile Picture Upload screen are implemented.
+> **✅ Core 4-step onboarding wizard is now fully built end-to-end.** All four steps (Create Sports Profile, Personal Information, Playing Information, Profile Completion) are implemented.
 
 
 ## Integration Gaps
@@ -66,7 +64,7 @@ The `public.profiles` table stores extended user information.
 
 **Schema Gaps — Status:**
 - **Bio** ✅ **Resolved** — Migration `002_add_bio_avatar_to_profiles.sql` adds a `bio text` column with a `CHECK (char_length(bio) <= 500)` constraint. Bio is now persisted via `updateProfileOnboarding()` in `profileService.ts`.
-- **Avatar URL** ⏳ **Still pending** — Migration `002` adds the `avatar_url text` column to the schema, but file upload to Supabase Storage is a separate future task. The UI `Upload Image` button is present but non-functional for persistence. `avatar_url` is intentionally excluded from the current `updateProfileOnboarding()` call until a storage bucket and upload flow are implemented.
+- **Avatar URL** ✅ **Resolved** — Migration `002` adds the `avatar_url text` column to the schema. Avatar upload to Supabase Storage and Google-avatar-prefill are fully built and live, seamlessly integrated into `CreateSportsProfileScreen`.
 - **Physical Metrics & Location** ✅ **Resolved** — Migration `005_add_personal_and_playing_info.sql` adds `location`, `age`, `height_cm`, `weight_kg` columns. Now persisted via `completeOnboarding()` in `profileService.ts` (called by `ProfileCompletionScreen` on mount). **APPLY MANUALLY before this flow works in production.**
 - **Playing Information** ✅ **Resolved** — Migration `005_add_personal_and_playing_info.sql` adds `dominant_foot`, `primary_position`, `years_of_experience` columns. Now persisted via `completeOnboarding()`. **APPLY MANUALLY.**
 - **ROUTES.PROFILE** now points to the real `OwnProfileScreen`. `ROUTES.EDIT_PROFILE` now points to the real role-aware `EditProfileScreen`.

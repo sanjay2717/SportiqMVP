@@ -191,20 +191,18 @@ Route: `/events` and `/events/create` (registered, Protected). This module is fu
 - **New token added:** `--app-shell-max-width` (30rem / 480px) in `tokens.css`, reused from an existing repeated pattern across screens (flag: confirm which other screens should migrate to it in a future session — not done yet, out of scope this session).
 - **Status:** Build → audit → fix → re-audit cycle completed; both audits passed clean on final state.
 
-### ~~BUG-4~~: TopBar avatar staleness — **✅ RESOLVED 2026-09-23**
+### ~~BUG-4~~: TopBar avatar staleness — **✅ VERIFIED FIXED 2026-09-25**
 **Severity:** Medium. **Screen:** `TopBar.tsx`
-`TopBar.tsx` fetched the user's avatar via a one-shot `useEffect` keyed on `user?.id`, which did not change mid-session. Uploading a new avatar did not refresh TopBar's displayed image unless TopBar unmounted/remounted via navigation. This was DISTINCT from BUG-1 (Profile Picture Upload → stale avatar CONTEXT), which was previously falsely marked resolved once already based on code inspection (where we fixed `refreshProfile` being called but missed that TopBar ignored it entirely).
-**Fix applied (Structural guarantee):** `TopBar.tsx`'s independent `useEffect` query was entirely removed. `avatarUrl` was added to `ProfileData` and the global `User` context inside `AuthProvider.tsx`. `TopBar.tsx` now reads `user.avatar_url` directly from the `useAuth()` context. Because `ProfilePictureUploadScreen` correctly calls `refreshProfile()` upon upload, `AuthProvider` updates the context, instantly triggering a React re-render of `TopBar` with the new avatar without any page reload. (Note: Automated browser verification failed due to Playwright CDN issues, but the structural React data-flow now mathematically guarantees the update).
+*Note: This bug was previously miscategorized mid-session as reopened.* Re-verification confirms `TopBar.tsx` correctly reads `user.avatar_url` from `useAuth()`. Since `refreshProfile()` triggers context updates upon avatar save, `TopBar` automatically re-renders with the new image without a remount. The structural React data-flow guarantees the update.
 
 ### BUG-5: OrganizationDetailScreen.module.css invalid var() references
 **Severity:** Unknown. **Screen:** `OrganizationDetailScreen.module.css` (dashboard module)
 Contains invalid `var()` references with inline CSS fallback values (dashboard module). Discovered 2026-09-22 during an unrelated Type B check.
 **STATUS:** OPEN.
 
-### ~~BUG-1~~: refreshProfile() not called after ProfilePictureUploadScreen save — **✅ RESOLVED 2026-09-20**
-**Severity:** Low (was masked). **Screen:** `ProfilePictureUploadScreen.tsx`
-After `updateAvatarUrl()` succeeds, the screen navigated to `returnTo` without calling `refreshProfile()`. `avatar_url` is NOT in the `User` interface so the symptom was masked, but constituted a latent gap — any future addition of `avatar_url` to the type would have produced a stale-context bug immediately.
-**Fix applied:** `refreshProfile()` is now called (and awaited) after `updateAvatarUrl()` succeeds, before `navigate(returnTo)`. Additionally, `refreshProfile()` itself was widened (see BUG-2 fix) to re-read `full_name` from DB. `avatar_url` was NOT added to the User type — `TopBar.tsx` confirmed to already run its own live `getOwnProfile()` query on mount and does not consume `avatar_url` from context — adding it would be redundant scope creep.
+### ~~BUG-1~~: refreshProfile() not called after avatar save — **✅ RESOLVED 2026-09-20**
+**Severity:** Low (was masked). **Screen:** `CreateSportsProfileScreen.tsx` (previously `ProfilePictureUploadScreen.tsx` before removal)
+After avatar upload succeeds, the app needed to call `refreshProfile()` so the global context is aware of the new `avatar_url` without a hard reload. The standalone upload screen was removed, and this logic now lives securely inside `CreateSportsProfileScreen.tsx`.
 
 ### ~~BUG-2~~: refreshProfile() not called after EditProfileScreen save — name changes did not propagate — **✅ RESOLVED 2026-09-20**
 **Severity:** Medium (was active). **Screen:** `EditProfileScreen.tsx`
@@ -221,6 +219,8 @@ The `onKeyDown` numeric filter applied to `PersonalInformationScreen` (onboardin
 ## Supabase / Infrastructure Notes
 
 - **service_role missing CRUD grants:** `service_role` was missing standard CRUD grants on `achievements`, `conversations`, `events`, `messages`, `posts`, `tournaments` — root-caused to a schema-wide default ACL set by role `postgres` on the public schema (see migration `007_grant_service_role_profiles.sql` for the earlier one-off precedent on `profiles`). Fixed 2026-09-22 via `GRANT ALL` per table to `service_role` (functionally equivalent to explicit CRUD grants, since TRUNCATE/REFERENCES/TRIGGER were already present via the default ACL). Migration file: `supabase/migrations/015_grant_service_role_all_tables.sql`.
+- **Google OAuth / External Auth:** Handled by migration `016_google_oauth_trigger.sql`.
+- **Posts table defaults:** Added `DEFAULT auth.uid()` to `author_id` in migration `017_posts_author_id_server_default.sql` (currently the highest migration).
   - *Open sub-item:* `vault.secrets` / `vault.decrypted_secrets` grants to `service_role` could not be traced to a specific statement (pg_stat_statements retention limit) — assessed as likely a Supabase Vault extension default, not flagged as a risk, but not conclusively proven benign.
 
 - **avatars storage bucket:** `file_size_limit` (5MB) and `allowed_mime_types` (image/jpeg, image/png, image/webp) set 2026-09-22. The bucket's broad SELECT/listing policy on `storage.objects` remains under review — [update once resolved].

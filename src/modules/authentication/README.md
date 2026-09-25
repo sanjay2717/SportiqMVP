@@ -14,14 +14,18 @@ Handles all user-facing authentication screens for SportIQ. No feature logic fro
 | Sign Up | `/signup` | `SignUpScreen/SignUpScreen.tsx` | `1ecbe3fbb0e64da187c25f35ed61722b` |
 | Verify Email | `/verify-email` | `VerifyEmailScreen/VerifyEmailScreen.tsx` | `223bbcb17016423580c0ce687e3ce88a` |
 | Forgot Password | `/forgot-password` | `ForgotPasswordScreen/ForgotPasswordScreen.tsx` | `aa5f559dd1d140c9bfadb231a301ebf9` |
+| Reset Password | `/reset-password` | `ResetPasswordScreen/ResetPasswordScreen.tsx` | N/A |
+| Select Role | `/select-role` | `SelectRoleScreen/SelectRoleScreen.tsx` | N/A |
 
 **Purpose of each screen:**
 - **SplashScreen** — Launch screen. Displays logo, wordmark ("SportIQ"), tagline ("Prove Your Standard"), and a shimmer progress bar. Auto-navigates after 2.5 s.
 - **WelcomeScreen** — Landing screen shown to unauthenticated users. Contains "Get Started", "Sign In", and "Explore as Guest" CTAs.
-- **LoginScreen** — Credential form with email/password, a "Remember Me" checkbox, password visibility toggle, Google login simulation, and a link to Forgot Password.
-- **SignUpScreen** — Registration form collecting full name, email, password (with confirmation), and a role selector (Athlete / Coach / Organiser / Govt Official). Persists new accounts to `localStorage`.
-- **VerifyEmailScreen** — Post-registration holding screen. Receives the user's email via router `location.state`. Mocks the verification flow; "Open Email App" triggers a 1 s delay then navigates to Login.
-- **ForgotPasswordScreen** — Email input form that mocks sending a password reset link. Shows an inline success state on submit; both the default and success states have a "Back to Login" link.
+- **LoginScreen** — Credential form with email/password, a "Remember Me" checkbox, password visibility toggle, real Supabase Google OAuth login, and a link to Forgot Password.
+- **SignUpScreen** — Registration form collecting full name, email, password (with confirmation), and a role selector (Athlete / Coach / Organiser / Govt Official). Persists new accounts to Supabase Auth and automatically creates `profiles` via a DB trigger.
+- **VerifyEmailScreen** — Post-registration holding screen. Receives the user's email via router `location.state`. Mocks the verification flow; "Open Email App" triggers a 1 s delay then navigates to Login. (Currently skipped entirely).
+- **ForgotPasswordScreen** — Email input form that performs a real Supabase password-reset request. Shows an inline success state on submit; both the default and success states have a "Back to Login" link.
+- **ResetPasswordScreen** — Real reset-entry flow triggered by the email reset link. Known caveat: there can be spam-deliverability issues depending on the current sending domain configuration.
+- **SelectRoleScreen** — Interstitial screen for first-time Google Sign-In users who do not yet have a role assigned in their profile.
 
 ---
 
@@ -64,8 +68,8 @@ Traced from actual `navigate()` and `<Link to=…>` calls in each screen's `.tsx
 
 - All authentication screens are wrapped in `<PublicRoute>` in `AppRouter.tsx`. Authenticated users visiting any of these routes are redirected to `/` (Home).
 - `AuthProvider` (`src/core/auth/AuthProvider.tsx`) holds the active `User` object (id, name, email, role).
-- Login and Google login call `setUser(...)` then navigate to Home. SignUp does **not** call `setUser` — the user remains unauthenticated until they complete email verification and log in manually.
-- User accounts are persisted to `localStorage` key `sportiq_users` (mock only; replace with real API before production).
+- Login, Google login, and SignUp all result in an authenticated session. Email confirmation is deliberately disabled for this pilot, so there is no forced verification step. Users are immediately signed in after successful registration.
+- User accounts are persisted securely in Supabase.
 
 ---
 

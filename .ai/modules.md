@@ -7,7 +7,6 @@ This tells AI what exists.
 - Profile (Pending)
 - Social (Pending)
 - Search (Pending)
-- Messaging (Pending)
 - Notifications (Pending)
 - Settings (Pending)
 
