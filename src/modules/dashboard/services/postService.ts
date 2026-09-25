@@ -49,10 +49,10 @@ export const postService = {
 
   async uploadPostImage(userId: string, file: File): Promise<string> {
     const fileExt = file.name.split('.').pop();
-    const filePath = `posts/${userId}/${Date.now()}.${fileExt}`;
+    const filePath = `${userId}/${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
-      .from('avatars') // Reusing the avatars bucket as instructed to avoid needing new bucket creation
+      .from('posts')
       .upload(filePath, file, { upsert: true });
 
     if (uploadError) {
@@ -60,7 +60,7 @@ export const postService = {
     }
 
     const { data: publicUrlData } = supabase.storage
-      .from('avatars')
+      .from('posts')
       .getPublicUrl(filePath);
 
     return publicUrlData.publicUrl;

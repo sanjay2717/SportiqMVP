@@ -99,10 +99,10 @@ export async function deleteAchievement(id: string): Promise<void> {
 
 export async function uploadAchievementImage(userId: string, file: File): Promise<string> {
   const fileExt = file.name.split('.').pop();
-  const filePath = `achievements/${userId}/${Date.now()}.${fileExt}`;
+  const filePath = `${userId}/${Date.now()}.${fileExt}`;
 
   const { error: uploadError } = await supabase.storage
-    .from('avatars') // Reusing the avatars bucket
+    .from('achievements')
     .upload(filePath, file, { upsert: true });
 
   if (uploadError) {
@@ -110,7 +110,7 @@ export async function uploadAchievementImage(userId: string, file: File): Promis
   }
 
   const { data: publicUrlData } = supabase.storage
-    .from('avatars')
+    .from('achievements')
     .getPublicUrl(filePath);
 
   return publicUrlData.publicUrl;
