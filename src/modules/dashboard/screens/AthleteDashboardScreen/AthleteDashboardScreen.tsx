@@ -21,6 +21,16 @@ export function AthleteDashboardScreen() {
   
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
+  const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) => {
+    setExpandedPosts(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   const handleEditSubmit = async (postId: string) => {
     if (!user || !editContent.trim()) return;
@@ -242,7 +252,17 @@ export function AthleteDashboardScreen() {
                       </div>
                     </div>
                   ) : (
-                    <p className={styles.postText}>{post.content}</p>
+                    <>
+                      <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`}>{post.content}</p>
+                      {post.content && post.content.length > 100 && (
+                        <button 
+                          className={styles.readMoreBtn} 
+                          onClick={() => toggleExpand(post.id)}
+                        >
+                          {expandedPosts.has(post.id) ? 'Show less' : '...more'}
+                        </button>
+                      )}
+                    </>
                   )}
                   {post.image_url && (
                     <div className={styles.postImageContainer}>
@@ -284,19 +304,21 @@ export function AthleteDashboardScreen() {
                       onClick={() => handleToggleComments(post.id)}
                     >
                       <span className="material-symbols-outlined">chat_bubble_outline</span>
-                      <span>{post.commentsCount || 0}</span>
+                      <span className={styles.actionLabel}>{post.commentsCount || 0}</span>
                     </button>
                     <button 
                       className={`${styles.actionButton} animate-press ${sharedPostId === post.id ? 'animate-pulse' : ''}`}
                       onClick={() => {
                         setSharedPostId(post.id);
+                        navigator.clipboard.writeText(`${window.location.origin}/`);
+                        alert('Link copied to clipboard!');
                         setTimeout(() => setSharedPostId(null), 300);
                       }}
                     >
                       <span className="material-symbols-outlined">share</span>
                     </button>
                   </div>
-                  <button className={`${styles.actionButton} animate-press`}>
+                  <button className={`${styles.actionButton} animate-press`} onClick={() => alert('Bookmarks coming soon!')}>
                     <span className="material-symbols-outlined">bookmark_border</span>
                   </button>
                 </div>

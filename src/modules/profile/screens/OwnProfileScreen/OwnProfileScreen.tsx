@@ -22,6 +22,16 @@ export function OwnProfileScreen() {
   const [commentText, setCommentText] = useState('');
   const [postComments, setPostComments] = useState<Record<string, any[]>>({});
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
+  const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) => {
+    setExpandedPosts(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -348,9 +358,19 @@ export function OwnProfileScreen() {
                         </div>
                       </div>
                     ) : (
-                      <p style={{ margin: '0 0 var(--spacing-3) 0', fontSize: '14px', lineHeight: 1.5, color: 'var(--color-neutral-800)' }}>
-                        {post.content}
-                      </p>
+                      <>
+                        <p style={{ margin: '0 0 var(--spacing-3) 0', fontSize: '14px', lineHeight: 1.5, color: 'var(--color-neutral-800)', whiteSpace: 'pre-wrap', ...( !expandedPosts.has(post.id) ? { display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {} ) }}>
+                          {post.content}
+                        </p>
+                        {post.content && post.content.length > 100 && (
+                          <button 
+                            style={{ background: 'none', border: 'none', color: 'var(--color-neutral-600)', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 600, cursor: 'pointer', marginBottom: 'var(--spacing-3)' }}
+                            onClick={() => toggleExpand(post.id)}
+                          >
+                            {expandedPosts.has(post.id) ? 'Show less' : '...more'}
+                          </button>
+                        )}
+                      </>
                     )}
                     
                     {post.image_url && (
@@ -359,8 +379,8 @@ export function OwnProfileScreen() {
                       </div>
                     )}
                     
-                    <div style={{ display: 'flex', borderTop: '1px solid var(--color-neutral-100)', paddingTop: 'var(--spacing-3)', gap: 'var(--spacing-4)', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', borderTop: '1px solid var(--color-neutral-100)', paddingTop: 'var(--spacing-3)', gap: 'var(--spacing-4)', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                         <button 
                           style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: post.isLiked ? 'var(--color-primary-500)' : 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
                           onClick={() => handleToggleLike(post)}
@@ -384,13 +404,24 @@ export function OwnProfileScreen() {
                         </button>
                         <span style={{ fontSize: '14px', color: 'var(--color-neutral-600)', marginLeft: '4px', fontWeight: 'bold' }}>{post.likesCount || 0}</span>
                       </div>
-                      <button 
-                        style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
-                        onClick={() => handleToggleComments(post.id)}
-                      >
-                        <span className="material-symbols-outlined">chat_bubble_outline</span>
-                        <span style={{ fontSize: '14px' }}>{post.commentsCount || 0}</span>
-                      </button>
+                      <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                        <button 
+                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
+                          onClick={() => handleToggleComments(post.id)}
+                        >
+                          <span className="material-symbols-outlined">chat_bubble_outline</span>
+                          <span style={{ fontSize: '14px' }}>{post.commentsCount || 0}</span>
+                        </button>
+                        <button 
+                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/`);
+                            alert('Link copied to clipboard!');
+                          }}
+                        >
+                          <span className="material-symbols-outlined">share</span>
+                        </button>
+                      </div>
                     </div>
 
                     {activeCommentPostId === post.id && (
