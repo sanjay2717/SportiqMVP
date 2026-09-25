@@ -6,9 +6,9 @@ import {
   getAchievementById, 
   createAchievement, 
   updateAchievement,
-  AchievementPayload
+  AchievementPayload,
+  uploadAchievementImage
 } from '../../services/achievementService';
-import { updateAvatarUrl } from '../../services/profileService';
 import styles from './AchievementForm.module.css';
 
 const ICON_OPTIONS = [
@@ -94,9 +94,7 @@ export function AchievementForm() {
       // Upload new image if selected
       if (selectedFile) {
         try {
-          // Re-using avatar upload pattern but saving the URL to the achievement payload
-          // Ideally we'd have a separate bucket, but we'll use the service logic
-          finalImageUrl = await updateAvatarUrl(user.id, selectedFile);
+          finalImageUrl = await uploadAchievementImage(user.id, selectedFile);
         } catch (uploadErr) {
           console.error("Image upload failed:", uploadErr);
           // If storage bucket isn't set up, this fails gracefully.
