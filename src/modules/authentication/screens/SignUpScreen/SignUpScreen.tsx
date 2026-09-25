@@ -4,6 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { UserRole } from '../../../../core/auth/types';
 import { ROUTES } from '../../../../routing/routes';
 import { supabase } from '../../../../core/database/supabaseClient';
+import { config } from '../../../../core/config';
 import { validatePassword } from '../../utils/validation';
 import { useCapsLockDetection } from '../../hooks/useCapsLockDetection';
 import { RoleSelector } from '../../../../shared/components/RoleSelector/RoleSelector';
@@ -64,7 +65,7 @@ export function SignUpScreen() {
       await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}${ROUTES.AUTH_CALLBACK}`,
+          redirectTo: `${config.appUrl}${ROUTES.AUTH_CALLBACK}`,
         }
       });
     } catch (err: any) {

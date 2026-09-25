@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ROUTES } from '../../../../routing/routes';
 import { supabase } from '../../../../core/database/supabaseClient';
+import { config } from '../../../../core/config';
 import { isValidEmail } from '../../utils/validation';
 import styles from './ForgotPasswordScreen.module.css';
 
@@ -31,7 +32,7 @@ export function ForgotPasswordScreen() {
     setIsSubmitting(true);
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}${ROUTES.RESET_PASSWORD}`,
+        redirectTo: `${config.appUrl}${ROUTES.RESET_PASSWORD}`,
       });
 
       if (resetError) {

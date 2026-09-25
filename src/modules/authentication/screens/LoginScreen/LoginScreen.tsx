@@ -4,6 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { UserRole } from '../../../../core/auth/types';
 import { ROUTES } from '../../../../routing/routes';
 import { supabase } from '../../../../core/database/supabaseClient';
+import { config } from '../../../../core/config';
 import styles from './LoginScreen.module.css';
 
 export function LoginScreen() {
@@ -38,7 +39,7 @@ export function LoginScreen() {
       await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}${ROUTES.AUTH_CALLBACK}`,
+          redirectTo: `${config.appUrl}${ROUTES.AUTH_CALLBACK}`,
         }
       });
     } catch (err: any) {
