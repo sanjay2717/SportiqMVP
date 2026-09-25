@@ -93,7 +93,7 @@ The operator must confirm which is authoritative before Social module work begin
 | Empty Feed | `fdaacdf294d243d29a940b171a3fa037` | ✅ Built | Handled intrinsically by `AthleteDashboardScreen` when the `posts` query returns empty. |
 | Create Post | `8cacd67b59894b2c9768fa930968233a` | ✅ Built — CreatePostScreen.tsx | Composer form inserting directly into the real `posts` table with authenticated `author_id` and image upload. |
 | Sports Community | `d24d1ca83f164c0395059e64a0de57d4` | Not built | Community groups or topic-based discussion listing |
-| Connections | `f55432c01428410488ad5899fb5bd953` | Not built | List of followers / following |
+| Connections | `f55432c01428410488ad5899fb5bd953` | ✅ Built — NetworkScreen.tsx | Implements a one-way follow model (upgradeable to request/accept later). Replaces Stitch fetch which failed. |
 | Share Sheet | `52b6aae41f2d42c885e6eb2802970ee2` | Not built | Bottom sheet to share content externally |
 
 ---
@@ -118,8 +118,8 @@ Route: `/messages` (registered, Protected, currently renders `PlaceholderScreen`
 
 | Screen Name | Screen ID | Build Status | Notes |
 |---|---|---|---|
-| Messages | `e96861ef8d874036840cbf5e3c787634` | Not built | Inbox / conversation list view |
-| Private Chat | `0c73ecbd86984b6492c5f13155a694f0` | Not built | Direct messaging thread between two users |
+| Messages | `e96861ef8d874036840cbf5e3c787634` | ✅ Built — MessagesScreen.tsx | Inbox / conversation list view. Explicitly left as manual refresh (scoped reduction). |
+| Private Chat | `0c73ecbd86984b6492c5f13155a694f0` | ✅ Built — PrivateChatScreen.tsx | Direct messaging thread between two users. Fully real-time using `supabase_realtime` subscription. |
 
 ---
 

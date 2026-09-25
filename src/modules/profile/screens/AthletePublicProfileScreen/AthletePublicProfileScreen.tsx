@@ -6,6 +6,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { messageService } from '../../../messages/services/messageService';
 import { ROUTES } from '../../../../routing/routes';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
+import { networkService } from '../../../network/services/networkService';
 import styles from './AthletePublicProfileScreen.module.css';
 
 interface AthleteProfile {
@@ -42,6 +43,8 @@ export function AthletePublicProfileScreen() {
   const [error, setError] = useState<string | null>(null);
   const [isMessaging, setIsMessaging] = useState(false);
   const [activeTab, setActiveTab] = useState('Posts');
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -72,8 +75,37 @@ export function AthletePublicProfileScreen() {
       }
     }
 
+    async function checkFollowStatus() {
+      if (!id || !user) return;
+      try {
+        const following = await networkService.getConnectionStatus(user.id, id);
+        setIsFollowing(following);
+      } catch (err) {
+        console.error('Failed to check follow status:', err);
+      }
+    }
+
     fetchProfile();
-  }, [id]);
+    checkFollowStatus();
+  }, [id, user]);
+
+  const handleToggleFollow = async () => {
+    if (!user || !profile || isFollowLoading) return;
+    setIsFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await networkService.unfollow(user.id, profile.id);
+        setIsFollowing(false);
+      } else {
+        await networkService.follow(user.id, profile.id);
+        setIsFollowing(true);
+      }
+    } catch (err) {
+      console.error('Failed to toggle follow status:', err);
+    } finally {
+      setIsFollowLoading(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -222,11 +254,18 @@ export function AthletePublicProfileScreen() {
           </div>
         </section>
 
-        {/* 2. Actions (Visual Only) */}
+        {/* 2. Actions (Visual Only -> Now Functional) */}
         <section className={styles.actionsSection}>
-          <button type="button" className={styles.primaryActionBtn}>
-            <span className="material-symbols-outlined">person_add</span>
-            Follow
+          <button 
+            type="button" 
+            className={isFollowing ? styles.secondaryActionBtn : styles.primaryActionBtn}
+            onClick={handleToggleFollow}
+            disabled={isFollowLoading}
+          >
+            <span className="material-symbols-outlined">
+              {isFollowing ? 'how_to_reg' : 'person_add'}
+            </span>
+            {isFollowLoading ? 'Wait...' : isFollowing ? 'Following' : 'Follow'}
           </button>
           <button 
             type="button" 

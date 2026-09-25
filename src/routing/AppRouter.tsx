@@ -38,6 +38,7 @@ import { CreateTournamentScreen } from '../modules/dashboard/screens/CreateTourn
 import { NotificationsScreen } from '../modules/notifications/screens';
 import { SettingsScreen } from '../modules/settings/screens';
 import { MessagesScreen, PrivateChatScreen } from '../modules/messages/screens';
+import { NetworkScreen } from '../modules/network/screens';
 
 import styles from './Routing.module.css';
 
@@ -312,7 +313,7 @@ export function AppRouter() {
         <Route path={ROUTES.TOURNAMENTS} element={<ProtectedRoute><AppLayout><TournamentsListScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.ANALYTICS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Analytics screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.POSTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Posts" description="// TODO: replace with real Posts screen" /></AppLayout></ProtectedRoute>} />
-        <Route path={ROUTES.NETWORK} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Network" description="// TODO: replace with real Network screen" /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.NETWORK} element={<ProtectedRoute><AppLayout><NetworkScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.CREATE} element={<ProtectedRoute><CreatePostScreen /></ProtectedRoute>} />
 
         {/* Fallback */}

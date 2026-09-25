@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../../core/database/supabaseClient';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
+import { useAuth } from '../../../../core/auth/AuthProvider';
+import { networkService } from '../../../network/services/networkService';
 
 import styles from './OrganizationDetailScreen.module.css';
 
@@ -85,10 +87,13 @@ function formatSports(sports?: string[]): string {
 export function OrganizationDetailScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [profile, setProfile] = useState<OrganizationProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
 
   useEffect(() => {
     async function fetchOrgProfile() {
@@ -121,8 +126,37 @@ export function OrganizationDetailScreen() {
       }
     }
 
+    async function checkFollowStatus() {
+      if (!id || !user) return;
+      try {
+        const following = await networkService.getConnectionStatus(user.id, id);
+        setIsFollowing(following);
+      } catch (err) {
+        console.error('Failed to check follow status:', err);
+      }
+    }
+
     fetchOrgProfile();
-  }, [id]);
+    checkFollowStatus();
+  }, [id, user]);
+
+  const handleToggleFollow = async () => {
+    if (!user || !profile || isFollowLoading) return;
+    setIsFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await networkService.unfollow(user.id, profile.id);
+        setIsFollowing(false);
+      } else {
+        await networkService.follow(user.id, profile.id);
+        setIsFollowing(true);
+      }
+    } catch (err) {
+      console.error('Failed to toggle follow status:', err);
+    } finally {
+      setIsFollowLoading(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -285,8 +319,13 @@ export function OrganizationDetailScreen() {
                 </span>
                 Share
               </button>
-              <button className={styles.followBtn} type="button">
-                Follow
+              <button 
+                className={isFollowing ? styles.shareBtn : styles.followBtn}
+                onClick={handleToggleFollow}
+                disabled={isFollowLoading}
+                type="button"
+              >
+                {isFollowLoading ? 'Wait...' : isFollowing ? 'Following' : 'Follow'}
               </button>
             </div>
           </div>

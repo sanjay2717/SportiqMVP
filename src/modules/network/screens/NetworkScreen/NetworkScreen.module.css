@@ -1,0 +1,209 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-neutral-0);
+}
+
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-neutral-0);
+  border-bottom: 1px solid var(--color-neutral-100);
+  padding: var(--spacing-4) var(--spacing-6);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2);
+  margin-left: calc(var(--spacing-2) * -1);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.backButton:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.pageTitle {
+  font-family: var(--font-family);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.mainContent {
+  padding: var(--spacing-6);
+  flex: 1;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-10);
+  gap: var(--spacing-4);
+  color: var(--color-text-secondary);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  font-size: 32px;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.errorAlert {
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-6);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  font-family: var(--font-family);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-12) var(--spacing-6);
+  background-color: var(--color-neutral-100);
+  border-radius: var(--radius-lg);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  color: var(--color-neutral-400);
+  margin-bottom: var(--spacing-4);
+}
+
+.emptyTitle {
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.emptyDesc {
+  font-family: var(--font-family);
+  color: var(--color-text-secondary);
+  max-width: 320px;
+  margin: 0;
+}
+
+.networkGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.networkCard {
+  background-color: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-100);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.networkCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: var(--color-primary-300);
+}
+
+.avatarWrapper {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background-color: var(--color-primary-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitials {
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--color-primary-700);
+  font-size: 24px;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-1) 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userRole {
+  font-family: var(--font-family);
+  color: var(--color-text-secondary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  text-transform: capitalize;
+}
+
+.roleIcon {
+  font-size: 14px;
+}
+
+.messageButton {
+  background: none;
+  border: none;
+  color: var(--color-primary-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.messageButton:hover {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
