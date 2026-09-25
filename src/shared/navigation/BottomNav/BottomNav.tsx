@@ -10,6 +10,7 @@ import { useAuth } from '@core/auth/AuthProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navigationByRole } from '@core/navigation/config';
 import type { NavItem } from '@core/navigation/types';
+import { ROUTES } from '@routing/routes';
 import styles from './BottomNav.module.css';
 
 export function BottomNavBar() {
@@ -54,9 +55,13 @@ export function BottomNavBar() {
               aria-label={item.label}
               aria-current={isActive(item.path) ? 'page' : undefined}
             >
-              <span className={`material-symbols-outlined ${styles.navIcon}`}>
-                {item.iconName}
-              </span>
+              {item.path === ROUTES.PROFILE && user?.avatar_url ? (
+                <img src={user.avatar_url} alt="Profile" className={styles.navAvatar} />
+              ) : (
+                <span className={`material-symbols-outlined ${styles.navIcon}`}>
+                  {item.iconName}
+                </span>
+              )}
               <span className={styles.navLabel}>{item.label}</span>
             </button>
           );

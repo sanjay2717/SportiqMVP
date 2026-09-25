@@ -9,7 +9,8 @@ export interface SportEvent {
   sport: string | null;
   created_by: string;
   created_at: string;
-  creator_name?: string; // Joined from profiles
+  creator_name?: string;
+  creator_avatar?: string | null;
 }
 
 export interface CreateEventPayload {
@@ -42,7 +43,8 @@ export async function getEvents(): Promise<SportEvent[]> {
     .select(`
       *,
       profiles:created_by (
-        full_name
+        full_name,
+        avatar_url
       )
     `)
     .order('event_date', { ascending: true });
@@ -56,6 +58,7 @@ export async function getEvents(): Promise<SportEvent[]> {
   return data.map((event: any) => ({
     ...event,
     creator_name: event.profiles?.full_name || 'Unknown',
+    creator_avatar: event.profiles?.avatar_url || null,
   })) as SportEvent[];
 }
 
@@ -65,7 +68,8 @@ export async function getEventById(id: string): Promise<SportEvent | null> {
     .select(`
       *,
       profiles:created_by (
-        full_name
+        full_name,
+        avatar_url
       )
     `)
     .eq('id', id)
@@ -83,5 +87,6 @@ export async function getEventById(id: string): Promise<SportEvent | null> {
   return {
     ...data,
     creator_name: data.profiles?.full_name || 'Unknown',
+    creator_avatar: data.profiles?.avatar_url || null,
   } as SportEvent;
 }

@@ -10,7 +10,8 @@ export interface Tournament {
   location: string | null;
   organiser_id: string;
   created_at: string;
-  organiser_name?: string; // Joined from profiles
+  organiser_name?: string;
+  organiser_avatar?: string | null;
 }
 
 export interface CreateTournamentPayload {
@@ -44,7 +45,8 @@ export async function getTournaments(): Promise<Tournament[]> {
     .select(`
       *,
       profiles:organiser_id (
-        full_name
+        full_name,
+        avatar_url
       )
     `)
     .order('start_date', { ascending: true });
@@ -57,5 +59,6 @@ export async function getTournaments(): Promise<Tournament[]> {
   return data.map((t: any) => ({
     ...t,
     organiser_name: t.profiles?.full_name || 'Unknown',
+    organiser_avatar: t.profiles?.avatar_url || null,
   })) as Tournament[];
 }

@@ -60,7 +60,11 @@ export function SettingsScreen() {
           <div className={styles.profileCard}>
             <div className={styles.profileInfo}>
               <div className={styles.avatar}>
-                <span className={`material-symbols-outlined ${styles.avatarIcon}`} style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
+                {user?.avatar_url ? (
+                  <img src={user.avatar_url} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                ) : (
+                  <span className={`material-symbols-outlined ${styles.avatarIcon}`} style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
+                )}
               </div>
               <div className={styles.profileText}>
                 <h2 className={styles.profileName}>{user?.name || 'User Name'}</h2>

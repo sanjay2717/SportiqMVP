@@ -64,6 +64,13 @@
   font-variation-settings: 'FILL' 1;
 }
 
+.navAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .navLabel {
   font-family: var(--font-family);
   font-size: var(--font-size-xs);

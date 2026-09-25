@@ -60,7 +60,11 @@ export function EventCard({ event }: EventCardProps) {
             <span className={styles.metaText}>{locationDisplay}</span>
           </div>
           <div className={styles.metaItem}>
-            <span className={`material-symbols-outlined ${styles.metaIcon}`}>person</span>
+            {event.creator_avatar ? (
+              <img src={event.creator_avatar} alt="Avatar" style={{ width: '16px', height: '16px', borderRadius: '50%', objectFit: 'cover' }} />
+            ) : (
+              <span className={`material-symbols-outlined ${styles.metaIcon}`}>person</span>
+            )}
             <span className={styles.metaText}>Organised by {event.creator_name || 'Unknown'}</span>
           </div>
         </div>

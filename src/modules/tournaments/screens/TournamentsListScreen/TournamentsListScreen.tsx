@@ -128,7 +128,11 @@ export function TournamentsListScreen() {
                     )}
                     {tournament.organiser_name && (
                       <span className={styles.metaItem}>
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>person</span>
+                        {tournament.organiser_avatar ? (
+                          <img src={tournament.organiser_avatar} alt="Avatar" style={{ width: '16px', height: '16px', borderRadius: '50%', objectFit: 'cover' }} />
+                        ) : (
+                          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>person</span>
+                        )}
                         {tournament.organiser_name}
                       </span>
                     )}

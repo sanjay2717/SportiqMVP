@@ -118,6 +118,14 @@
   font-size: var(--icon-lg);
 }
 
+.navAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 2px;
+}
+
 .navTabActive .navIcon {
   font-variation-settings: 'FILL' 1;
 }
