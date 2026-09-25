@@ -170,11 +170,12 @@ export function AthleteDashboardScreen() {
         ) : (
           <section className={styles.feedSection}>
             {posts.map((post, index) => {
-              <article 
-                key={post.id} 
-                className={`${styles.feedCard} animate-fade-in`} 
-                style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
-              >
+              return (
+                <article 
+                  key={post.id} 
+                  className={`${styles.feedCard} animate-fade-in`} 
+                  style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+                >
                 <div className={styles.cardHeader}>
                   <div 
                     className={styles.authorInfo} 
