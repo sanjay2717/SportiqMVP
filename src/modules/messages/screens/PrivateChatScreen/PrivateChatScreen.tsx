@@ -18,6 +18,19 @@ export function PrivateChatScreen() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAttachClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Implement upload logic
+      console.log('File selected:', file);
+    }
+  };
 
   // Load initial messages
   useEffect(() => {
@@ -204,7 +217,13 @@ export function PrivateChatScreen() {
       {/* Input Area */}
       {!error && (
         <footer className={styles.inputArea}>
-          <button className={styles.attachButton} title="Attach file">
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            style={{ display: 'none' }} 
+            onChange={handleFileChange}
+          />
+          <button className={styles.attachButton} title="Attach file" onClick={handleAttachClick}>
             <span className="material-symbols-outlined">attach_file</span>
           </button>
           <div className={styles.inputContainer}>
@@ -217,15 +236,7 @@ export function PrivateChatScreen() {
               rows={1}
             />
           </div>
-          {inputText.trim() ? (
-            <button
-              className={styles.sendButton}
-              onClick={handleSend}
-              disabled={isSending}
-            >
-              <span className="material-symbols-outlined">send</span>
-            </button>
-          ) : (
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
             <button
               className={`${styles.micButton} ${isRecording ? styles.recording : ''}`}
               onClick={() => setIsRecording(!isRecording)}
@@ -233,7 +244,14 @@ export function PrivateChatScreen() {
             >
               <span className="material-symbols-outlined">mic</span>
             </button>
-          )}
+            <button
+              className={styles.sendButton}
+              onClick={handleSend}
+              disabled={isSending || !inputText.trim()}
+            >
+              <span className="material-symbols-outlined">send</span>
+            </button>
+          </div>
         </footer>
       )}
     </div>

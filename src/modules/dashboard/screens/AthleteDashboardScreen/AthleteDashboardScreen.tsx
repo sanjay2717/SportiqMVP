@@ -252,16 +252,33 @@ export function AthleteDashboardScreen() {
                 </div>
 
                 <div className={styles.cardActions}>
-                  <div className={styles.actionGroup}>
+                  <div className={styles.actionGroup} style={{ alignItems: 'center' }}>
                     <button 
                       className={`${styles.actionButton} animate-press ${post.isLiked ? styles.likeActive : ''}`} 
                       onClick={() => handleToggleLike(post)}
+                      title="Thumbs Up"
                     >
                       <span className={`material-symbols-outlined ${post.isLiked ? 'animate-burst' : ''}`} style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                        favorite
+                        thumb_up
                       </span>
-                      <span>{post.likesCount || 0}</span>
                     </button>
+                    <button 
+                      className={`${styles.actionButton} animate-press`} 
+                      onClick={() => handleToggleLike(post)}
+                      style={{ color: 'var(--color-danger-500)' }}
+                      title="Love"
+                    >
+                      <span className="material-symbols-outlined">favorite</span>
+                    </button>
+                    <button 
+                      className={`${styles.actionButton} animate-press`} 
+                      onClick={() => handleToggleLike(post)}
+                      style={{ color: '#f59e0b' }}
+                      title="Laugh"
+                    >
+                      <span className="material-symbols-outlined">sentiment_very_satisfied</span>
+                    </button>
+                    <span style={{ fontSize: '14px', color: 'var(--color-neutral-600)', fontWeight: 'bold', marginRight: '8px' }}>{post.likesCount || 0}</span>
                     <button 
                       className={`${styles.actionButton} animate-press`}
                       onClick={() => handleToggleComments(post.id)}
@@ -288,8 +305,18 @@ export function AthleteDashboardScreen() {
                   <div className={`${styles.commentArea} animate-fade-in`}>
                     <div className={styles.commentsList}>
                       {(postComments[post.id] || []).map(c => (
-                        <div key={c.id} className={styles.commentItem}>
-                          <span className={styles.commentAuthor}>{c.author?.full_name}:</span> {c.content}
+                        <div key={c.id} className={styles.commentItem} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                          <div style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', backgroundColor: 'var(--color-primary-100)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {c.author?.avatar_url ? (
+                              <img src={c.author.avatar_url} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                              <span className="material-symbols-outlined" style={{ fontSize: '14px', color: 'var(--color-primary-700)' }}>person</span>
+                            )}
+                          </div>
+                          <div>
+                            <span className={styles.commentAuthor} style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--color-neutral-900)' }}>{c.author?.full_name}:</span> 
+                            <span style={{ fontSize: '13px', marginLeft: '4px', color: 'var(--color-neutral-700)' }}>{c.content}</span>
+                          </div>
                         </div>
                       ))}
                     </div>
