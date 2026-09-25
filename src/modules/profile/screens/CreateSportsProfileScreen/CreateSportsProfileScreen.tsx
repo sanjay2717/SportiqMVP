@@ -290,9 +290,9 @@ export function CreateSportsProfileScreen() {
                 className={styles.ghostBtn} 
                 type="button" 
                 onClick={handleSaveDraft}
-                disabled={isSubmitting}
+                disabled={true}
               >
-                Save Draft
+                Save Draft (Coming Soon)
               </button>
               <button 
                 className={styles.primaryBtn} 
