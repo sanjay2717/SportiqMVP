@@ -9,26 +9,34 @@ import styles from './NetworkScreen.module.css';
 export function NetworkScreen() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'connections' | 'discover'>('connections');
   const [connections, setConnections] = useState<Connection[]>([]);
+  const [discoverUsers, setDiscoverUsers] = useState<any[]>([]);
+  const [sportFilter, setSportFilter] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadConnections() {
+    async function loadData() {
       if (!user) return;
       try {
         setIsLoading(true);
         setError(null);
-        const data = await networkService.getConnections(user.id);
-        setConnections(data);
+        if (activeTab === 'connections') {
+          const data = await networkService.getConnections(user.id);
+          setConnections(data);
+        } else {
+          const data = await networkService.getDiscoverUsers(user.id, sportFilter);
+          setDiscoverUsers(data);
+        }
       } catch (err: any) {
-        setError(err.message || 'Failed to load connections.');
+        setError(err.message || 'Failed to load data.');
       } finally {
         setIsLoading(false);
       }
     }
-    loadConnections();
-  }, [user]);
+    loadData();
+  }, [user, activeTab, sportFilter]);
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
@@ -60,6 +68,18 @@ export function NetworkScreen() {
     }
   };
 
+  const handleFollow = async (e: React.MouseEvent, profileId: string) => {
+    e.stopPropagation();
+    if (!user) return;
+    try {
+      await networkService.follow(user.id, profileId);
+      // Remove from discover list immediately
+      setDiscoverUsers(prev => prev.filter(p => p.id !== profileId));
+    } catch (err) {
+      console.error('Failed to follow', err);
+    }
+  };
+
   // Note: This is a custom-built screen structurally modeled on MyCoachesScreen, 
   // replacing the Stitch MCP fetch which failed.
   return (
@@ -72,35 +92,118 @@ export function NetworkScreen() {
       </header>
 
       <main className={styles.mainContent}>
+        <div className={styles.tabContainer}>
+          <button 
+            className={`${styles.tabBtn} ${activeTab === 'connections' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('connections')}
+          >
+            My Network
+          </button>
+          <button 
+            className={`${styles.tabBtn} ${activeTab === 'discover' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('discover')}
+          >
+            Discover
+          </button>
+        </div>
+
+        {activeTab === 'discover' && (
+          <div className={styles.filterContainer}>
+            <span className="material-symbols-outlined" style={{color: 'var(--color-neutral-500)'}}>search</span>
+            <select 
+              className={styles.sportSelect}
+              value={sportFilter}
+              onChange={(e) => setSportFilter(e.target.value)}
+            >
+              <option value="All">All Sports</option>
+              <option value="Football">Football</option>
+              <option value="Athletics">Athletics</option>
+              <option value="Swimming">Swimming</option>
+              <option value="Basketball">Basketball</option>
+              <option value="Tennis">Tennis</option>
+            </select>
+          </div>
+        )}
+
         {isLoading ? (
           <div className={styles.loadingContainer}>
             <span className={`material-symbols-outlined ${styles.spinner}`}>sync</span>
-            <p>Loading your network...</p>
+            <p>Loading...</p>
           </div>
         ) : error ? (
           <div className={styles.errorAlert}>
             <span className="material-symbols-outlined">error</span>
             <span>{error}</span>
           </div>
-        ) : connections.length === 0 ? (
-          <div className={styles.emptyState}>
-            <span className={`material-symbols-outlined ${styles.emptyIcon}`}>group_add</span>
-            <h2 className={styles.emptyTitle}>Grow Your Network</h2>
-            <p className={styles.emptyDesc}>
-              Follow athletes, coaches, and organizations to see them here.
-            </p>
-          </div>
+        ) : activeTab === 'connections' ? (
+          connections.length === 0 ? (
+            <div className={styles.emptyState}>
+              <span className={`material-symbols-outlined ${styles.emptyIcon}`}>group_add</span>
+              <h2 className={styles.emptyTitle}>Grow Your Network</h2>
+              <p className={styles.emptyDesc}>
+                Follow athletes, coaches, and organizations to see them here.
+              </p>
+              <button className={styles.discoverBtn} onClick={() => setActiveTab('discover')}>
+                Find People
+              </button>
+            </div>
+          ) : (
+            <div className={styles.networkGrid}>
+              {connections.map(conn => {
+                const profile = conn.recipient_profile;
+                if (!profile) return null;
+                
+                return (
+                  <div 
+                    key={conn.id} 
+                    className={styles.networkCard}
+                    onClick={() => handleCardClick(profile.role, conn.recipient_id)}
+                  >
+                    <div className={styles.avatarWrapper}>
+                      {profile.avatar_url ? (
+                        <img src={profile.avatar_url} alt={profile.full_name} className={styles.avatarImage} />
+                      ) : (
+                        <span className={styles.avatarInitials}>{getInitials(profile.full_name)}</span>
+                      )}
+                    </div>
+                    <div className={styles.userInfo}>
+                      <h3 className={styles.userName}>{profile.full_name || 'Unknown User'}</h3>
+                      <p className={styles.userRole}>
+                        <span className={`material-symbols-outlined ${styles.roleIcon}`}>
+                          {profile.role === 'organiser' ? 'corporate_fare' : profile.role === 'coach' ? 'sports' : 'person'}
+                        </span>
+                        {profile.role || 'Athlete'}
+                      </p>
+                    </div>
+                    <button 
+                      className={styles.messageButton} 
+                      onClick={(e) => handleMessage(e, conn.recipient_id)}
+                      aria-label="Send message"
+                    >
+                      <span className="material-symbols-outlined">chat</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )
         ) : (
-          <div className={styles.networkGrid}>
-            {connections.map(conn => {
-              const profile = conn.recipient_profile;
-              if (!profile) return null;
-              
-              return (
+          /* Discover Tab */
+          discoverUsers.length === 0 ? (
+            <div className={styles.emptyState}>
+              <span className={`material-symbols-outlined ${styles.emptyIcon}`}>search_off</span>
+              <h2 className={styles.emptyTitle}>No Results Found</h2>
+              <p className={styles.emptyDesc}>
+                Try selecting a different sport filter.
+              </p>
+            </div>
+          ) : (
+            <div className={styles.networkGrid}>
+              {discoverUsers.map(profile => (
                 <div 
-                  key={conn.id} 
+                  key={profile.id} 
                   className={styles.networkCard}
-                  onClick={() => handleCardClick(profile.role, conn.recipient_id)}
+                  onClick={() => handleCardClick(profile.role, profile.id)}
                 >
                   <div className={styles.avatarWrapper}>
                     {profile.avatar_url ? (
@@ -119,16 +222,16 @@ export function NetworkScreen() {
                     </p>
                   </div>
                   <button 
-                    className={styles.messageButton} 
-                    onClick={(e) => handleMessage(e, conn.recipient_id)}
-                    aria-label="Send message"
+                    className={styles.followButton} 
+                    onClick={(e) => handleFollow(e, profile.id)}
+                    aria-label="Follow"
                   >
-                    <span className="material-symbols-outlined">chat</span>
+                    Follow
                   </button>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )
         )}
       </main>
     </div>

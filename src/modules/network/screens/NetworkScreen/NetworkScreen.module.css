@@ -207,3 +207,85 @@
   background-color: var(--color-primary-50);
   color: var(--color-primary-700);
 }
+
+/* Tabs */
+.tabContainer {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-600);
+  padding: var(--spacing-2) var(--spacing-4);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tabBtn.activeTab {
+  color: var(--color-primary-600);
+  border-bottom-color: var(--color-primary-600);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Filter */
+.filterContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  background: var(--color-neutral-0);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-neutral-200);
+  margin-bottom: var(--spacing-6);
+}
+
+.sportSelect {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-neutral-800);
+  outline: none;
+}
+
+.discoverBtn {
+  background-color: var(--color-primary-500);
+  color: var(--color-neutral-0);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-full);
+  border: none;
+  margin-top: var(--spacing-4);
+  cursor: pointer;
+}
+
+.followButton {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-600);
+  border: 1px solid var(--color-primary-200);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  width: auto;
+  padding: var(--spacing-2) var(--spacing-4);
+}
+
+.followButton:hover {
+  background-color: var(--color-primary-500);
+  color: var(--color-neutral-0);
+}

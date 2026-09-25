@@ -14,28 +14,68 @@ export function AthleteDashboardScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Optimistic local-only interaction — not persisted, resets on refresh. Real persistence is separate future work (post_likes/post_comments tables).
-  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
   const [sharedPostId, setSharedPostId] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState('');
+  const [postComments, setPostComments] = useState<Record<string, any[]>>({});
 
-  const toggleLike = (postId: string) => {
-    setLikedPosts(prev => {
-      const next = new Set(prev);
-      if (next.has(postId)) {
-        next.delete(postId);
-      } else {
-        next.add(postId);
-      }
-      return next;
-    });
+  const handleToggleLike = async (post: Post) => {
+    if (!user) return;
+    const currentlyLiked = !!post.isLiked;
+    // Optimistic UI
+    setPosts(prev => prev.map(p => 
+      p.id === post.id 
+        ? { ...p, isLiked: !currentlyLiked, likesCount: (p.likesCount || 0) + (currentlyLiked ? -1 : 1) }
+        : p
+    ));
+    try {
+      await postService.toggleLike(post.id, user.id, currentlyLiked);
+    } catch (err) {
+      console.error('Like failed', err);
+      // Revert on failure (simple page reload or just flip back)
+    }
+  };
+
+  const loadComments = async (postId: string) => {
+    try {
+      const comments = await postService.getComments(postId);
+      setPostComments(prev => ({ ...prev, [postId]: comments }));
+    } catch (err) {
+      console.error('Failed to load comments', err);
+    }
+  };
+
+  const handleToggleComments = (postId: string) => {
+    if (activeCommentPostId === postId) {
+      setActiveCommentPostId(null);
+    } else {
+      setActiveCommentPostId(postId);
+      loadComments(postId);
+    }
+  };
+
+  const submitComment = async (postId: string) => {
+    if (!user || !commentText.trim()) return;
+    try {
+      const newComment = await postService.addComment(postId, user.id, commentText);
+      setPostComments(prev => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), newComment]
+      }));
+      setPosts(prev => prev.map(p => 
+        p.id === postId ? { ...p, commentsCount: (p.commentsCount || 0) + 1 } : p
+      ));
+      setCommentText('');
+    } catch (err) {
+      console.error('Comment failed', err);
+    }
   };
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setIsLoading(true);
-        const data = await postService.getFeedPosts();
+        const data = await postService.getFeedPosts(user?.id);
         setPosts(data);
       } catch (err) {
         console.error('Failed to fetch feed:', err);
@@ -130,18 +170,17 @@ export function AthleteDashboardScreen() {
         ) : (
           <section className={styles.feedSection}>
             {posts.map((post, index) => {
-              const isLiked = likedPosts.has(post.id);
-              const isCommenting = activeCommentPostId === post.id;
-              const isSharing = sharedPostId === post.id;
-              
-              return (
               <article 
                 key={post.id} 
                 className={`${styles.feedCard} animate-fade-in`} 
                 style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
               >
                 <div className={styles.cardHeader}>
-                  <div className={styles.authorInfo}>
+                  <div 
+                    className={styles.authorInfo} 
+                    onClick={() => navigate(post.author?.role === 'organiser' ? ROUTES.ORGANIZATION_DETAIL.replace(':id', post.author_id) : ROUTES.ATHLETE_PUBLIC_PROFILE.replace(':id', post.author_id))}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className={styles.avatar}>
                       {post.author?.avatar_url ? (
                         <img src={post.author.avatar_url} alt="Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
@@ -173,23 +212,23 @@ export function AthleteDashboardScreen() {
                 <div className={styles.cardActions}>
                   <div className={styles.actionGroup}>
                     <button 
-                      className={`${styles.actionButton} animate-press ${isLiked ? styles.likeActive : ''}`} 
-                      onClick={() => toggleLike(post.id)}
+                      className={`${styles.actionButton} animate-press ${post.isLiked ? styles.likeActive : ''}`} 
+                      onClick={() => handleToggleLike(post)}
                     >
-                      <span className={`material-symbols-outlined ${isLiked ? 'animate-burst' : ''}`} style={isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                      <span className={`material-symbols-outlined ${post.isLiked ? 'animate-burst' : ''}`} style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>
                         favorite
                       </span>
-                      <span>{isLiked ? '1' : '0'}</span>
+                      <span>{post.likesCount || 0}</span>
                     </button>
                     <button 
                       className={`${styles.actionButton} animate-press`}
-                      onClick={() => setActiveCommentPostId(isCommenting ? null : post.id)}
+                      onClick={() => handleToggleComments(post.id)}
                     >
                       <span className="material-symbols-outlined">chat_bubble_outline</span>
-                      <span>0</span>
+                      <span>{post.commentsCount || 0}</span>
                     </button>
                     <button 
-                      className={`${styles.actionButton} animate-press ${isSharing ? 'animate-pulse' : ''}`}
+                      className={`${styles.actionButton} animate-press ${sharedPostId === post.id ? 'animate-pulse' : ''}`}
                       onClick={() => {
                         setSharedPostId(post.id);
                         setTimeout(() => setSharedPostId(null), 300);
@@ -203,10 +242,26 @@ export function AthleteDashboardScreen() {
                   </button>
                 </div>
                 
-                {isCommenting && (
+                {activeCommentPostId === post.id && (
                   <div className={`${styles.commentArea} animate-fade-in`}>
-                    <input type="text" placeholder="Add a comment..." className={styles.commentInput} />
-                    <button className={styles.commentSubmitBtn}>Post</button>
+                    <div className={styles.commentsList}>
+                      {(postComments[post.id] || []).map(c => (
+                        <div key={c.id} className={styles.commentItem}>
+                          <span className={styles.commentAuthor}>{c.author?.full_name}:</span> {c.content}
+                        </div>
+                      ))}
+                    </div>
+                    <div className={styles.commentInputRow}>
+                      <input 
+                        type="text" 
+                        placeholder="Add a comment..." 
+                        className={styles.commentInput} 
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && submitComment(post.id)}
+                      />
+                      <button className={styles.commentSubmitBtn} onClick={() => submitComment(post.id)}>Post</button>
+                    </div>
                   </div>
                 )}
               </article>

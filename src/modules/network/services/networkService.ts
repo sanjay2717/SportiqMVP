@@ -68,5 +68,27 @@ export const networkService = {
       console.error('Error unfollowing user:', error);
       throw error;
     }
+  },
+
+  async getDiscoverUsers(currentUserId: string, sportFilter?: string): Promise<any[]> {
+    let query = supabase
+      .from('profiles')
+      .select('id, full_name, avatar_url, role, selected_sports')
+      .neq('id', currentUserId);
+
+    if (sportFilter && sportFilter !== 'All') {
+      query = query.contains('selected_sports', [sportFilter.toLowerCase()]);
+    }
+
+    const { data, error } = await query.limit(50);
+    if (error) {
+      console.error('Error fetching discover users', error);
+      throw error;
+    }
+    
+    const conns = await this.getConnections(currentUserId);
+    const followingIds = new Set(conns.map(c => c.recipient_id));
+    
+    return (data || []).filter(p => !followingIds.has(p.id));
   }
 };
