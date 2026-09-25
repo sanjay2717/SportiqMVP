@@ -87,7 +87,7 @@ The operator must confirm which is authoritative before Social module work begin
 
 | Screen Name | Screen ID | Build Status | Notes |
 |---|---|---|---|
-| Home Feed | `6e6713d235b04d0eb2b65d50e0b87179` | ✅ Built — AthleteDashboardScreen.tsx | **ACTIVE.** Re-wired to query the real `posts` table for feed content. Like/Comment/Share are explicitly non-functional. |
+| Home Feed | `6e6713d235b04d0eb2b65d50e0b87179` | ✅ Built — AthleteDashboardScreen.tsx | **ACTIVE.** Re-wired to query the real `posts` table for feed content (cross-user posts joined with profiles). Includes functional placeholder for Announcements (no DB backing yet). Like/Comment/Share are explicitly non-functional. |
 | Post Detail (v1) | `bc326d7ec976480cb73568c23fcc9bac` | Not built | 780x2682 — see ambiguity flag above |
 | Post Detail (v2) | `e91d12a23c784df3973fffe4818d7b34` | Not built | 780x2454 — see ambiguity flag above |
 | Empty Feed | `fdaacdf294d243d29a940b171a3fa037` | ✅ Built | Handled intrinsically by `AthleteDashboardScreen` when the `posts` query returns empty. |

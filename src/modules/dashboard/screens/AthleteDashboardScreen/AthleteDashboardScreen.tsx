@@ -91,6 +91,28 @@ export function AthleteDashboardScreen() {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
+        {/* Announcements Placeholder */}
+        <section className={styles.feedSection} style={{ marginBottom: 'var(--spacing-4)' }}>
+          <article className={styles.feedCard}>
+            <div className={styles.cardHeader}>
+              <div className={styles.authorInfo}>
+                <div className={styles.avatar}>
+                  <span className="material-symbols-outlined">campaign</span>
+                </div>
+                <div className={styles.authorMeta}>
+                  <h3 className={styles.authorName}>Announcements</h3>
+                  <p className={styles.authorSubtitle}>Coming soon to this feed</p>
+                </div>
+              </div>
+            </div>
+            <div className={styles.cardContent}>
+              <p className={styles.postText}>
+                Official updates, schedules, and urgent notices from your coaches and organizers will appear here once connected.
+              </p>
+            </div>
+          </article>
+        </section>
+
         {posts.length === 0 ? (
           <div className={styles.emptyState}>
             <div className={styles.emptyContent}>
