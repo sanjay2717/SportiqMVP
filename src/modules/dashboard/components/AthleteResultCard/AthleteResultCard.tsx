@@ -47,7 +47,11 @@ export function AthleteResultCard({ athlete, onViewProfile }: AthleteResultCardP
         </div>
         
         <div className={styles.avatar}>
-          {initials}
+          {athlete.avatar_url ? (
+            <img src={athlete.avatar_url} alt={athlete.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{initials}</span>
+          )}
         </div>
         
         <div className={styles.info}>

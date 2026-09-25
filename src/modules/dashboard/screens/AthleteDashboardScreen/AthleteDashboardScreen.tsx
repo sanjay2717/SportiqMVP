@@ -18,6 +18,20 @@ export function AthleteDashboardScreen() {
   const [sharedPostId, setSharedPostId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState('');
   const [postComments, setPostComments] = useState<Record<string, any[]>>({});
+  
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState('');
+
+  const handleEditSubmit = async (postId: string) => {
+    if (!user || !editContent.trim()) return;
+    try {
+      await postService.updatePost(postId, user.id, { content: editContent });
+      setPosts(prev => prev.map(p => p.id === postId ? { ...p, content: editContent } : p));
+      setEditingPostId(null);
+    } catch (err) {
+      console.error('Failed to update post', err);
+    }
+  };
 
   const handleToggleLike = async (post: Post) => {
     if (!user) return;
@@ -199,10 +213,37 @@ export function AthleteDashboardScreen() {
                       <span className="material-symbols-outlined">sports_score</span> {post.sport}
                     </span>
                   )}
+                  {post.author_id === user?.id && (
+                    <button 
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-neutral-500)', marginLeft: 'auto' }}
+                      onClick={() => {
+                        setEditingPostId(post.id);
+                        setEditContent(post.content);
+                      }}
+                      title="Edit Post"
+                    >
+                      <span className="material-symbols-outlined">edit</span>
+                    </button>
+                  )}
                 </div>
 
                 <div className={styles.cardContent}>
-                  <p className={styles.postText}>{post.content}</p>
+                  {editingPostId === post.id ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '8px' }}>
+                      <textarea 
+                        value={editContent} 
+                        onChange={e => setEditContent(e.target.value)} 
+                        style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid var(--color-neutral-300)', fontFamily: 'var(--font-family)' }}
+                        rows={3}
+                      />
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        <button onClick={() => setEditingPostId(null)} style={{ padding: '6px 12px', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
+                        <button onClick={() => handleEditSubmit(post.id)} style={{ padding: '6px 12px', background: 'var(--color-primary-500)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Save</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className={styles.postText}>{post.content}</p>
+                  )}
                   {post.image_url && (
                     <div className={styles.postImageContainer}>
                       <img src={post.image_url} alt="Post Attachment" className={styles.postImage} />

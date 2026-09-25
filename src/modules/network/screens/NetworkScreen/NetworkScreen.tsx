@@ -13,6 +13,7 @@ export function NetworkScreen() {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [discoverUsers, setDiscoverUsers] = useState<any[]>([]);
   const [sportFilter, setSportFilter] = useState('All');
+  const [roleFilter, setRoleFilter] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +27,7 @@ export function NetworkScreen() {
           const data = await networkService.getConnections(user.id);
           setConnections(data);
         } else {
-          const data = await networkService.getDiscoverUsers(user.id, sportFilter);
+          const data = await networkService.getDiscoverUsers(user.id, sportFilter, roleFilter);
           setDiscoverUsers(data);
         }
       } catch (err: any) {
@@ -36,7 +37,7 @@ export function NetworkScreen() {
       }
     }
     loadData();
-  }, [user, activeTab, sportFilter]);
+  }, [user, activeTab, sportFilter, roleFilter]);
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
@@ -121,6 +122,21 @@ export function NetworkScreen() {
               <option value="Swimming">Swimming</option>
               <option value="Basketball">Basketball</option>
               <option value="Tennis">Tennis</option>
+            </select>
+            
+            <div style={{ width: '1px', height: '24px', backgroundColor: 'var(--color-neutral-200)', margin: '0 8px' }}></div>
+            
+            <span className="material-symbols-outlined" style={{color: 'var(--color-neutral-500)'}}>badge</span>
+            <select 
+              className={styles.sportSelect}
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+            >
+              <option value="All">All Roles</option>
+              <option value="athlete">Athlete</option>
+              <option value="coach">Coach</option>
+              <option value="organiser">Organiser</option>
+              <option value="government">Government Official</option>
             </select>
           </div>
         )}

@@ -70,7 +70,7 @@ export const networkService = {
     }
   },
 
-  async getDiscoverUsers(currentUserId: string, sportFilter?: string): Promise<any[]> {
+  async getDiscoverUsers(currentUserId: string, sportFilter?: string, roleFilter?: string): Promise<any[]> {
     let query = supabase
       .from('profiles')
       .select('id, full_name, avatar_url, role, selected_sports')
@@ -78,6 +78,10 @@ export const networkService = {
 
     if (sportFilter && sportFilter !== 'All') {
       query = query.contains('selected_sports', [sportFilter.toLowerCase()]);
+    }
+    
+    if (roleFilter && roleFilter !== 'All') {
+      query = query.eq('role', roleFilter.toLowerCase());
     }
 
     const { data, error } = await query.limit(50);

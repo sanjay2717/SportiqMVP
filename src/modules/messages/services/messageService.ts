@@ -25,6 +25,28 @@ export const messageService = {
   },
 
   /**
+   * Fetch single conversation with profiles
+   */
+  async getConversation(conversationId: string): Promise<ConversationWithProfiles> {
+    const { data, error } = await supabase
+      .from('conversations')
+      .select(`
+        *,
+        participant_one_profile:profiles!participant_one(id, full_name, avatar_url, role),
+        participant_two_profile:profiles!participant_two(id, full_name, avatar_url, role)
+      `)
+      .eq('id', conversationId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching conversation:', error);
+      throw error;
+    }
+
+    return data as any as ConversationWithProfiles;
+  },
+
+  /**
    * Fetch messages for a specific conversation.
    */
   async getMessages(conversationId: string): Promise<Message[]> {

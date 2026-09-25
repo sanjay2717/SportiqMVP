@@ -43,6 +43,32 @@ export const postService = {
     }));
   },
 
+  async getPostsByAuthor(authorId: string, currentUserId?: string): Promise<Post[]> {
+    const { data, error } = await supabase
+      .from('posts')
+      .select(`
+        *,
+        author:profiles!author_id (full_name, avatar_url, role),
+        likes:post_likes(user_id),
+        comments:post_comments(id)
+      `)
+      .eq('author_id', authorId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching author posts:', error);
+      throw error;
+    }
+
+    return (data || []).map((post: any) => ({
+      ...post,
+      likesCount: post.likes?.length || 0,
+      commentsCount: post.comments?.length || 0,
+      isLiked: currentUserId ? post.likes?.some((l: any) => l.user_id === currentUserId) : false,
+      author: post.author
+    }));
+  },
+
   async createPost(payload: { content: string; image_url?: string; sport?: string }): Promise<Post> {
     const { data, error } = await supabase
       .from('posts')
@@ -60,6 +86,19 @@ export const postService = {
     }
 
     return data as any;
+  },
+
+  async updatePost(postId: string, userId: string, payload: { content: string }): Promise<void> {
+    const { error } = await supabase
+      .from('posts')
+      .update({ content: payload.content })
+      .eq('id', postId)
+      .eq('author_id', userId);
+
+    if (error) {
+      console.error('Error updating post:', error);
+      throw error;
+    }
   },
 
   async uploadPostImage(userId: string, file: File): Promise<string> {

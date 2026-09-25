@@ -7,11 +7,14 @@ import { messageService } from '../../../messages/services/messageService';
 import { ROUTES } from '../../../../routing/routes';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { networkService } from '../../../network/services/networkService';
+import { getAchievements, Achievement } from '../../services/achievementService';
+import { postService, Post } from '../../../dashboard/services/postService';
 import styles from './AthletePublicProfileScreen.module.css';
 
 interface AthleteProfile {
   id: string;
   full_name: string;
+  avatar_url: string | null;
   role: string | null;
   selected_sports: string[];
   age: number | null;
@@ -45,6 +48,63 @@ export function AthletePublicProfileScreen() {
   const [activeTab, setActiveTab] = useState('Posts');
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  
+  // Interactions state for posts
+  const [postComments, setPostComments] = useState<Record<string, any[]>>({});
+  const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState('');
+
+  const loadComments = async (postId: string) => {
+    try {
+      const comments = await postService.getComments(postId);
+      setPostComments(prev => ({ ...prev, [postId]: comments }));
+    } catch (err) {
+      console.error('Failed to load comments', err);
+    }
+  };
+
+  const handleToggleComments = (postId: string) => {
+    if (activeCommentPostId === postId) {
+      setActiveCommentPostId(null);
+    } else {
+      setActiveCommentPostId(postId);
+      loadComments(postId);
+    }
+  };
+
+  const submitComment = async (postId: string) => {
+    if (!user || !commentText.trim()) return;
+    try {
+      const newComment = await postService.addComment(postId, user.id, commentText);
+      setPostComments(prev => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), newComment]
+      }));
+      setPosts(prev => prev.map(p => 
+        p.id === postId ? { ...p, commentsCount: (p.commentsCount || 0) + 1 } : p
+      ));
+      setCommentText('');
+    } catch (err) {
+      console.error('Comment failed', err);
+    }
+  };
+
+  const handleToggleLike = async (post: Post) => {
+    if (!user) return;
+    const currentlyLiked = !!post.isLiked;
+    setPosts(prev => prev.map(p => 
+      p.id === post.id 
+        ? { ...p, isLiked: !currentlyLiked, likesCount: (p.likesCount || 0) + (currentlyLiked ? -1 : 1) }
+        : p
+    ));
+    try {
+      await postService.toggleLike(post.id, user.id, currentlyLiked);
+    } catch (err) {
+      console.error('Like failed', err);
+    }
+  };
 
   useEffect(() => {
     async function fetchProfile() {
@@ -54,7 +114,7 @@ export function AthletePublicProfileScreen() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, full_name, role, selected_sports, age, location, primary_position, bio, height_cm, weight_kg, dominant_foot')
+          .select('id, full_name, avatar_url, role, selected_sports, age, location, primary_position, bio, height_cm, weight_kg, dominant_foot')
           .eq('id', id)
           .single();
 
@@ -66,6 +126,17 @@ export function AthletePublicProfileScreen() {
           }
         } else {
           setProfile(data as AthleteProfile);
+          
+          // Load related data
+          try {
+            const userAchievements = await getAchievements(id);
+            setAchievements(userAchievements);
+            
+            const userPosts = await postService.getPostsByAuthor(id, user?.id);
+            setPosts(userPosts);
+          } catch (e) {
+            console.error('Failed loading achievements/posts', e);
+          }
         }
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -229,7 +300,11 @@ export function AthletePublicProfileScreen() {
           
           <div className={styles.profileInfoOverlay}>
             <div className={styles.avatarWrapper}>
-              <div className={styles.avatar}>{initials}</div>
+              {profile.avatar_url ? (
+                <img src={profile.avatar_url} alt="Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+              ) : (
+                <div className={styles.avatar}>{initials}</div>
+              )}
             </div>
             
             <div className={styles.nameRow}>
@@ -370,14 +445,34 @@ export function AthletePublicProfileScreen() {
             <section className={styles.section} aria-labelledby="achievements-title">
               <div className={styles.sectionHeader}>
                 <h2 id="achievements-title" className={styles.sectionTitle}>Key Achievements</h2>
-                <button className={styles.seeAllLink} style={{ background: 'none', border: 'none' }}>See All</button>
+                {achievements.length > 0 && <button className={styles.seeAllLink} style={{ background: 'none', border: 'none' }}>See All</button>}
               </div>
               
-              <div className={styles.emptyState}>
-                <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>emoji_events</span>
-                <h3 className={styles.emptyStateTitle}>No Achievements Yet</h3>
-                <p className={styles.emptyStateDesc}>This athlete hasn't published any achievements to their profile.</p>
-              </div>
+              {achievements.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>emoji_events</span>
+                  <h3 className={styles.emptyStateTitle}>No Achievements Yet</h3>
+                  <p className={styles.emptyStateDesc}>This athlete hasn't published any achievements to their profile.</p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+                  {achievements.slice(0, 3).map(ach => (
+                    <div key={ach.id} className={styles.card} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', padding: 'var(--spacing-3)' }}>
+                      {ach.image_url ? (
+                         <img src={ach.image_url} alt={ach.title} style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover' }} />
+                      ) : (
+                         <span className={`material-symbols-outlined`} style={{ fontSize: 40, color: 'var(--color-primary-500)' }}>{ach.icon_name || 'emoji_events'}</span>
+                      )}
+                      <div>
+                        <h4 style={{ margin: 0, fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-base)', color: 'var(--color-text-primary)' }}>{ach.title}</h4>
+                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--color-neutral-600)', fontFamily: 'var(--font-family-body-sm)' }}>
+                          {ach.issuer || 'Unknown Issuer'} • {ach.start_date ? new Date(ach.start_date).getFullYear() : 'No date'}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
             
             {/* Activity Feed */}
@@ -403,11 +498,94 @@ export function AthletePublicProfileScreen() {
                 </button>
               </div>
               
-              <div className={styles.emptyState}>
-                <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>article</span>
-                <h3 className={styles.emptyStateTitle}>No Recent Activity</h3>
-                <p className={styles.emptyStateDesc}>There are no {activeTab.toLowerCase()} to display at this time.</p>
-              </div>
+              {activeTab === 'Posts' && posts.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>article</span>
+                  <h3 className={styles.emptyStateTitle}>No Recent Posts</h3>
+                  <p className={styles.emptyStateDesc}>This athlete has not posted anything yet.</p>
+                </div>
+              ) : activeTab === 'Posts' ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+                  {posts.map((post) => (
+                    <article key={post.id} className={styles.card} style={{ padding: 'var(--spacing-4)' }}>
+                      <div style={{ display: 'flex', gap: 'var(--spacing-3)', marginBottom: 'var(--spacing-3)' }}>
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', backgroundColor: 'var(--color-primary-100)' }}>
+                           {post.author?.avatar_url ? (
+                             <img src={post.author.avatar_url} alt="Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                           ) : (
+                             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-700)', fontWeight: 'bold' }}>{initials}</div>
+                           )}
+                        </div>
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 'bold', color: 'var(--color-neutral-900)' }}>{post.author?.full_name || 'Anonymous'}</h4>
+                          <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'var(--color-neutral-500)' }}>
+                            {new Date(post.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <p style={{ margin: '0 0 var(--spacing-3) 0', fontSize: '14px', lineHeight: 1.5, color: 'var(--color-neutral-800)' }}>
+                        {post.content}
+                      </p>
+                      
+                      {post.image_url && (
+                        <div style={{ margin: '0 -var(--spacing-4) var(--spacing-3) -var(--spacing-4)' }}>
+                           <img src={post.image_url} alt="Post content" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                      
+                      <div style={{ display: 'flex', borderTop: '1px solid var(--color-neutral-100)', paddingTop: 'var(--spacing-3)', gap: 'var(--spacing-4)' }}>
+                        <button 
+                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: post.isLiked ? 'var(--color-danger-500)' : 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
+                          onClick={() => handleToggleLike(post)}
+                        >
+                          <span className="material-symbols-outlined" style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>favorite</span>
+                          <span style={{ fontSize: '14px' }}>{post.likesCount || 0}</span>
+                        </button>
+                        <button 
+                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
+                          onClick={() => handleToggleComments(post.id)}
+                        >
+                          <span className="material-symbols-outlined">chat_bubble_outline</span>
+                          <span style={{ fontSize: '14px' }}>{post.commentsCount || 0}</span>
+                        </button>
+                      </div>
+
+                      {activeCommentPostId === post.id && (
+                        <div style={{ marginTop: 'var(--spacing-3)', padding: 'var(--spacing-3)', backgroundColor: 'var(--color-neutral-50)', borderRadius: '8px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '150px', overflowY: 'auto', marginBottom: '8px' }}>
+                            {(postComments[post.id] || []).map(c => (
+                              <div key={c.id} style={{ fontSize: '13px', color: 'var(--color-neutral-800)' }}>
+                                <span style={{ fontWeight: 'bold', color: 'var(--color-neutral-900)' }}>{c.author?.full_name}:</span> {c.content}
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <input 
+                              type="text" 
+                              placeholder="Add a comment..." 
+                              style={{ flex: 1, padding: '6px 12px', border: '1px solid var(--color-neutral-200)', borderRadius: '20px', fontSize: '13px', outline: 'none' }}
+                              value={commentText}
+                              onChange={(e) => setCommentText(e.target.value)}
+                              onKeyDown={(e) => e.key === 'Enter' && submitComment(post.id)}
+                            />
+                            <button 
+                              style={{ background: 'none', border: 'none', color: 'var(--color-primary-600)', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }} 
+                              onClick={() => submitComment(post.id)}
+                            >Post</button>
+                          </div>
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.emptyState}>
+                  <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>article</span>
+                  <h3 className={styles.emptyStateTitle}>No Recent Activity</h3>
+                  <p className={styles.emptyStateDesc}>There are no {activeTab.toLowerCase()} to display at this time.</p>
+                </div>
+              )}
             </section>
 
           </div>

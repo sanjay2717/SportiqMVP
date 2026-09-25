@@ -8,6 +8,7 @@ export interface AthleteSearchResult {
   selected_sports: string[];
   primary_position: string | null;
   age: number | null;
+  avatar_url?: string | null;
 }
 
 export interface SearchFilters {
@@ -18,7 +19,7 @@ export interface SearchFilters {
 export async function searchAthletes(filters: SearchFilters): Promise<AthleteSearchResult[]> {
   let query = supabase
     .from('profiles')
-    .select('id, full_name, location, selected_sports, primary_position, age')
+    .select('id, full_name, location, selected_sports, primary_position, age, avatar_url')
     .eq('role', UserRole.Athlete)
     .eq('onboarding_complete', true);
 

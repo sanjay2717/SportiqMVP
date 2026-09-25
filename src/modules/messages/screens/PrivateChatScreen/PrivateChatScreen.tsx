@@ -10,8 +10,10 @@ export function PrivateChatScreen() {
   const { conversationId } = useParams<{ conversationId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [conversation, setConversation] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,6 +24,9 @@ export function PrivateChatScreen() {
     async function loadData() {
       if (!conversationId) return;
       try {
+        const conv = await messageService.getConversation(conversationId);
+        setConversation(conv);
+        
         const msgs = await messageService.getMessages(conversationId);
         setMessages(msgs);
       } catch (err) {
@@ -78,6 +83,26 @@ export function PrivateChatScreen() {
     return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   };
 
+  const getRecipient = () => {
+    if (!conversation || !user) return null;
+    return conversation.participant_one === user.id 
+      ? conversation.participant_two_profile 
+      : conversation.participant_one_profile;
+  };
+
+  const recipient = getRecipient();
+
+  const getInitials = (name?: string) => {
+    if (!name) return 'U';
+    const parts = name.split(' ').filter(Boolean);
+    if (parts.length > 1) {
+      const first = parts[0]?.charAt(0) || '';
+      const second = parts[1]?.charAt(0) || '';
+      if (first && second) return (first + second).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -86,9 +111,22 @@ export function PrivateChatScreen() {
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <div className={styles.headerInfo}>
-          <h1 className={styles.title}>Private Chat</h1>
+          {recipient && (
+            <div className={styles.headerAvatar}>
+              {recipient.avatar_url ? (
+                <img src={recipient.avatar_url} alt={recipient.full_name} className={styles.avatarImg} />
+              ) : (
+                <div className={styles.avatarInitials}>{getInitials(recipient.full_name)}</div>
+              )}
+            </div>
+          )}
+          <h1 className={styles.title}>{recipient ? recipient.full_name : 'Private Chat'}</h1>
         </div>
-        <div className={styles.spacer} />
+        <div className={styles.spacer}>
+          <button className={styles.iconButton}>
+            <span className="material-symbols-outlined">more_vert</span>
+          </button>
+        </div>
       </header>
 
       {/* Chat Area */}
@@ -113,15 +151,48 @@ export function PrivateChatScreen() {
           <div className={styles.messageList}>
             {messages.map((msg) => {
               const isOwn = msg.sender_id === user?.id;
+              const senderProfile = isOwn 
+                ? (conversation?.participant_one === user?.id ? conversation?.participant_one_profile : conversation?.participant_two_profile)
+                : recipient;
+                
               return (
                 <div
                   key={msg.id}
-                  className={`${styles.messageWrapper} ${isOwn ? styles.ownMessage : styles.otherMessage}`}
+                  className={`${styles.messageRow} ${isOwn ? styles.rowOwn : styles.rowOther}`}
                 >
-                  <div className={styles.messageBubble}>
-                    <p className={styles.messageContent}>{msg.content}</p>
+                  {!isOwn && senderProfile && (
+                    <div className={styles.msgAvatar}>
+                      {senderProfile.avatar_url ? (
+                        <img src={senderProfile.avatar_url} alt="avatar" />
+                      ) : (
+                        <div className={styles.msgInitials}>{getInitials(senderProfile.full_name)}</div>
+                      )}
+                    </div>
+                  )}
+                  
+                  <div className={`${styles.messageWrapper} ${isOwn ? styles.ownMessage : styles.otherMessage}`}>
+                    <div className={styles.messageBubble}>
+                      <p className={styles.messageContent}>{msg.content}</p>
+                    </div>
+                    <div className={styles.messageMeta}>
+                      <span className={styles.messageTime}>{formatTime(msg.created_at)}</span>
+                      {!isOwn && (
+                        <button className={styles.reactionBtn} title="Add Reaction">
+                          <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>add_reaction</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <span className={styles.messageTime}>{formatTime(msg.created_at)}</span>
+                  
+                  {isOwn && senderProfile && (
+                    <div className={styles.msgAvatar}>
+                      {senderProfile.avatar_url ? (
+                        <img src={senderProfile.avatar_url} alt="avatar" />
+                      ) : (
+                        <div className={styles.msgInitials}>{getInitials(senderProfile.full_name)}</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -133,6 +204,9 @@ export function PrivateChatScreen() {
       {/* Input Area */}
       {!error && (
         <footer className={styles.inputArea}>
+          <button className={styles.attachButton} title="Attach file">
+            <span className="material-symbols-outlined">attach_file</span>
+          </button>
           <div className={styles.inputContainer}>
             <textarea
               className={styles.inputField}
@@ -143,13 +217,23 @@ export function PrivateChatScreen() {
               rows={1}
             />
           </div>
-          <button
-            className={styles.sendButton}
-            onClick={handleSend}
-            disabled={!inputText.trim() || isSending}
-          >
-            <span className="material-symbols-outlined">send</span>
-          </button>
+          {inputText.trim() ? (
+            <button
+              className={styles.sendButton}
+              onClick={handleSend}
+              disabled={isSending}
+            >
+              <span className="material-symbols-outlined">send</span>
+            </button>
+          ) : (
+            <button
+              className={`${styles.micButton} ${isRecording ? styles.recording : ''}`}
+              onClick={() => setIsRecording(!isRecording)}
+              title="Record Audio"
+            >
+              <span className="material-symbols-outlined">mic</span>
+            </button>
+          )}
         </footer>
       )}
     </div>
