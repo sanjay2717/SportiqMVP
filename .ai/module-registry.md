@@ -224,6 +224,7 @@ The `onKeyDown` numeric filter applied to `PersonalInformationScreen` (onboardin
   - *Open sub-item:* `vault.secrets` / `vault.decrypted_secrets` grants to `service_role` could not be traced to a specific statement (pg_stat_statements retention limit) — assessed as likely a Supabase Vault extension default, not flagged as a risk, but not conclusively proven benign.
 
 - **avatars storage bucket:** `file_size_limit` (5MB) and `allowed_mime_types` (image/jpeg, image/png, image/webp) set 2026-09-22. The bucket's broad SELECT/listing policy on `storage.objects` remains under review — [update once resolved].
+- **storage.objects SELECT dependency:** `storage.objects` requires an authenticated SELECT policy on avatars/posts/achievements buckets for `upsert:true` uploads to work correctly — the client's upload call internally checks for an existing file before overwriting, which requires read access. Removing this policy (even when justified by "clients can list all files" warnings) will break first-time and repeat uploads with a misleading RLS INSERT-looking error. If listing enumeration is a concern, scope the SELECT policy to the user's own folder path, do not remove it entirely.
 
 ## Deferred Module Design Assets
 
