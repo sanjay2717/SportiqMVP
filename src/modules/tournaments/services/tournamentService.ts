@@ -62,3 +62,28 @@ export async function getTournaments(): Promise<Tournament[]> {
     organiser_avatar: t.profiles?.avatar_url || null,
   })) as Tournament[];
 }
+
+export async function getTournamentById(id: string): Promise<Tournament> {
+  const { data, error } = await supabase
+    .from('tournaments')
+    .select(`
+      *,
+      profiles:organiser_id (
+        full_name,
+        avatar_url
+      )
+    `)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching tournament by id:', error);
+    throw error;
+  }
+
+  return {
+    ...data,
+    organiser_name: data.profiles?.full_name || 'Unknown',
+    organiser_avatar: data.profiles?.avatar_url || null,
+  } as Tournament;
+}

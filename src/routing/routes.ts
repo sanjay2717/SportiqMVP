@@ -46,6 +46,7 @@ export const ROUTES = {
   ACHIEVEMENTS_EDIT: '/achievements/:id/edit',
   SCHEDULE: '/schedule',
   TOURNAMENTS: '/tournaments',
+  TOURNAMENT_DETAILS: '/tournaments/:id',
   ANALYTICS: '/analytics',
   POSTS: '/posts',
   NETWORK: '/network',

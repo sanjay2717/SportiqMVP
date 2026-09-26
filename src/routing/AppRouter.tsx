@@ -33,6 +33,7 @@ import {
 } from '../modules/events/screens';
 
 import { TournamentsListScreen } from '../modules/tournaments/screens/TournamentsListScreen/TournamentsListScreen';
+import { TournamentDetailScreen } from '../modules/tournaments/screens/TournamentDetailScreen/TournamentDetailScreen';
 import { CreateTournamentScreen } from '../modules/dashboard/screens/CreateTournamentScreen/CreateTournamentScreen';
 
 import { NotificationsScreen } from '../modules/notifications/screens';
@@ -311,6 +312,7 @@ export function AppRouter() {
         
         <Route path={ROUTES.SCHEDULE} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Schedule" description="// TODO: replace with real Schedule screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.TOURNAMENTS} element={<ProtectedRoute><AppLayout><TournamentsListScreen /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.TOURNAMENT_DETAILS} element={<ProtectedRoute><AppLayout><TournamentDetailScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.ANALYTICS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Analytics screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.POSTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Posts" description="// TODO: replace with real Posts screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.NETWORK} element={<ProtectedRoute><AppLayout><NetworkScreen /></AppLayout></ProtectedRoute>} />

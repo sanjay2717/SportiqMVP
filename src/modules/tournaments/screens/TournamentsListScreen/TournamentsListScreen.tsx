@@ -103,7 +103,12 @@ export function TournamentsListScreen() {
         ) : (
           <div className={`${styles.grid} animate-fade-in`}>
             {tournaments.map(tournament => (
-              <div key={tournament.id} className={styles.card}>
+              <div 
+                key={tournament.id} 
+                className={styles.card} 
+                onClick={() => navigate(ROUTES.TOURNAMENT_DETAILS.replace(':id', tournament.id))}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className={styles.cardBody}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{tournament.title}</h2>

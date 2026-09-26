@@ -1,0 +1,265 @@
+.container {
+  padding: var(--spacing-4);
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  background: none;
+  border: none;
+  color: var(--color-neutral-600);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  padding: var(--spacing-2) 0;
+  margin-bottom: var(--spacing-4);
+  transition: color var(--duration-fast) var(--easing-default);
+}
+
+.backButton:hover {
+  color: var(--color-neutral-900);
+}
+
+.heroSection {
+  background: linear-gradient(to right, var(--color-primary-600), var(--color-primary-400));
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-8);
+  color: var(--color-neutral-0);
+  margin-bottom: var(--spacing-6);
+  position: relative;
+  overflow: hidden;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--spacing-4) 0;
+  line-height: var(--line-height-tight);
+}
+
+.sportBadge {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+@media (min-width: 768px) {
+  .contentGrid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.section {
+  background-color: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+.sectionTitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-4) 0;
+}
+
+.description {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-neutral-700);
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.detailsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.detailItem {
+  display: flex;
+  gap: var(--spacing-4);
+  align-items: flex-start;
+}
+
+.detailItem > .material-symbols-outlined {
+  color: var(--color-primary-500);
+  margin-top: 2px;
+}
+
+.detailItem div {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailItem strong {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  margin-bottom: var(--spacing-1);
+}
+
+.detailItem span {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-neutral-900);
+}
+
+.organiserAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.actionCard {
+  background-color: var(--color-neutral-0);
+  border: 1px solid var(--color-primary-200);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
+  text-align: center;
+  position: sticky;
+  top: var(--spacing-6);
+}
+
+.actionTitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-4) 0;
+}
+
+.registerButton {
+  width: 100%;
+  background-color: var(--color-primary-500);
+  color: var(--color-neutral-0);
+  border: none;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--easing-default), background-color var(--duration-fast) var(--easing-default);
+}
+
+.registerButton:hover {
+  background-color: var(--color-primary-600);
+}
+
+.registerButton:active {
+  transform: scale(0.98);
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--spacing-4);
+  animation: fadeIn var(--duration-normal) var(--easing-default);
+}
+
+.modalContent {
+  background-color: var(--color-neutral-0);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-8);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp var(--duration-normal) var(--easing-default);
+}
+
+.modalIcon {
+  margin-bottom: var(--spacing-4);
+}
+
+.modalTitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-900);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.modalText {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-neutral-600);
+  margin: 0 0 var(--spacing-6) 0;
+  line-height: var(--line-height-normal);
+}
+
+.modalCloseButton {
+  width: 100%;
+  background-color: var(--color-primary-500);
+  color: var(--color-neutral-0);
+  border: none;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--easing-default);
+}
+
+.modalCloseButton:hover {
+  background-color: var(--color-primary-600);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--spacing-16) 0;
+}
+.emptyStateText {
+  font-family: var(--font-family);
+  color: var(--color-neutral-600);
+  margin: var(--spacing-4) 0;
+}
