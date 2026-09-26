@@ -2,22 +2,29 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getUpcomingEvents, DashboardEvent } from '../../../dashboard/services/organiserService';
+import { getNotifications, markAsRead, markAllAsRead, Notification } from '../../services/notificationService';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
+import { ROUTES } from '../../../../routing/routes';
 import styles from './NotificationsScreen.module.css';
 
 export function NotificationsScreen() {
   const navigate = useNavigate();
   const [events, setEvents] = useState<DashboardEvent[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await getUpcomingEvents();
-        setEvents(data);
+        const [eventsData, notificationsData] = await Promise.all([
+          getUpcomingEvents(),
+          getNotifications()
+        ]);
+        setEvents(eventsData);
+        setNotifications(notificationsData);
       } catch (err) {
-        console.error('Error fetching events for notifications:', err);
+        console.error('Error fetching notifications:', err);
         setError('Failed to load notifications.');
       } finally {
         setIsLoading(false);
@@ -25,6 +32,33 @@ export function NotificationsScreen() {
     }
     fetchData();
   }, []);
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllAsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    } catch (err) {
+      console.error('Failed to mark all as read:', err);
+    }
+  };
+
+  const handleNotificationClick = async (notification: Notification) => {
+    if (!notification.read) {
+      try {
+        await markAsRead(notification.id);
+        setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
+      } catch (err) {
+        console.error('Failed to mark as read:', err);
+      }
+    }
+    
+    // NAMED SCOPE REDUCTION: Tap navigation without inline actions.
+    if (notification.type === 'follow' && notification.actor_id) {
+      navigate(`${ROUTES.PROFILE}/${notification.actor_id}`);
+    } else if (notification.post_id) {
+      navigate(`${ROUTES.HOME}#post-${notification.post_id}`);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -92,7 +126,6 @@ export function NotificationsScreen() {
     );
   }
 
-  // Helper to format date relatively or short style for mock/real data
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -101,6 +134,27 @@ export function NotificationsScreen() {
       return 'Soon';
     }
   };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'like': return 'favorite';
+      case 'comment': return 'chat_bubble';
+      case 'follow': return 'person_add';
+      default: return 'notifications';
+    }
+  };
+
+  const getNotificationText = (notification: Notification) => {
+    const actorName = notification.actor?.name || 'Someone';
+    switch (notification.type) {
+      case 'like': return <><span className={styles.messageBold}>{actorName}</span> liked your post.</>;
+      case 'comment': return <><span className={styles.messageBold}>{actorName}</span> commented on your post.</>;
+      case 'follow': return <><span className={styles.messageBold}>{actorName}</span> started following you.</>;
+      default: return <><span className={styles.messageBold}>{actorName}</span> interacted with you.</>;
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="animate-fade-in">
@@ -148,39 +202,64 @@ export function NotificationsScreen() {
             </div>
           </section>
 
-          {/* Section: Achievements */}
-          <section className={styles.section} aria-labelledby="achievements-title">
-            <h2 id="achievements-title" className={styles.sectionTitle}>Achievements</h2>
-            <div className={styles.sectionCard}>
-              <div className={styles.emptyState}>
-                <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>emoji_events</span>
-                <h3 className={styles.emptyStateTitle}>No New Achievements</h3>
-                <p className={styles.emptyStateDesc}>Keep training to unlock milestones and badges!</p>
-              </div>
+          {/* Section: Unified Recent Activity */}
+          <section className={styles.section} aria-labelledby="activity-title">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '16px' }}>
+              <h2 id="activity-title" className={styles.sectionTitle}>Recent Activity</h2>
+              {unreadCount > 0 && (
+                <button 
+                  onClick={handleMarkAllRead} 
+                  style={{ background: 'none', border: 'none', color: 'var(--color-primary-500)', cursor: 'pointer', fontFamily: 'var(--font-family)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}
+                >
+                  Mark all as read
+                </button>
+              )}
             </div>
-          </section>
-
-          {/* Section: Social Activity */}
-          <section className={styles.section} aria-labelledby="social-title">
-            <h2 id="social-title" className={styles.sectionTitle}>Social Activity</h2>
+            
             <div className={styles.sectionCard}>
-              <div className={styles.emptyState}>
-                <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>group</span>
-                <h3 className={styles.emptyStateTitle}>No Recent Interactions</h3>
-                <p className={styles.emptyStateDesc}>You don't have any new followers, likes, or comments.</p>
-              </div>
-            </div>
-          </section>
-
-          {/* Section: System Alerts */}
-          <section className={styles.section} aria-labelledby="system-title">
-            <h2 id="system-title" className={styles.sectionTitle}>System Alerts</h2>
-            <div className={styles.sectionCard}>
-              <div className={styles.emptyState}>
-                <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>notifications</span>
-                <h3 className={styles.emptyStateTitle}>All Caught Up</h3>
-                <p className={styles.emptyStateDesc}>There are no system updates or alerts.</p>
-              </div>
+              {notifications.length > 0 ? (
+                notifications.map(notification => (
+                  <div 
+                    key={notification.id} 
+                    className={styles.notificationItem}
+                    onClick={() => handleNotificationClick(notification)}
+                    style={{ cursor: 'pointer', backgroundColor: notification.read ? 'transparent' : 'var(--color-primary-50)' }}
+                  >
+                    <div className={styles.iconWrapper} style={{ backgroundColor: 'var(--color-neutral-100)' }}>
+                      {notification.actor?.avatar_url ? (
+                        <img 
+                          src={notification.actor.avatar_url} 
+                          alt="Avatar" 
+                          style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} 
+                        />
+                      ) : (
+                        <span className="material-symbols-outlined" style={{ color: 'var(--color-neutral-600)' }}>
+                          {getNotificationIcon(notification.type)}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.contentWrapper}>
+                      <div className={styles.headerRow}>
+                        <p className={styles.message}>
+                          {getNotificationText(notification)}
+                        </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span className={styles.timestamp}>{formatDate(notification.created_at)}</span>
+                          {!notification.read && (
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-primary-500)' }} />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className={styles.emptyState}>
+                  <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>notifications_off</span>
+                  <h3 className={styles.emptyStateTitle}>All Caught Up</h3>
+                  <p className={styles.emptyStateDesc}>You have no new notifications.</p>
+                </div>
+              )}
             </div>
           </section>
         </div>
