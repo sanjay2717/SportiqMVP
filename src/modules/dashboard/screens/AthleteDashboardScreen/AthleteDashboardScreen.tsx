@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { postService, Post, ReactionType } from '../../services/postService';
@@ -23,6 +23,21 @@ export function AthleteDashboardScreen() {
   const [editContent, setEditContent] = useState('');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
   const [hoveredReactionPostId, setHoveredReactionPostId] = useState<string | null>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = (postId: string) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoveredReactionPostId(postId);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredReactionPostId(null);
+    }, 200);
+  };
 
   const REACTIONS: { type: ReactionType; icon: string; color: string; label: string }[] = [
     { type: 'like', icon: 'thumb_up', color: 'var(--color-primary-500)', label: 'Like' },
@@ -304,9 +319,9 @@ export function AthleteDashboardScreen() {
                   <div className={styles.actionGroup} style={{ alignItems: 'center' }}>
                     <div 
                       className={styles.reactionContainer}
-                      onMouseEnter={() => setHoveredReactionPostId(post.id)}
-                      onMouseLeave={() => setHoveredReactionPostId(null)}
-                      onTouchStart={() => setHoveredReactionPostId(post.id)}
+                      onMouseEnter={() => handleMouseEnter(post.id)}
+                      onMouseLeave={handleMouseLeave}
+                      onTouchStart={() => handleMouseEnter(post.id)}
                     >
                       <button 
                         className={`${styles.actionButton} animate-press`} 
@@ -322,20 +337,22 @@ export function AthleteDashboardScreen() {
                       </button>
 
                       {hoveredReactionPostId === post.id && (
-                        <div className={`${styles.reactionPopover} animate-fade-in`}>
-                          {REACTIONS.map(reaction => (
-                            <button
-                              key={reaction.type}
-                              className={`${styles.reactionOption} animate-press`}
-                              onClick={(e) => { e.stopPropagation(); handleReaction(post, reaction.type); setHoveredReactionPostId(null); }}
-                              style={{ color: reaction.color }}
-                              title={reaction.label}
-                            >
-                              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                {reaction.icon}
-                              </span>
-                            </button>
-                          ))}
+                        <div className={`${styles.reactionPopoverWrapper} animate-fade-in`}>
+                          <div className={styles.reactionPopover}>
+                            {REACTIONS.map(reaction => (
+                              <button
+                                key={reaction.type}
+                                className={`${styles.reactionOption} animate-press`}
+                                onClick={(e) => { e.stopPropagation(); handleReaction(post, reaction.type); setHoveredReactionPostId(null); }}
+                                style={{ color: reaction.color }}
+                                title={reaction.label}
+                              >
+                                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                  {reaction.icon}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
