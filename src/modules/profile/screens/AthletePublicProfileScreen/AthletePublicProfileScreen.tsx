@@ -330,39 +330,41 @@ export function AthletePublicProfileScreen() {
         </section>
 
         {/* 2. Actions (Visual Only -> Now Functional) */}
-        <section className={styles.actionsSection}>
-          <button 
-            type="button" 
-            className={isFollowing ? styles.secondaryActionBtn : styles.primaryActionBtn}
-            onClick={handleToggleFollow}
-            disabled={isFollowLoading}
-          >
-            <span className="material-symbols-outlined">
-              {isFollowing ? 'how_to_reg' : 'person_add'}
-            </span>
-            {isFollowLoading ? 'Wait...' : isFollowing ? 'Following' : 'Follow'}
-          </button>
-          <button 
-            type="button" 
-            className={styles.secondaryActionBtn}
-            onClick={async () => {
-              if (!user || !profile || isMessaging) return;
-              setIsMessaging(true);
-              try {
-                const conversationId = await messageService.getOrCreateConversation(user.id, profile.id);
-                navigate(ROUTES.PRIVATE_CHAT.replace(':conversationId', conversationId));
-              } catch (err) {
-                console.error('Failed to create conversation:', err);
-              } finally {
-                setIsMessaging(false);
-              }
-            }}
-            disabled={isMessaging}
-          >
-            <span className="material-symbols-outlined">chat</span>
-            {isMessaging ? 'Loading...' : 'Message'}
-          </button>
-        </section>
+        {user?.id !== profile.id && (
+          <section className={styles.actionsSection}>
+            <button 
+              type="button" 
+              className={isFollowing ? styles.secondaryActionBtn : styles.primaryActionBtn}
+              onClick={handleToggleFollow}
+              disabled={isFollowLoading}
+            >
+              <span className="material-symbols-outlined">
+                {isFollowing ? 'how_to_reg' : 'person_add'}
+              </span>
+              {isFollowLoading ? 'Wait...' : isFollowing ? 'Following' : 'Follow'}
+            </button>
+            <button 
+              type="button" 
+              className={styles.secondaryActionBtn}
+              onClick={async () => {
+                if (!user || !profile || isMessaging) return;
+                setIsMessaging(true);
+                try {
+                  const conversationId = await messageService.getOrCreateConversation(user.id, profile.id);
+                  navigate(ROUTES.PRIVATE_CHAT.replace(':conversationId', conversationId));
+                } catch (err) {
+                  console.error('Failed to create conversation:', err);
+                } finally {
+                  setIsMessaging(false);
+                }
+              }}
+              disabled={isMessaging}
+            >
+              <span className="material-symbols-outlined">chat</span>
+              {isMessaging ? 'Loading...' : 'Message'}
+            </button>
+          </section>
+        )}
 
         <div className={styles.contentGrid}>
           {/* LEFT COLUMN */}

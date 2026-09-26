@@ -319,14 +319,16 @@ export function OrganizationDetailScreen() {
                 </span>
                 Share
               </button>
-              <button 
-                className={isFollowing ? styles.shareBtn : styles.followBtn}
-                onClick={handleToggleFollow}
-                disabled={isFollowLoading}
-                type="button"
-              >
-                {isFollowLoading ? 'Wait...' : isFollowing ? 'Following' : 'Follow'}
-              </button>
+              {user?.id !== profile.id && (
+                <button 
+                  className={isFollowing ? styles.shareBtn : styles.followBtn}
+                  onClick={handleToggleFollow}
+                  disabled={isFollowLoading}
+                  type="button"
+                >
+                  {isFollowLoading ? 'Wait...' : isFollowing ? 'Following' : 'Follow'}
+                </button>
+              )}
             </div>
           </div>
         </section>
