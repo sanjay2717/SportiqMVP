@@ -195,13 +195,46 @@
   font-size: var(--font-size-sm);
 }
 
-.likeActive {
-  color: var(--color-error);
-  background-color: color-mix(in srgb, var(--color-error) 10%, transparent); /* Optional fallback */
+.reactionContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.likeActive:hover {
-  background-color: color-mix(in srgb, var(--color-error) 20%, transparent);
+.reactionPopover {
+  position: absolute;
+  bottom: calc(100% + var(--spacing-2));
+  left: 0;
+  background-color: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  padding: var(--spacing-1) var(--spacing-2);
+  gap: var(--spacing-2);
+  z-index: var(--z-index-overlay);
+  transform-origin: bottom left;
+}
+
+.reactionOption {
+  background: none;
+  border: none;
+  padding: var(--spacing-2);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--duration-fast) var(--easing-default), background-color var(--duration-fast) var(--easing-default);
+}
+
+.reactionOption:hover {
+  background-color: var(--color-neutral-100);
+  transform: scale(1.2);
+}
+
+.reactionOption:active {
+  transform: scale(0.9);
 }
 
 .commentArea {

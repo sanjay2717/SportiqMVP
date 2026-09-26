@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
-import { postService, Post } from '../../services/postService';
+import { postService, Post, ReactionType } from '../../services/postService';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { ROUTES } from '../../../../routing/routes';
 import styles from './AthleteDashboardScreen.module.css';
@@ -22,6 +22,15 @@ export function AthleteDashboardScreen() {
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+  const [hoveredReactionPostId, setHoveredReactionPostId] = useState<string | null>(null);
+
+  const REACTIONS: { type: ReactionType; icon: string; color: string; label: string }[] = [
+    { type: 'like', icon: 'thumb_up', color: 'var(--color-primary-500)', label: 'Like' },
+    { type: 'love', icon: 'favorite', color: 'var(--color-error)', label: 'Love' },
+    { type: 'support', icon: 'volunteer_activism', color: 'var(--color-success)', label: 'Support' },
+    { type: 'congrats', icon: 'celebration', color: 'var(--color-warning)', label: 'Congrats' },
+    { type: 'insightful', icon: 'lightbulb', color: 'var(--color-info)', label: 'Insightful' },
+  ];
 
   const toggleExpand = (id: string) => {
     setExpandedPosts(prev => {
@@ -43,20 +52,40 @@ export function AthleteDashboardScreen() {
     }
   };
 
-  const handleToggleLike = async (post: Post) => {
+  const handleReaction = async (post: Post, newReaction?: ReactionType) => {
     if (!user) return;
-    const currentlyLiked = !!post.isLiked;
+    
+    // Default action (clicking the main button): toggle 'like'
+    let targetReaction: ReactionType | null = newReaction || null;
+    if (!newReaction) {
+      targetReaction = post.currentUserReaction ? null : 'like'; // Toggle
+    } else if (post.currentUserReaction === newReaction) {
+      targetReaction = null; // Clicking same reaction removes it
+    }
+
+    const hadReaction = !!post.currentUserReaction;
+    const hasReactionNow = !!targetReaction;
+
     // Optimistic UI
     setPosts(prev => prev.map(p => 
       p.id === post.id 
-        ? { ...p, isLiked: !currentlyLiked, likesCount: (p.likesCount || 0) + (currentlyLiked ? -1 : 1) }
+        ? { 
+            ...p, 
+            currentUserReaction: targetReaction, 
+            likesCount: (p.likesCount || 0) + (hasReactionNow && !hadReaction ? 1 : (!hasReactionNow && hadReaction ? -1 : 0)) 
+          }
         : p
     ));
+
     try {
-      await postService.toggleLike(post.id, user.id, currentlyLiked);
+      if (targetReaction) {
+        await postService.setReaction(post.id, user.id, targetReaction);
+      } else {
+        await postService.removeReaction(post.id, user.id);
+      }
     } catch (err) {
-      console.error('Like failed', err);
-      // Revert on failure (simple page reload or just flip back)
+      console.error('Reaction failed', err);
+      // Fallback on error could be implemented here
     }
   };
 
@@ -273,32 +302,47 @@ export function AthleteDashboardScreen() {
 
                 <div className={styles.cardActions}>
                   <div className={styles.actionGroup} style={{ alignItems: 'center' }}>
-                    <button 
-                      className={`${styles.actionButton} animate-press ${post.isLiked ? styles.likeActive : ''}`} 
-                      onClick={() => handleToggleLike(post)}
-                      title="Thumbs Up"
+                    <div 
+                      className={styles.reactionContainer}
+                      onMouseEnter={() => setHoveredReactionPostId(post.id)}
+                      onMouseLeave={() => setHoveredReactionPostId(null)}
+                      onTouchStart={() => setHoveredReactionPostId(post.id)}
                     >
-                      <span className={`material-symbols-outlined ${post.isLiked ? 'animate-burst' : ''}`} style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                        thumb_up
-                      </span>
-                    </button>
-                    <button 
-                      className={`${styles.actionButton} animate-press`} 
-                      onClick={() => handleToggleLike(post)}
-                      style={{ color: 'var(--color-danger-500)' }}
-                      title="Love"
-                    >
-                      <span className="material-symbols-outlined">favorite</span>
-                    </button>
-                    <button 
-                      className={`${styles.actionButton} animate-press`} 
-                      onClick={() => handleToggleLike(post)}
-                      style={{ color: '#f59e0b' }}
-                      title="Laugh"
-                    >
-                      <span className="material-symbols-outlined">sentiment_very_satisfied</span>
-                    </button>
-                    <span style={{ fontSize: '14px', color: 'var(--color-neutral-600)', fontWeight: 'bold', marginRight: '8px' }}>{post.likesCount || 0}</span>
+                      <button 
+                        className={`${styles.actionButton} animate-press`} 
+                        onClick={() => handleReaction(post)}
+                        style={post.currentUserReaction ? { color: REACTIONS.find(r => r.type === post.currentUserReaction)?.color } : {}}
+                      >
+                        <span className={`material-symbols-outlined ${post.currentUserReaction ? 'animate-burst' : ''}`} style={post.currentUserReaction ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                          {post.currentUserReaction ? REACTIONS.find(r => r.type === post.currentUserReaction)?.icon : 'thumb_up'}
+                        </span>
+                        <span className={styles.actionLabel} style={post.currentUserReaction ? { color: REACTIONS.find(r => r.type === post.currentUserReaction)?.color } : {}}>
+                          {post.currentUserReaction ? REACTIONS.find(r => r.type === post.currentUserReaction)?.label : 'Like'}
+                        </span>
+                      </button>
+
+                      {hoveredReactionPostId === post.id && (
+                        <div className={`${styles.reactionPopover} animate-fade-in`}>
+                          {REACTIONS.map(reaction => (
+                            <button
+                              key={reaction.type}
+                              className={`${styles.reactionOption} animate-press`}
+                              onClick={(e) => { e.stopPropagation(); handleReaction(post, reaction.type); setHoveredReactionPostId(null); }}
+                              style={{ color: reaction.color }}
+                              title={reaction.label}
+                            >
+                              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                {reaction.icon}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <span style={{ fontSize: '14px', color: 'var(--color-neutral-600)', fontWeight: 'bold', marginRight: '8px', marginLeft: '4px' }}>
+                      {post.likesCount || 0}
+                    </span>
                     <button 
                       className={`${styles.actionButton} animate-press`}
                       onClick={() => handleToggleComments(post.id)}

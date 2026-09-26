@@ -1,5 +1,7 @@
 import { supabase } from '../../../core/database/supabaseClient';
 
+export type ReactionType = 'like' | 'love' | 'support' | 'congrats' | 'insightful';
+
 export interface Post {
   id: string;
   author_id: string;
@@ -15,6 +17,7 @@ export interface Post {
   likesCount?: number;
   commentsCount?: number;
   isLiked?: boolean;
+  currentUserReaction?: ReactionType | null;
 }
 
 export const postService = {
@@ -24,7 +27,7 @@ export const postService = {
       .select(`
         *,
         author:profiles!author_id (full_name, avatar_url, role),
-        likes:post_likes(user_id),
+        likes:post_likes(user_id, reaction_type),
         comments:post_comments(id)
       `)
       .order('created_at', { ascending: false });
@@ -39,6 +42,7 @@ export const postService = {
       likesCount: post.likes?.length || 0,
       commentsCount: post.comments?.length || 0,
       isLiked: userId ? post.likes?.some((l: any) => l.user_id === userId) : false,
+      currentUserReaction: userId ? (post.likes?.find((l: any) => l.user_id === userId)?.reaction_type || null) : null,
       author: post.author
     }));
   },
@@ -49,7 +53,7 @@ export const postService = {
       .select(`
         *,
         author:profiles!author_id (full_name, avatar_url, role),
-        likes:post_likes(user_id),
+        likes:post_likes(user_id, reaction_type),
         comments:post_comments(id)
       `)
       .eq('author_id', authorId)
@@ -65,6 +69,7 @@ export const postService = {
       likesCount: post.likes?.length || 0,
       commentsCount: post.comments?.length || 0,
       isLiked: currentUserId ? post.likes?.some((l: any) => l.user_id === currentUserId) : false,
+      currentUserReaction: currentUserId ? (post.likes?.find((l: any) => l.user_id === currentUserId)?.reaction_type || null) : null,
       author: post.author
     }));
   },
@@ -122,18 +127,26 @@ export const postService = {
 
   async toggleLike(postId: string, userId: string, currentlyLiked: boolean): Promise<void> {
     if (currentlyLiked) {
-      const { error } = await supabase
-        .from('post_likes')
-        .delete()
-        .eq('post_id', postId)
-        .eq('user_id', userId);
-      if (error) throw error;
+      await this.removeReaction(postId, userId);
     } else {
-      const { error } = await supabase
-        .from('post_likes')
-        .insert({ post_id: postId, user_id: userId });
-      if (error) throw error;
+      await this.setReaction(postId, userId, 'like');
     }
+  },
+
+  async setReaction(postId: string, userId: string, reactionType: ReactionType): Promise<void> {
+    const { error } = await supabase
+      .from('post_likes')
+      .upsert({ post_id: postId, user_id: userId, reaction_type: reactionType }, { onConflict: 'post_id,user_id' });
+    if (error) throw error;
+  },
+
+  async removeReaction(postId: string, userId: string): Promise<void> {
+    const { error } = await supabase
+      .from('post_likes')
+      .delete()
+      .eq('post_id', postId)
+      .eq('user_id', userId);
+    if (error) throw error;
   },
 
   async addComment(postId: string, userId: string, content: string): Promise<any> {
@@ -156,3 +169,4 @@ export const postService = {
     return data || [];
   }
 };
+
