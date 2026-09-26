@@ -8,6 +8,8 @@ import { config } from '../../../../core/config';
 import { validatePassword } from '../../utils/validation';
 import { useCapsLockDetection } from '../../hooks/useCapsLockDetection';
 import { RoleSelector } from '../../../../shared/components/RoleSelector/RoleSelector';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import styles from './SignUpScreen.module.css';
 
 export function SignUpScreen() {
@@ -62,12 +64,22 @@ export function SignUpScreen() {
 
   const handleGoogleLogin = async () => {
     try {
-      await supabase.auth.signInWithOAuth({
+      const isNative = Capacitor.isNativePlatform();
+      const redirectTo = isNative ? 'com.sportiq.app://auth/callback' : `${config.appUrl}${ROUTES.AUTH_CALLBACK}`;
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${config.appUrl}${ROUTES.AUTH_CALLBACK}`,
+          redirectTo,
+          skipBrowserRedirect: isNative
         }
       });
+      
+      if (error) throw error;
+      
+      if (isNative && data?.url) {
+        await Browser.open({ url: data.url });
+      }
     } catch (err: any) {
       setError(err.message || 'Google sign-up failed. Please try again.');
     }

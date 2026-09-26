@@ -5,6 +5,8 @@ import { UserRole } from '../../../../core/auth/types';
 import { ROUTES } from '../../../../routing/routes';
 import { supabase } from '../../../../core/database/supabaseClient';
 import { config } from '../../../../core/config';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import styles from './LoginScreen.module.css';
 
 export function LoginScreen() {
@@ -36,12 +38,22 @@ export function LoginScreen() {
 
   const handleGoogleLogin = async () => {
     try {
-      await supabase.auth.signInWithOAuth({
+      const isNative = Capacitor.isNativePlatform();
+      const redirectTo = isNative ? 'com.sportiq.app://auth/callback' : `${config.appUrl}${ROUTES.AUTH_CALLBACK}`;
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${config.appUrl}${ROUTES.AUTH_CALLBACK}`,
+          redirectTo,
+          skipBrowserRedirect: isNative
         }
       });
+      
+      if (error) throw error;
+      
+      if (isNative && data?.url) {
+        await Browser.open({ url: data.url });
+      }
     } catch (err: any) {
       setError(err.message || 'Google login failed. Please try again.');
     }

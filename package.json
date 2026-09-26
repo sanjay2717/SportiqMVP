@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/browser": "^8.0.4",
+    "@capacitor/core": "^8.5.2",
     "@designcodeio/threeui": "^1.2.0",
     "@supabase/supabase-js": "^2.110.8",
     "gsap": "^3.15.0",
