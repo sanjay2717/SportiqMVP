@@ -97,7 +97,7 @@ export function TournamentDetailScreen() {
                 <span className="material-symbols-outlined">calendar_today</span>
                 <div>
                   <strong>Dates</strong>
-                  <span>{formatDate(tournament.start_date)} {tournament.end_date ? ` – ${formatDate(tournament.end_date)}` : ''}</span>
+                  <span className={styles.detailText}>{formatDate(tournament.start_date)} {tournament.end_date ? ` – ${formatDate(tournament.end_date)}` : ''}</span>
                 </div>
               </li>
               {tournament.location && (
@@ -105,7 +105,16 @@ export function TournamentDetailScreen() {
                   <span className="material-symbols-outlined">location_on</span>
                   <div>
                     <strong>Location</strong>
-                    <span>{tournament.location}</span>
+                    <span className={styles.detailText}>{tournament.location}</span>
+                  </div>
+                </li>
+              )}
+              {tournament.sport && (
+                <li className={styles.detailItem}>
+                  <span className="material-symbols-outlined">sports</span>
+                  <div>
+                    <strong>Sport</strong>
+                    <span className={styles.detailText} style={{ textTransform: 'capitalize' }}>{tournament.sport}</span>
                   </div>
                 </li>
               )}
@@ -120,7 +129,7 @@ export function TournamentDetailScreen() {
                       ) : (
                         <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>person</span>
                       )}
-                      <span>{tournament.organiser_name}</span>
+                      <span className={styles.detailText}>{tournament.organiser_name}</span>
                     </div>
                   </div>
                 </li>

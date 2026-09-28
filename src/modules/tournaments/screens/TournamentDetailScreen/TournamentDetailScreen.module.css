@@ -129,7 +129,7 @@
   margin-bottom: var(--spacing-1);
 }
 
-.detailItem span {
+.detailText {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   color: var(--color-neutral-900);
