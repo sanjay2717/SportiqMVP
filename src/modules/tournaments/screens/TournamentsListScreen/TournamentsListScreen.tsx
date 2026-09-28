@@ -5,6 +5,7 @@ import { UserRole } from '../../../../core/auth/types';
 import { getTournaments, Tournament } from '../../../tournaments/services/tournamentService';
 import { ROUTES } from '../../../../routing/routes';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
+import { getSportName } from '../../../../shared/constants/sports';
 import styles from './TournamentsListScreen.module.css';
 
 export function TournamentsListScreen() {
@@ -113,7 +114,7 @@ export function TournamentsListScreen() {
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{tournament.title}</h2>
                     {tournament.sport && (
-                      <span className={styles.sportBadge}>{tournament.sport}</span>
+                      <span className={styles.sportBadge}>{getSportName(tournament.sport)}</span>
                     )}
                   </div>
                   {tournament.description && (

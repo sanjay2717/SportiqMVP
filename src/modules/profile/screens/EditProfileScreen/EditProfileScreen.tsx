@@ -10,6 +10,7 @@ import {
   getOrganisers,
 } from '../../services/profileService';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
+import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
 import styles from './EditProfileScreen.module.css';
 
 export function EditProfileScreen() {
@@ -29,7 +30,8 @@ export function EditProfileScreen() {
   const [dateOfBirth, setDateOfBirth] = useState(''); // Unmapped
   const [location, setLocation] = useState('');
   
-  const [primarySport, setPrimarySport] = useState('Football (Soccer)');
+  const [primarySport, setPrimarySport] = useState('football');
+  const [selectedSports, setSelectedSports] = useState<string[]>([]);
   const [position, setPosition] = useState('');
   const [currentTeam, setCurrentTeam] = useState(''); // Unmapped
   const [bio, setBio] = useState('');
@@ -69,7 +71,8 @@ export function EditProfileScreen() {
           setLocation(profileData.location || '');
           
           if (profileData.selected_sports && profileData.selected_sports.length > 0) {
-            setPrimarySport(profileData.selected_sports[0] || 'Football (Soccer)');
+            setSelectedSports(profileData.selected_sports);
+            setPrimarySport(profileData.selected_sports[0] || 'football');
           }
           setPosition(profileData.primary_position || '');
           setBio(profileData.bio || '');
@@ -150,12 +153,18 @@ export function EditProfileScreen() {
         }
       }
       
-      // 2. Save text fields
+      const newSelectedSports = [...selectedSports];
+      if (newSelectedSports.length > 0) {
+        newSelectedSports[0] = primarySport;
+      } else if (primarySport) {
+        newSelectedSports.push(primarySport);
+      }
+      
       await updateEditProfile(user.id, {
         firstName,
         lastName,
         location,
-        primarySport,
+        selectedSports: newSelectedSports,
         position,
         bio,
         dateOfBirth,
@@ -331,20 +340,10 @@ export function EditProfileScreen() {
             <>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Primary Sport</label>
-                <div className={styles.inputWrapper}>
-                  <select 
-                    className={styles.input} 
-                    style={{ appearance: 'none', paddingRight: '40px' }}
-                    value={primarySport}
-                    onChange={e => setPrimarySport(e.target.value)}
-                  >
-                    <option value="Football (Soccer)">Football (Soccer)</option>
-                    <option value="Basketball">Basketball</option>
-                    <option value="Tennis">Tennis</option>
-                    <option value="Athletics">Athletics</option>
-                  </select>
-                  <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
-                </div>
+                <SportSelect 
+                  value={primarySport}
+                  onChange={setPrimarySport}
+                />
               </div>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Position / Role</label>

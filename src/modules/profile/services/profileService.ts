@@ -202,7 +202,8 @@ export interface EditProfilePayload {
   firstName: string;
   lastName: string;
   location: string;
-  primarySport: string;
+  primarySport?: string;
+  selectedSports?: string[];
   position: string;
   bio: string;
   
@@ -230,7 +231,14 @@ export async function updateEditProfile(
   payload: EditProfilePayload
 ): Promise<void> {
   const fullName = `${payload.firstName} ${payload.lastName}`.trim();
-  const selectedSports = payload.primarySport ? [payload.primarySport] : [];
+
+  // Determine selected_sports. Prefer the array if provided, fallback to primarySport, else empty.
+  let selectedSports: string[] = [];
+  if (payload.selectedSports) {
+    selectedSports = payload.selectedSports;
+  } else if (payload.primarySport) {
+    selectedSports = [payload.primarySport];
+  }
 
   const { error } = await supabase
     .from('profiles')

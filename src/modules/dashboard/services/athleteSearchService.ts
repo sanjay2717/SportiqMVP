@@ -14,6 +14,7 @@ export interface AthleteSearchResult {
 export interface SearchFilters {
   name?: string;
   regionId?: string;
+  sportId?: string;
 }
 
 export async function searchAthletes(filters: SearchFilters): Promise<AthleteSearchResult[]> {
@@ -29,6 +30,10 @@ export async function searchAthletes(filters: SearchFilters): Promise<AthleteSea
 
   if (filters.regionId && filters.regionId.trim().length > 0) {
     query = query.eq('location', filters.regionId.trim());
+  }
+
+  if (filters.sportId && filters.sportId !== 'all') {
+    query = query.contains('selected_sports', [filters.sportId]);
   }
 
   // Order by newest profiles by default

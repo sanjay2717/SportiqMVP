@@ -4,6 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { networkService, Connection } from '../../services/networkService';
 import { messageService } from '../../../messages/services/messageService';
 import { ROUTES } from '../../../../routing/routes';
+import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
 import styles from './NetworkScreen.module.css';
 
 export function NetworkScreen() {
@@ -12,7 +13,7 @@ export function NetworkScreen() {
   const [activeTab, setActiveTab] = useState<'connections' | 'discover'>('connections');
   const [connections, setConnections] = useState<Connection[]>([]);
   const [discoverUsers, setDiscoverUsers] = useState<any[]>([]);
-  const [sportFilter, setSportFilter] = useState('All');
+  const [sportFilter, setSportFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -110,19 +111,14 @@ export function NetworkScreen() {
 
         {activeTab === 'discover' && (
           <div className={styles.filterContainer}>
-            <span className="material-symbols-outlined" style={{color: 'var(--color-neutral-500)'}}>search</span>
-            <select 
-              className={styles.sportSelect}
-              value={sportFilter}
-              onChange={(e) => setSportFilter(e.target.value)}
-            >
-              <option value="All">All Sports</option>
-              <option value="Football">Football</option>
-              <option value="Athletics">Athletics</option>
-              <option value="Swimming">Swimming</option>
-              <option value="Basketball">Basketball</option>
-              <option value="Tennis">Tennis</option>
-            </select>
+            <div style={{ flex: 1 }}>
+              <SportSelect 
+                value={sportFilter}
+                onChange={setSportFilter}
+                includeAll
+                allLabel="All Sports"
+              />
+            </div>
             
             <div style={{ width: '1px', height: '24px', backgroundColor: 'var(--color-neutral-200)', margin: '0 8px' }}></div>
             

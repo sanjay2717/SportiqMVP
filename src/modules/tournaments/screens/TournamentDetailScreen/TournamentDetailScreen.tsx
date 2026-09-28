@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getTournamentById, Tournament } from '../../services/tournamentService';
 import { ROUTES } from '../../../../routing/routes';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
+import { getSportName } from '../../../../shared/constants/sports';
 import styles from './TournamentDetailScreen.module.css';
 
 export function TournamentDetailScreen() {
@@ -76,7 +77,7 @@ export function TournamentDetailScreen() {
         <div className={styles.heroContent}>
           <h1 className={styles.title}>{tournament.title}</h1>
           {tournament.sport && (
-            <span className={styles.sportBadge}>{tournament.sport}</span>
+            <span className={styles.sportBadge}>{getSportName(tournament.sport)}</span>
           )}
         </div>
       </div>
@@ -114,7 +115,7 @@ export function TournamentDetailScreen() {
                   <span className="material-symbols-outlined">sports</span>
                   <div>
                     <strong>Sport</strong>
-                    <span className={styles.detailText} style={{ textTransform: 'capitalize' }}>{tournament.sport}</span>
+                    <span className={styles.detailText}>{getSportName(tournament.sport)}</span>
                   </div>
                 </li>
               )}

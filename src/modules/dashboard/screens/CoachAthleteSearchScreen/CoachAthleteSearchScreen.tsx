@@ -5,6 +5,7 @@ import { REGION_LIST } from '../../../../shared/constants/regions';
 import { AthleteSearchResult, searchAthletes } from '../../services/athleteSearchService';
 import { AthleteResultCard } from '../../components/AthleteResultCard/AthleteResultCard';
 import { DashboardSectionHeader } from '../../components/DashboardSectionHeader/DashboardSectionHeader';
+import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
 import { PlaceholderScreen } from '../../../../shared/components/PlaceholderScreen';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import styles from './CoachAthleteSearchScreen.module.css';
@@ -27,6 +28,7 @@ export function CoachAthleteSearchScreen() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedSport, setSelectedSport] = useState('all');
 
   const [results, setResults] = useState<AthleteSearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,10 +36,10 @@ export function CoachAthleteSearchScreen() {
   const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
-    if (searchTerm !== '' || selectedRegion !== '') {
+    if (searchTerm !== '' || selectedRegion !== '' || selectedSport !== 'all') {
       setHasSearched(true);
     }
-  }, [searchTerm, selectedRegion]);
+  }, [searchTerm, selectedRegion, selectedSport]);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -48,6 +50,7 @@ export function CoachAthleteSearchScreen() {
       const data = await searchAthletes({
         name: debouncedSearchTerm,
         regionId: selectedRegion,
+        sportId: selectedSport,
       });
       setResults(data);
     } catch (err) {
@@ -55,7 +58,7 @@ export function CoachAthleteSearchScreen() {
     } finally {
       setIsLoading(false);
     }
-  }, [debouncedSearchTerm, selectedRegion]);
+  }, [debouncedSearchTerm, selectedRegion, selectedSport]);
 
   useEffect(() => {
     // Only fetch if the user is authorized
@@ -116,10 +119,12 @@ export function CoachAthleteSearchScreen() {
 
           {/* Static placeholders for visual fidelity to the Stitch design */}
           <div className={styles.dropdownWrapper}>
-            <select className={styles.dropdown} disabled>
-              <option>Sport: All</option>
-            </select>
-            <span className={`material-symbols-outlined ${styles.dropdownIcon}`}>expand_more</span>
+            <SportSelect 
+              value={selectedSport}
+              onChange={setSelectedSport}
+              includeAll
+              allLabel="Sport: All"
+            />
           </div>
 
           <div className={styles.dropdownWrapper}>

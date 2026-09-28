@@ -76,7 +76,7 @@ export const networkService = {
       .select('id, full_name, avatar_url, role, selected_sports')
       .neq('id', currentUserId);
 
-    if (sportFilter && sportFilter !== 'All') {
+    if (sportFilter && sportFilter !== 'all' && sportFilter !== 'All') {
       query = query.contains('selected_sports', [sportFilter.toLowerCase()]);
     }
     
