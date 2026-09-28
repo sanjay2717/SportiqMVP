@@ -8,7 +8,8 @@ import { ROUTES } from '../../../../routing/routes';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { networkService } from '../../../network/services/networkService';
 import { getAchievements, Achievement } from '../../services/achievementService';
-import { postService, Post } from '../../../dashboard/services/postService';
+import { postService, Post, ReactionType } from '../../../dashboard/services/postService';
+import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
 import styles from './AthletePublicProfileScreen.module.css';
 
 interface AthleteProfile {
@@ -91,18 +92,37 @@ export function AthletePublicProfileScreen() {
     }
   };
 
-  const handleToggleLike = async (post: Post) => {
+  const handleReaction = async (post: Post, newReaction?: ReactionType | null) => {
     if (!user) return;
-    const currentlyLiked = !!post.isLiked;
+    
+    let targetReaction: ReactionType | null = newReaction || null;
+    if (!newReaction) {
+      targetReaction = post.currentUserReaction ? null : 'like';
+    } else if (post.currentUserReaction === newReaction) {
+      targetReaction = null;
+    }
+
+    const hadReaction = !!post.currentUserReaction;
+    const hasReactionNow = !!targetReaction;
+
     setPosts(prev => prev.map(p => 
       p.id === post.id 
-        ? { ...p, isLiked: !currentlyLiked, likesCount: (p.likesCount || 0) + (currentlyLiked ? -1 : 1) }
+        ? { 
+            ...p, 
+            currentUserReaction: targetReaction, 
+            likesCount: (p.likesCount || 0) + (hasReactionNow && !hadReaction ? 1 : (!hasReactionNow && hadReaction ? -1 : 0)) 
+          }
         : p
     ));
+
     try {
-      await postService.toggleLike(post.id, user.id, currentlyLiked);
+      if (targetReaction) {
+        await postService.setReaction(post.id, user.id, targetReaction);
+      } else {
+        await postService.removeReaction(post.id, user.id);
+      }
     } catch (err) {
-      console.error('Like failed', err);
+      console.error('Reaction failed', err);
     }
   };
 
@@ -536,14 +556,13 @@ export function AthletePublicProfileScreen() {
                         </div>
                       )}
                       
-                      <div style={{ display: 'flex', borderTop: '1px solid var(--color-neutral-100)', paddingTop: 'var(--spacing-3)', gap: 'var(--spacing-4)' }}>
-                        <button 
-                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: post.isLiked ? 'var(--color-danger-500)' : 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
-                          onClick={() => handleToggleLike(post)}
-                        >
-                          <span className="material-symbols-outlined" style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>favorite</span>
-                          <span style={{ fontSize: '14px' }}>{post.likesCount || 0}</span>
-                        </button>
+                      <div style={{ display: 'flex', borderTop: '1px solid var(--color-neutral-100)', paddingTop: 'var(--spacing-3)', gap: 'var(--spacing-4)', alignItems: 'center' }}>
+                        <PostReactionPicker 
+                          currentUserReaction={post.currentUserReaction}
+                          onSelect={(reaction) => handleReaction(post, reaction)}
+                          onRemove={() => handleReaction(post, post.currentUserReaction)}
+                        />
+                        <span style={{ fontSize: '14px', color: 'var(--color-neutral-600)', fontWeight: 'bold' }}>{post.likesCount || 0}</span>
                         <button 
                           style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
                           onClick={() => handleToggleComments(post.id)}

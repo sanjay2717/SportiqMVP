@@ -6,6 +6,7 @@ import { getOwnProfile, ProfileData } from '../../services/profileService';
 import { ROUTES } from '../../../../routing/routes';
 import { ProfileSectionHeader } from '../../components/ProfileSectionHeader/ProfileSectionHeader';
 import { UserRole } from '../../../../core/auth/types';
+import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
 
 export function OwnProfileScreen() {
   const navigate = useNavigate();
@@ -104,19 +105,38 @@ export function OwnProfileScreen() {
     }
   };
 
-  const handleToggleLike = async (post: any) => {
+  const handleReaction = async (post: any, newReaction?: any) => {
     if (!user) return;
-    const currentlyLiked = !!post.isLiked;
+    
+    let targetReaction: any = newReaction || null;
+    if (!newReaction) {
+      targetReaction = post.currentUserReaction ? null : 'like';
+    } else if (post.currentUserReaction === newReaction) {
+      targetReaction = null;
+    }
+
+    const hadReaction = !!post.currentUserReaction;
+    const hasReactionNow = !!targetReaction;
+
     setPosts(prev => prev.map(p => 
       p.id === post.id 
-        ? { ...p, isLiked: !currentlyLiked, likesCount: (p.likesCount || 0) + (currentlyLiked ? -1 : 1) }
+        ? { 
+            ...p, 
+            currentUserReaction: targetReaction, 
+            likesCount: (p.likesCount || 0) + (hasReactionNow && !hadReaction ? 1 : (!hasReactionNow && hadReaction ? -1 : 0)) 
+          }
         : p
     ));
+
     try {
       const { postService } = await import('../../../dashboard/services/postService');
-      await postService.toggleLike(post.id, user.id, currentlyLiked);
+      if (targetReaction) {
+        await postService.setReaction(post.id, user.id, targetReaction);
+      } else {
+        await postService.removeReaction(post.id, user.id);
+      }
     } catch (err) {
-      console.error('Like failed', err);
+      console.error('Reaction failed', err);
     }
   };
 
@@ -381,27 +401,11 @@ export function OwnProfileScreen() {
                     
                     <div style={{ display: 'flex', borderTop: '1px solid var(--color-neutral-100)', paddingTop: 'var(--spacing-3)', gap: 'var(--spacing-4)', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <button 
-                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: post.isLiked ? 'var(--color-primary-500)' : 'var(--color-neutral-600)', cursor: 'pointer', padding: 0 }}
-                          onClick={() => handleToggleLike(post)}
-                          title="Thumbs Up"
-                        >
-                          <span className="material-symbols-outlined" style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>thumb_up</span>
-                        </button>
-                        <button 
-                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-danger-500)', cursor: 'pointer', padding: 0 }}
-                          onClick={() => handleToggleLike(post)}
-                          title="Love"
-                        >
-                          <span className="material-symbols-outlined">favorite</span>
-                        </button>
-                        <button 
-                          style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '4px', color: '#f59e0b', cursor: 'pointer', padding: 0 }}
-                          onClick={() => handleToggleLike(post)}
-                          title="Laugh"
-                        >
-                          <span className="material-symbols-outlined">sentiment_very_satisfied</span>
-                        </button>
+                        <PostReactionPicker 
+                          currentUserReaction={post.currentUserReaction}
+                          onSelect={(reaction) => handleReaction(post, reaction)}
+                          onRemove={() => handleReaction(post, post.currentUserReaction)}
+                        />
                         <span style={{ fontSize: '14px', color: 'var(--color-neutral-600)', marginLeft: '4px', fontWeight: 'bold' }}>{post.likesCount || 0}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>

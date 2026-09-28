@@ -1,0 +1,74 @@
+.actionButton {
+  background: none;
+  border: none;
+  padding: var(--spacing-2) var(--spacing-3);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--color-neutral-600);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--easing-default), color var(--duration-fast) var(--easing-default), transform var(--duration-fast) var(--easing-default);
+}
+
+.actionButton:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.actionButton:active {
+  transform: scale(0.95);
+}
+
+.actionButton span.actionLabel {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.reactionContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.reactionPopoverWrapper {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  padding-bottom: var(--spacing-2);
+  z-index: var(--z-index-overlay);
+  transform-origin: bottom left;
+}
+
+.reactionPopover {
+  background-color: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  padding: var(--spacing-1) var(--spacing-2);
+  gap: var(--spacing-2);
+}
+
+.reactionOption {
+  background: none;
+  border: none;
+  padding: var(--spacing-2);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--duration-fast) var(--easing-default), background-color var(--duration-fast) var(--easing-default);
+}
+
+.reactionOption:hover {
+  background-color: var(--color-neutral-100);
+  transform: scale(1.2);
+}
+
+.reactionOption:active {
+  transform: scale(0.9);
+}

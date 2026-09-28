@@ -4,6 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { postService, Post, ReactionType } from '../../services/postService';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { ROUTES } from '../../../../routing/routes';
+import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
 import styles from './AthleteDashboardScreen.module.css';
 
 
@@ -22,30 +23,6 @@ export function AthleteDashboardScreen() {
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
-  const [hoveredReactionPostId, setHoveredReactionPostId] = useState<string | null>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleMouseEnter = (postId: string) => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-    setHoveredReactionPostId(postId);
-  };
-
-  const handleMouseLeave = () => {
-    hoverTimeoutRef.current = setTimeout(() => {
-      setHoveredReactionPostId(null);
-    }, 200);
-  };
-
-  const REACTIONS: { type: ReactionType; icon: string; color: string; label: string }[] = [
-    { type: 'like', icon: 'thumb_up', color: 'var(--color-primary-500)', label: 'Like' },
-    { type: 'love', icon: 'favorite', color: 'var(--color-error)', label: 'Love' },
-    { type: 'support', icon: 'volunteer_activism', color: 'var(--color-success)', label: 'Support' },
-    { type: 'congrats', icon: 'celebration', color: 'var(--color-warning)', label: 'Congrats' },
-    { type: 'insightful', icon: 'lightbulb', color: 'var(--color-info)', label: 'Insightful' },
-  ];
 
   const toggleExpand = (id: string) => {
     setExpandedPosts(prev => {
@@ -67,7 +44,7 @@ export function AthleteDashboardScreen() {
     }
   };
 
-  const handleReaction = async (post: Post, newReaction?: ReactionType) => {
+  const handleReaction = async (post: Post, newReaction?: ReactionType | null) => {
     if (!user) return;
     
     // Default action (clicking the main button): toggle 'like'
@@ -317,45 +294,11 @@ export function AthleteDashboardScreen() {
 
                 <div className={styles.cardActions}>
                   <div className={styles.actionGroup} style={{ alignItems: 'center' }}>
-                    <div 
-                      className={styles.reactionContainer}
-                      onMouseEnter={() => handleMouseEnter(post.id)}
-                      onMouseLeave={handleMouseLeave}
-                      onTouchStart={() => handleMouseEnter(post.id)}
-                    >
-                      <button 
-                        className={`${styles.actionButton} animate-press`} 
-                        onClick={() => handleReaction(post)}
-                        style={post.currentUserReaction ? { color: REACTIONS.find(r => r.type === post.currentUserReaction)?.color } : {}}
-                      >
-                        <span className={`material-symbols-outlined ${post.currentUserReaction ? 'animate-burst' : ''}`} style={post.currentUserReaction ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                          {post.currentUserReaction ? REACTIONS.find(r => r.type === post.currentUserReaction)?.icon : 'thumb_up'}
-                        </span>
-                        <span className={styles.actionLabel} style={post.currentUserReaction ? { color: REACTIONS.find(r => r.type === post.currentUserReaction)?.color } : {}}>
-                          {post.currentUserReaction ? REACTIONS.find(r => r.type === post.currentUserReaction)?.label : 'Like'}
-                        </span>
-                      </button>
-
-                      {hoveredReactionPostId === post.id && (
-                        <div className={`${styles.reactionPopoverWrapper} animate-fade-in`}>
-                          <div className={styles.reactionPopover}>
-                            {REACTIONS.map(reaction => (
-                              <button
-                                key={reaction.type}
-                                className={`${styles.reactionOption} animate-press`}
-                                onClick={(e) => { e.stopPropagation(); handleReaction(post, reaction.type); setHoveredReactionPostId(null); }}
-                                style={{ color: reaction.color }}
-                                title={reaction.label}
-                              >
-                                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                  {reaction.icon}
-                                </span>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <PostReactionPicker 
+                      currentUserReaction={post.currentUserReaction}
+                      onSelect={(reaction) => handleReaction(post, reaction)}
+                      onRemove={() => handleReaction(post, post.currentUserReaction)}
+                    />
                     
                     <span style={{ fontSize: '14px', color: 'var(--color-neutral-600)', fontWeight: 'bold', marginRight: '8px', marginLeft: '4px' }}>
                       {post.likesCount || 0}
