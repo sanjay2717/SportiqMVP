@@ -9,7 +9,7 @@ export interface Notification {
   read: boolean;
   created_at: string;
   actor?: {
-    name: string;
+    full_name: string;
     avatar_url: string | null;
   };
 }
@@ -22,7 +22,7 @@ export async function getNotifications(): Promise<Notification[]> {
     .from('notifications')
     .select(`
       *,
-      actor:profiles!actor_id(name, avatar_url)
+      actor:profiles!actor_id(full_name, avatar_url)
     `)
     .order('created_at', { ascending: false });
 

@@ -145,7 +145,7 @@ export function NotificationsScreen() {
   };
 
   const getNotificationText = (notification: Notification) => {
-    const actorName = notification.actor?.name || 'Someone';
+    const actorName = notification.actor?.full_name || 'Someone';
     switch (notification.type) {
       case 'like': return <><span className={styles.messageBold}>{actorName}</span> liked your post.</>;
       case 'comment': return <><span className={styles.messageBold}>{actorName}</span> commented on your post.</>;
