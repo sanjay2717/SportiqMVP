@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../../routing/routes';
 import { SportEvent } from '../../services/eventService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
+import { getSportName } from '../../../../shared/constants/sports';
 import styles from './EventCard.module.css';
 
 interface EventCardProps {
@@ -13,12 +14,6 @@ const REGION_MAP: Record<string, string> = {};
 REGION_LIST.forEach(r => {
   REGION_MAP[r.id] = r.name;
 });
-
-// Capitalizes sport IDs (e.g., 'football' -> 'Football')
-function formatSportName(sportId: string | null): string {
-  if (!sportId) return 'Unknown Sport';
-  return sportId.charAt(0).toUpperCase() + sportId.slice(1);
-}
 
 export function EventCard({ event }: EventCardProps) {
   const navigate = useNavigate();
@@ -36,7 +31,7 @@ export function EventCard({ event }: EventCardProps) {
   });
 
   const locationDisplay = event.location ? (REGION_MAP[event.location] || event.location) : 'TBD';
-  const sportDisplay = formatSportName(event.sport);
+  const sportDisplay = getSportName(event.sport);
 
   return (
     <div className={`${styles.card} animate-lift`}>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { getOwnProfile, ProfileData } from '../../../profile/services/profileService';
 import { postService } from '../../services/postService';
-import { SPORTS_LIST } from '../../../../shared/constants/sports';
+import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
 import { ROUTES } from '../../../../routing/routes';
 import styles from './CreatePostScreen.module.css';
 
@@ -52,7 +52,7 @@ export function CreatePostScreen() {
       await postService.createPost({
         content: content.trim(),
         image_url: imageUrl,
-        sport: sport || undefined
+        sport: sport === 'all' || !sport ? undefined : sport
       });
 
       navigate(ROUTES.HOME);
@@ -163,17 +163,15 @@ export function CreatePostScreen() {
 
           <div className={styles.sportSelectWrapper}>
             <span className={`material-symbols-outlined ${styles.iconColorTertiary}`}>sports_score</span>
-            <select 
-              className={styles.sportSelect}
-              value={sport}
-              onChange={(e) => setSport(e.target.value)}
-              disabled={isSubmitting}
-            >
-              <option value="">Tag Sport (Optional)</option>
-              {SPORTS_LIST.map(s => (
-                <option key={s.id} value={s.name}>{s.name}</option>
-              ))}
-            </select>
+            <div style={{ flex: 1, minWidth: '150px' }}>
+              <SportSelect 
+                value={sport}
+                onChange={setSport}
+                disabled={isSubmitting}
+                includeAll
+                allLabel="Tag Sport (Optional)"
+              />
+            </div>
           </div>
         </div>
       </div>

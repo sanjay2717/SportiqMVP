@@ -10,6 +10,7 @@ import { networkService } from '../../../network/services/networkService';
 import { getAchievements, Achievement } from '../../services/achievementService';
 import { postService, Post, ReactionType } from '../../../dashboard/services/postService';
 import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
+import { getSportName } from '../../../../shared/constants/sports';
 import styles from './AthletePublicProfileScreen.module.css';
 
 interface AthleteProfile {
@@ -25,11 +26,6 @@ interface AthleteProfile {
   height_cm: number | null;
   weight_kg: number | null;
   dominant_foot: string | null;
-}
-
-function formatSportName(sportId: string | undefined): string {
-  if (!sportId) return '';
-  return sportId.charAt(0).toUpperCase() + sportId.slice(1);
 }
 
 const REGION_MAP: Record<string, string> = REGION_LIST.reduce((acc, region) => {
@@ -288,7 +284,7 @@ export function AthletePublicProfileScreen() {
   }
 
   const sportDisplay = (profile.selected_sports && profile.selected_sports.length > 0) 
-    ? formatSportName(profile.selected_sports[0]) 
+    ? getSportName(profile.selected_sports[0]) 
     : 'Athlete';
     
   const locationDisplay = profile.location ? (REGION_MAP[profile.location] || profile.location) : 'Location unknown';

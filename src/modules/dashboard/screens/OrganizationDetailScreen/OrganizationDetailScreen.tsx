@@ -4,6 +4,7 @@ import { supabase } from '../../../../core/database/supabaseClient';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { networkService } from '../../../network/services/networkService';
+import { getSportName } from '../../../../shared/constants/sports';
 
 import styles from './OrganizationDetailScreen.module.css';
 
@@ -80,7 +81,7 @@ const STITCH_ORG_PROFILE_DATA = {
 function formatSports(sports?: string[]): string {
   if (!sports || sports.length === 0) return STITCH_ORG_PROFILE_DATA.defaultSports;
   return sports
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .map((s) => getSportName(s))
     .join(', ');
 }
 

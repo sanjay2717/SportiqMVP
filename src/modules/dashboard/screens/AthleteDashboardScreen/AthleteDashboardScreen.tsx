@@ -5,6 +5,7 @@ import { postService, Post, ReactionType } from '../../services/postService';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { ROUTES } from '../../../../routing/routes';
 import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
+import { getSportName } from '../../../../shared/constants/sports';
 import styles from './AthleteDashboardScreen.module.css';
 
 
@@ -241,7 +242,7 @@ export function AthleteDashboardScreen() {
                   </div>
                   {post.sport && (
                     <span className={styles.sportBadge}>
-                      <span className="material-symbols-outlined">sports_score</span> {post.sport}
+                      <span className="material-symbols-outlined">sports_score</span> {getSportName(post.sport)}
                     </span>
                   )}
                   {post.author_id === user?.id && (

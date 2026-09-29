@@ -6,6 +6,7 @@ import { getUpcomingEvents, DashboardEvent } from '../../services/organiserServi
 import { EventItem } from '../../types';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { ROUTES } from '../../../../routing/routes';
+import { getSportName } from '../../../../shared/constants/sports';
 
 export function OrganiserDashboardScreen() {
   const navigate = useNavigate();
@@ -212,7 +213,7 @@ export function OrganiserDashboardScreen() {
                                 {ORGANISER_MOCK_DATA.upcomingEventsRegisteredText}
                               </>
                             ) : (
-                              <span>{'sport' in event ? String((event as any).sport) : ''}</span>
+                              <span>{'sport' in event ? getSportName(String((event as any).sport)) : ''}</span>
                             )}
                           </div>
                           <button className={styles.eventManageBtn}>

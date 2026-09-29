@@ -1,18 +1,13 @@
 import styles from './AthleteResultCard.module.css';
 import { useNavigate } from 'react-router-dom';
 import { AthleteSearchResult } from '../../services/athleteSearchService';
+import { getSportName } from '../../../../shared/constants/sports';
 
 // Mock function to generate an impact score based on string length to keep it deterministic per user
 function generateMockImpactScore(id: string): string {
   const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const score = 80 + (hash % 19) + ((hash % 10) / 10);
   return score.toFixed(1);
-}
-
-// Capitalizes sport IDs (e.g., 'football' -> 'Football')
-function formatSportName(sportId: string): string {
-  if (!sportId) return '';
-  return sportId.charAt(0).toUpperCase() + sportId.slice(1);
 }
 
 // Maps region IDs (e.g., 'na', 'eu', 'asia') back to readable strings
@@ -29,7 +24,7 @@ interface AthleteResultCardProps {
 
 export function AthleteResultCard({ athlete, onViewProfile }: AthleteResultCardProps) {
   const navigate = useNavigate();
-  const sportDisplay = (athlete.selected_sports && athlete.selected_sports.length > 0) ? formatSportName(athlete.selected_sports[0] as string) : 'Unknown Sport';
+  const sportDisplay = (athlete.selected_sports && athlete.selected_sports.length > 0) ? getSportName(athlete.selected_sports[0] as string) : 'Unknown Sport';
   const positionDisplay = athlete.primary_position ? ` • ${athlete.primary_position}` : '';
   const locationDisplay = athlete.location ? (REGION_MAP[athlete.location] || athlete.location) : 'Unknown Location';
   const mockImpactScore = generateMockImpactScore(athlete.id);
