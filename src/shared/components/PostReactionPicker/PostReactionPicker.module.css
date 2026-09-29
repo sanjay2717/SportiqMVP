@@ -10,6 +10,8 @@
   font-size: var(--font-size-sm);
   border-radius: var(--radius-full);
   cursor: pointer;
+  user-select: none;
+  -webkit-touch-callout: none;
   transition: background-color var(--duration-fast) var(--easing-default), color var(--duration-fast) var(--easing-default), transform var(--duration-fast) var(--easing-default);
 }
 
