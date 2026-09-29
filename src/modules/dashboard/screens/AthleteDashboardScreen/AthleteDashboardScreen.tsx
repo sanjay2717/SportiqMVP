@@ -274,17 +274,18 @@ export function AthleteDashboardScreen() {
                       </div>
                     </div>
                   ) : (
-                    <>
-                      <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`}>{post.content}</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
+                      <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`} style={{ width: '100%' }}>{post.content}</p>
                       {post.content && post.content.length > 100 && (
                         <button 
                           className={styles.readMoreBtn} 
                           onClick={() => toggleExpand(post.id)}
+                          style={{ marginTop: '4px', textAlign: 'left' }}
                         >
                           {expandedPosts.has(post.id) ? 'Show less' : '...more'}
                         </button>
                       )}
-                    </>
+                    </div>
                   )}
                   {post.image_url && (
                     <div className={styles.postImageContainer}>

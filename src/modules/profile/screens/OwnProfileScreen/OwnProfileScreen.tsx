@@ -378,19 +378,19 @@ export function OwnProfileScreen() {
                         </div>
                       </div>
                     ) : (
-                      <>
-                        <p style={{ margin: '0 0 var(--spacing-3) 0', fontSize: '14px', lineHeight: 1.5, color: 'var(--color-neutral-800)', whiteSpace: 'pre-wrap', ...( !expandedPosts.has(post.id) ? { display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {} ) }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', marginBottom: 'var(--spacing-3)' }}>
+                        <p style={{ margin: 0, width: '100%', fontSize: '14px', lineHeight: 1.5, color: 'var(--color-neutral-800)', whiteSpace: 'pre-wrap', ...( !expandedPosts.has(post.id) ? { display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {} ) }}>
                           {post.content}
                         </p>
                         {post.content && post.content.length > 100 && (
                           <button 
-                            style={{ background: 'none', border: 'none', color: 'var(--color-neutral-600)', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 600, cursor: 'pointer', marginBottom: 'var(--spacing-3)' }}
+                            style={{ background: 'none', border: 'none', color: 'var(--color-neutral-600)', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 600, cursor: 'pointer', marginTop: '4px', textAlign: 'left' }}
                             onClick={() => toggleExpand(post.id)}
                           >
                             {expandedPosts.has(post.id) ? 'Show less' : '...more'}
                           </button>
                         )}
-                      </>
+                      </div>
                     )}
                     
                     {post.image_url && (
