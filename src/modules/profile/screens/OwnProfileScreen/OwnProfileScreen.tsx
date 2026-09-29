@@ -24,6 +24,7 @@ export function OwnProfileScreen() {
   const [postComments, setPostComments] = useState<Record<string, any[]>>({});
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+  const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedPosts(prev => {
@@ -394,8 +395,11 @@ export function OwnProfileScreen() {
                     )}
                     
                     {post.image_url && (
-                      <div style={{ margin: '0 -var(--spacing-4) var(--spacing-3) -var(--spacing-4)' }}>
-                         <img src={post.image_url} alt="Post content" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }} />
+                      <div 
+                        style={{ margin: '0 -var(--spacing-4) var(--spacing-3) -var(--spacing-4)', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', maxHeight: '500px', cursor: 'pointer' }}
+                        onClick={() => setEnlargedImage(post.image_url)}
+                      >
+                         <img src={post.image_url} alt="Post content" style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain' }} />
                       </div>
                     )}
                     
@@ -471,6 +475,15 @@ export function OwnProfileScreen() {
         )}
         
       </div>
+
+      {enlargedImage && (
+        <div 
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.9)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+          onClick={() => setEnlargedImage(null)}
+        >
+          <img src={enlargedImage} alt="Enlarged view" style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain' }} />
+        </div>
+      )}
     </div>
   );
 }
