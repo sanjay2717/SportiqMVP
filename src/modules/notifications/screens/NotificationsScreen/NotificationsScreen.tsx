@@ -54,7 +54,7 @@ export function NotificationsScreen() {
     
     // NAMED SCOPE REDUCTION: Tap navigation without inline actions.
     if (notification.type === 'follow' && notification.actor_id) {
-      navigate(`${ROUTES.PROFILE}/${notification.actor_id}`);
+      navigate(ROUTES.ATHLETE_PUBLIC_PROFILE.replace(':id', notification.actor_id));
     } else if (notification.post_id) {
       navigate(`${ROUTES.HOME}#post-${notification.post_id}`);
     }

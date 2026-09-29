@@ -17,6 +17,8 @@ export function PrivateChatScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -57,7 +59,10 @@ export function PrivateChatScreen() {
     if (!conversationId) return;
 
     const unsubscribe = messageService.subscribeToMessages(conversationId, (newMsg) => {
-      setMessages((prev) => [...prev, newMsg]);
+      setMessages((prev) => {
+        if (prev.some(m => m.id === newMsg.id)) return prev;
+        return [...prev, newMsg];
+      });
     });
 
     return () => {
@@ -75,7 +80,11 @@ export function PrivateChatScreen() {
     if (!inputText.trim() || !user || !conversationId) return;
     setIsSending(true);
     try {
-      await messageService.sendMessage(conversationId, user.id, inputText.trim());
+      const sentMsg = await messageService.sendMessage(conversationId, user.id, inputText.trim());
+      setMessages((prev) => {
+        if (prev.some(m => m.id === sentMsg.id)) return prev;
+        return [...prev, sentMsg];
+      });
       setInputText('');
     } catch (err) {
       console.error('Failed to send message', err);
@@ -120,7 +129,7 @@ export function PrivateChatScreen() {
   const headerTitle = isNotesToSelf ? 'Notes to self' : (recipient ? recipient.full_name : 'Private Chat');
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${isDarkMode ? styles.darkTheme : ''}`}>
       {/* Header */}
       <header className={styles.header}>
         <button className={styles.backButton} onClick={() => navigate(-1)}>
@@ -140,9 +149,24 @@ export function PrivateChatScreen() {
         </div>
         <div className={styles.spacer}>
           {!isNotesToSelf && (
-            <button className={styles.iconButton}>
-              <span className="material-symbols-outlined">more_vert</span>
-            </button>
+            <div style={{ position: 'relative' }}>
+              <button className={styles.iconButton} onClick={() => setMenuOpen(!menuOpen)}>
+                <span className="material-symbols-outlined">more_vert</span>
+              </button>
+              {menuOpen && (
+                <div className={styles.menuDropdown}>
+                  <button 
+                    onClick={() => { setIsDarkMode(!isDarkMode); setMenuOpen(false); }}
+                    className={styles.menuDropdownButton}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                      {isDarkMode ? 'light_mode' : 'dark_mode'}
+                    </span>
+                    {isDarkMode ? 'Light Theme' : 'Dark Theme'}
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </header>
