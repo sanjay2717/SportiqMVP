@@ -13,6 +13,7 @@ export function MessagesScreen() {
   const [conversations, setConversations] = useState<ConversationWithProfiles[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isCreatingNotes, setIsCreatingNotes] = useState(false);
 
   const loadConversations = useCallback(async () => {
     if (!user) return;
@@ -35,6 +36,19 @@ export function MessagesScreen() {
 
   const handleConversationClick = (id: string) => {
     navigate(ROUTES.PRIVATE_CHAT.replace(':conversationId', id));
+  };
+
+  const handleNotesToSelfClick = async () => {
+    if (!user || isCreatingNotes) return;
+    setIsCreatingNotes(true);
+    try {
+      const convId = await messageService.getOrCreateConversation(user.id, user.id);
+      navigate(ROUTES.PRIVATE_CHAT.replace(':conversationId', convId));
+    } catch (err) {
+      console.error('Failed to open notes conversation:', err);
+    } finally {
+      setIsCreatingNotes(false);
+    }
   };
 
   const getOtherParticipant = (conv: ConversationWithProfiles) => {
@@ -111,21 +125,62 @@ export function MessagesScreen() {
       </div>
       
       <div className={styles.list}>
-        {conversations.length === 0 ? (
-          <div className={styles.emptyState}>
-            <span className={`material-symbols-outlined ${styles.emptyIcon}`}>chat_bubble</span>
-            <h3 className={styles.emptyTitle}>No messages yet</h3>
-            <p className={styles.emptySubtitle}>Start a conversation with a coach or athlete.</p>
-            <button 
-              type="button" 
-              onClick={() => navigate(getDiscoveryRoute())} 
-              style={{ marginTop: 'var(--spacing-4)', display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-5)', backgroundColor: 'var(--color-primary-500)', color: 'var(--color-on-primary)', border: 'none', borderRadius: 'var(--radius-full)', fontFamily: 'var(--font-family-label-lg)', fontWeight: 500, cursor: 'pointer', transition: 'background-color 0.2s ease' }}
+        {/* NAMED NON-STITCH EXCEPTION: Notes to self pinned row */}
+        {(() => {
+          const selfConv = conversations.find(c => c.participant_one === user?.id && c.participant_two === user?.id);
+          const ownProfile = selfConv ? selfConv.participant_one_profile : null;
+          // @ts-ignore - fallback for avatar from context if profile not loaded
+          const avatarUrl = ownProfile?.avatar_url || user?.avatar_url || user?.user_metadata?.avatar_url;
+          
+          return (
+            <div
+              className={styles.chatItem}
+              onClick={handleNotesToSelfClick}
+              style={{ backgroundColor: 'var(--color-neutral-50)' }} // slight highlight
             >
-              Discover People
-            </button>
-          </div>
-        ) : (
-          conversations.map((conv) => {
+              <div className={styles.avatarContainer}>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Notes to self" className={styles.avatar} />
+                ) : (
+                  <div className={styles.avatarFallback}>
+                    <span className="material-symbols-outlined">person</span>
+                  </div>
+                )}
+              </div>
+              <div className={styles.chatInfo}>
+                <div className={styles.chatHeader}>
+                  <h3 className={styles.chatName}>Notes to self</h3>
+                  {selfConv && <span className={styles.chatTime}>{formatTime(selfConv.last_message_at)}</span>}
+                </div>
+                <div className={styles.chatFooter}>
+                  <p className={styles.chatPreview}>You</p>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+        {(() => {
+          const filteredConversations = conversations.filter(c => !(c.participant_one === user?.id && c.participant_two === user?.id));
+          
+          if (filteredConversations.length === 0) {
+            return (
+              <div className={styles.emptyState}>
+                <span className={`material-symbols-outlined ${styles.emptyIcon}`}>chat_bubble</span>
+                <h3 className={styles.emptyTitle}>No messages yet</h3>
+                <p className={styles.emptySubtitle}>Start a conversation with a coach or athlete.</p>
+                <button 
+                  type="button" 
+                  onClick={() => navigate(getDiscoveryRoute())} 
+                  style={{ marginTop: 'var(--spacing-4)', display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-5)', backgroundColor: 'var(--color-primary-500)', color: 'var(--color-on-primary)', border: 'none', borderRadius: 'var(--radius-full)', fontFamily: 'var(--font-family-label-lg)', fontWeight: 500, cursor: 'pointer', transition: 'background-color 0.2s ease' }}
+                >
+                  Discover People
+                </button>
+              </div>
+            );
+          }
+
+          return filteredConversations.map((conv) => {
             const otherUser = getOtherParticipant(conv);
             return (
               <div
@@ -158,8 +213,8 @@ export function MessagesScreen() {
                 </div>
               </div>
             );
-          })
-        )}
+          });
+        })()}
       </div>
     </div>
   );

@@ -116,6 +116,9 @@ export function PrivateChatScreen() {
     return name.substring(0, 2).toUpperCase();
   };
 
+  const isNotesToSelf = conversation?.participant_one === conversation?.participant_two;
+  const headerTitle = isNotesToSelf ? 'Notes to self' : (recipient ? recipient.full_name : 'Private Chat');
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -133,12 +136,14 @@ export function PrivateChatScreen() {
               )}
             </div>
           )}
-          <h1 className={styles.title}>{recipient ? recipient.full_name : 'Private Chat'}</h1>
+          <h1 className={styles.title}>{headerTitle}</h1>
         </div>
         <div className={styles.spacer}>
-          <button className={styles.iconButton}>
-            <span className="material-symbols-outlined">more_vert</span>
-          </button>
+          {!isNotesToSelf && (
+            <button className={styles.iconButton}>
+              <span className="material-symbols-outlined">more_vert</span>
+            </button>
+          )}
         </div>
       </header>
 

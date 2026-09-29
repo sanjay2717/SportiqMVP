@@ -94,6 +94,7 @@ export const messageService = {
 
   /**
    * Get an existing conversation between two users, or create a new one.
+   * NOTE: self-conversation (currentUserId === otherUserId) is an intentional Notes-to-self feature.
    */
   async getOrCreateConversation(currentUserId: string, otherUserId: string): Promise<string> {
     // Check if conversation exists (either direction)
