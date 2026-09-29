@@ -24,6 +24,7 @@ export async function getNotifications(): Promise<Notification[]> {
       *,
       actor:profiles!actor_id(full_name, avatar_url)
     `)
+    .eq('recipient_id', user.id)
     .order('created_at', { ascending: false });
 
   if (error) {
