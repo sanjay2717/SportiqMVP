@@ -420,9 +420,10 @@ export function EditProfileScreen() {
                 min="100"
                 max="250"
                 step="1"
+                maxLength={3}
                 placeholder="e.g. 175"
                 value={heightCm}
-                onChange={e => setHeightCm(e.target.value)}
+                onChange={e => setHeightCm(e.target.value.slice(0, 3))}
                 onKeyDown={handleHeightKeyDown}
               />
             </div>
@@ -434,9 +435,10 @@ export function EditProfileScreen() {
                 min="30"
                 max="200"
                 step="0.1"
+                maxLength={2}
                 placeholder="e.g. 72"
                 value={weightKg}
-                onChange={e => setWeightKg(e.target.value)}
+                onChange={e => setWeightKg(e.target.value.slice(0, 2))}
                 onKeyDown={handleWeightKeyDown}
               />
             </div>

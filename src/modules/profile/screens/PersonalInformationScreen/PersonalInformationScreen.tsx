@@ -226,10 +226,11 @@ export function PersonalInformationScreen() {
                     type="number"
                     min="50"
                     max="250"
+                    maxLength={3}
                     className={styles.metricInput}
                     placeholder="--"
                     value={height}
-                    onChange={(e) => setHeight(e.target.value)}
+                    onChange={(e) => setHeight(e.target.value.slice(0, 3))}
                     onKeyDown={handleHeightKeyDown}
                     required
                   />
@@ -249,10 +250,11 @@ export function PersonalInformationScreen() {
                     min="20"
                     max="300"
                     step="0.1"
+                    maxLength={2}
                     className={styles.metricInput}
                     placeholder="--"
                     value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
+                    onChange={(e) => setWeight(e.target.value.slice(0, 2))}
                     onKeyDown={handleWeightKeyDown}
                     required
                   />
