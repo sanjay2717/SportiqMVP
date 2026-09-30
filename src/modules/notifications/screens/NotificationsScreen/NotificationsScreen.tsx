@@ -55,6 +55,8 @@ export function NotificationsScreen() {
     // NAMED SCOPE REDUCTION: Tap navigation without inline actions.
     if (notification.type === 'follow' && notification.actor_id) {
       navigate(ROUTES.ATHLETE_PUBLIC_PROFILE.replace(':id', notification.actor_id));
+    } else if (notification.type === 'profile_reminder') {
+      navigate(ROUTES.EDIT_PROFILE);
     } else if (notification.post_id) {
       navigate(`${ROUTES.HOME}#post-${notification.post_id}`);
     }
@@ -140,6 +142,7 @@ export function NotificationsScreen() {
       case 'like': return 'favorite';
       case 'comment': return 'chat_bubble';
       case 'follow': return 'person_add';
+      case 'profile_reminder': return 'account_circle';
       default: return 'notifications';
     }
   };
@@ -150,6 +153,7 @@ export function NotificationsScreen() {
       case 'like': return <><span className={styles.messageBold}>{actorName}</span> liked your post.</>;
       case 'comment': return <><span className={styles.messageBold}>{actorName}</span> commented on your post.</>;
       case 'follow': return <><span className={styles.messageBold}>{actorName}</span> started following you.</>;
+      case 'profile_reminder': return <>Your profile is incomplete. <span className={styles.messageBold}>Complete it now</span> to stand out!</>;
       default: return <><span className={styles.messageBold}>{actorName}</span> interacted with you.</>;
     }
   };

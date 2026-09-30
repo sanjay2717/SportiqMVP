@@ -300,3 +300,36 @@ export async function getCoachesByOrganisation(orgId: string): Promise<ProfileDa
   }
   return data as ProfileData[];
 }
+
+export interface ProfileCompleteness {
+  percentage: number;
+  missingFields: string[];
+}
+
+/**
+ * Calculates profile completeness for athletes based on 8 fields.
+ * Required in onboarding: selected_sports, primary_position, dominant_foot, years_of_experience
+ * Skippable in onboarding: age (date of birth), location, height_cm, weight_kg
+ */
+export function getProfileCompleteness(profile: ProfileData): ProfileCompleteness {
+  if (profile.role !== 'athlete') {
+    return { percentage: 100, missingFields: [] }; // Only applies to athletes
+  }
+
+  const fields = [
+    { name: 'Age / Date of Birth', present: profile.age !== null && profile.age !== undefined },
+    { name: 'Location', present: !!profile.location },
+    { name: 'Primary Sport', present: Array.isArray(profile.selected_sports) && profile.selected_sports.length > 0 },
+    { name: 'Position/Role', present: !!profile.primary_position },
+    { name: 'Height', present: profile.height_cm !== null && profile.height_cm !== undefined },
+    { name: 'Weight', present: profile.weight_kg !== null && profile.weight_kg !== undefined },
+    { name: 'Dominant Foot', present: !!profile.dominant_foot },
+    { name: 'Years of Experience', present: profile.years_of_experience !== null && profile.years_of_experience !== undefined },
+  ];
+
+  const presentCount = fields.filter(f => f.present).length;
+  const missingFields = fields.filter(f => !f.present).map(f => f.name);
+  const percentage = Math.round((presentCount / fields.length) * 100);
+
+  return { percentage, missingFields };
+}

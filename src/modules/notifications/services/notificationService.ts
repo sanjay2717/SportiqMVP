@@ -4,7 +4,7 @@ export interface Notification {
   id: string;
   recipient_id: string;
   actor_id: string | null;
-  type: 'like' | 'comment' | 'follow';
+  type: 'like' | 'comment' | 'follow' | 'profile_reminder';
   post_id: string | null;
   read: boolean;
   created_at: string;

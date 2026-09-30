@@ -6,6 +6,8 @@ import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { ROUTES } from '../../../../routing/routes';
 import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
 import { getSportName } from '../../../../shared/constants/sports';
+import { getOwnProfile, getProfileCompleteness, ProfileCompleteness } from '../../../profile/services/profileService';
+import { ProfileCompletenessModal } from '../../../../shared/components/ProfileCompletenessModal/ProfileCompletenessModal';
 import styles from './AthleteDashboardScreen.module.css';
 
 
@@ -25,6 +27,18 @@ export function AthleteDashboardScreen() {
   const [editContent, setEditContent] = useState('');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
+  
+  const [completeness, setCompleteness] = useState<ProfileCompleteness | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      getOwnProfile(user.id).then(profile => {
+        if (profile) {
+          setCompleteness(getProfileCompleteness(profile));
+        }
+      }).catch(err => console.error(err));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!enlargedImage) return;
@@ -385,6 +399,8 @@ export function AthleteDashboardScreen() {
           <img src={enlargedImage} alt="Enlarged view" className={styles.enlargedImage} />
         </div>
       )}
+
+      {completeness && <ProfileCompletenessModal completeness={completeness} />}
     </div>
   );
 }
