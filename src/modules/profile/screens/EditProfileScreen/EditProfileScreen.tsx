@@ -11,6 +11,7 @@ import {
 } from '../../services/profileService';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
+import { POSITIONS_BY_SPORT } from '../../../../shared/constants/positions';
 import styles from './EditProfileScreen.module.css';
 
 export function EditProfileScreen() {
@@ -109,6 +110,19 @@ export function EditProfileScreen() {
     
     loadProfile();
   }, [user]);
+
+  // Reset position if the primary sport changes and the position is no longer valid
+  useEffect(() => {
+    setPosition(prev => {
+      if (!prev) return prev;
+      if (!primarySport) return '';
+      const validPositions = POSITIONS_BY_SPORT[primarySport];
+      if (!validPositions || !validPositions.includes(prev)) {
+        return '';
+      }
+      return prev;
+    });
+  }, [primarySport]);
 
   // Clean up object URLs
   useEffect(() => {
@@ -345,15 +359,25 @@ export function EditProfileScreen() {
                   onChange={setPrimarySport}
                 />
               </div>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Position / Role</label>
-                <input 
-                  className={styles.input} 
-                  type="text" 
-                  value={position} 
-                  onChange={e => setPosition(e.target.value)} 
-                />
-              </div>
+              {primarySport && POSITIONS_BY_SPORT[primarySport] && POSITIONS_BY_SPORT[primarySport].length > 0 && (
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Position / Role</label>
+                  <div className={styles.inputWrapper}>
+                    <select 
+                      className={styles.input} 
+                      style={{ appearance: 'none', paddingRight: '40px' }}
+                      value={position} 
+                      onChange={e => setPosition(e.target.value)}
+                    >
+                      <option value="">Select position</option>
+                      {POSITIONS_BY_SPORT[primarySport].map(pos => (
+                        <option key={pos} value={pos}>{pos}</option>
+                      ))}
+                    </select>
+                    <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
+                  </div>
+                </div>
+              )}
               <div className={styles.formGroupFull}>
                 <label className={styles.label}>Current Team / Affiliation</label>
                 <input 

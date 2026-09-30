@@ -252,6 +252,23 @@ export async function updateEditProfile(
     selectedSports = [payload.primarySport];
   }
 
+  // Fetch existing positions to merge properly
+  const { data: currentProfile } = await supabase
+    .from('profiles')
+    .select('positions')
+    .eq('id', userId)
+    .single();
+
+  const existingPositions = currentProfile?.positions || {};
+  
+  // If a sport has a position, store it in the array for that sport.
+  // If position is cleared or invalid, we write an empty array to overwrite any old value.
+  const newPositions = payload.primarySport 
+    ? { [payload.primarySport]: payload.position ? [payload.position] : [] } 
+    : {};
+    
+  const mergedPositions = { ...existingPositions, ...newPositions };
+
   const { error } = await supabase
     .from('profiles')
     .update({
@@ -259,6 +276,7 @@ export async function updateEditProfile(
       location: payload.location || null,
       selected_sports: selectedSports,
       primary_position: payload.position || null,
+      positions: mergedPositions,
       bio: payload.bio || null,
       organisation_id: payload.organisationId !== undefined ? payload.organisationId : undefined,
       height_cm: payload.heightCm !== undefined ? payload.heightCm : undefined,
