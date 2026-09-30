@@ -5,7 +5,7 @@ import { REGION_LIST } from '../../../../shared/constants/regions';
 import { AthleteSearchResult, searchAthletes } from '../../services/athleteSearchService';
 import { AthleteResultCard } from '../../components/AthleteResultCard/AthleteResultCard';
 import { DashboardSectionHeader } from '../../components/DashboardSectionHeader/DashboardSectionHeader';
-import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
+import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import { PlaceholderScreen } from '../../../../shared/components/PlaceholderScreen';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import styles from './CoachAthleteSearchScreen.module.css';
@@ -119,7 +119,7 @@ export function CoachAthleteSearchScreen() {
 
           {/* Static placeholders for visual fidelity to the Stitch design */}
           <div className={styles.dropdownWrapper}>
-            <SportSelect 
+            <SportCombobox 
               value={selectedSport}
               onChange={setSelectedSport}
               includeAll

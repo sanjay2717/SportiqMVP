@@ -10,7 +10,7 @@ import {
   getOrganisers,
 } from '../../services/profileService';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
-import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
+import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import styles from './EditProfileScreen.module.css';
 
 export function EditProfileScreen() {
@@ -340,7 +340,7 @@ export function EditProfileScreen() {
             <>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Primary Sport</label>
-                <SportSelect 
+                <SportCombobox 
                   value={primarySport}
                   onChange={setPrimarySport}
                 />

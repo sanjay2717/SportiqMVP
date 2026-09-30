@@ -4,7 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { networkService, Connection } from '../../services/networkService';
 import { messageService } from '../../../messages/services/messageService';
 import { ROUTES } from '../../../../routing/routes';
-import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
+import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import styles from './NetworkScreen.module.css';
 
 export function NetworkScreen() {
@@ -112,7 +112,7 @@ export function NetworkScreen() {
         {activeTab === 'discover' && (
           <div className={styles.filterContainer}>
             <div style={{ flex: 1 }}>
-              <SportSelect 
+              <SportCombobox 
                 value={sportFilter}
                 onChange={setSportFilter}
                 includeAll

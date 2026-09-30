@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
 import { createTournament, CreateTournamentPayload } from '../../../tournaments/services/tournamentService';
-import { SPORTS_LIST } from '../../../../shared/constants/sports';
+import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import styles from './CreateTournamentScreen.module.css';
 
 export function CreateTournamentScreen() {
@@ -122,18 +122,12 @@ export function CreateTournamentScreen() {
           <label className={styles.label} htmlFor="tourney-sport">
             Sport <span className={styles.required}>*</span>
           </label>
-          <select
-            id="tourney-sport"
-            className={styles.select}
+          <SportCombobox
             value={sport}
-            onChange={e => setSport(e.target.value)}
-            required
-          >
-            <option value="" disabled>Select a sport</option>
-            {SPORTS_LIST.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
+            onChange={(val) => setSport(val === 'all' ? '' : val)}
+            includeAll
+            allLabel="Select a sport"
+          />
         </div>
 
         {/* Date Row */}

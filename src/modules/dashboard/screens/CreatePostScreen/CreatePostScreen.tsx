@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { getOwnProfile, ProfileData } from '../../../profile/services/profileService';
 import { postService } from '../../services/postService';
-import { SportSelect } from '../../../../shared/components/SportSelect/SportSelect';
+import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import { ROUTES } from '../../../../routing/routes';
 import styles from './CreatePostScreen.module.css';
 
@@ -164,7 +164,7 @@ export function CreatePostScreen() {
           <div className={styles.sportSelectWrapper}>
             <span className={`material-symbols-outlined ${styles.iconColorTertiary}`}>sports_score</span>
             <div style={{ flex: 1, minWidth: '150px' }}>
-              <SportSelect 
+              <SportCombobox 
                 value={sport}
                 onChange={setSport}
                 disabled={isSubmitting}

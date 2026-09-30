@@ -4,7 +4,7 @@ import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
 import { createEvent, CreateEventPayload } from '../../services/eventService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
-import { SPORTS_LIST } from '../../../../shared/constants/sports';
+import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import styles from './CreateEventScreen.module.css';
 
 export function CreateEventScreen() {
@@ -159,18 +159,12 @@ export function CreateEventScreen() {
 
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="sport">Sport <span className={styles.required}>*</span></label>
-            <select
-              id="sport"
-              className={styles.select}
+            <SportCombobox
               value={sport}
-              onChange={(e) => setSport(e.target.value)}
-              required
-            >
-              <option value="" disabled>Select a sport</option>
-              {SPORTS_LIST.map(s => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
+              onChange={(val) => setSport(val === 'all' ? '' : val)}
+              includeAll
+              allLabel="Select a sport"
+            />
           </div>
         </div>
 
