@@ -17,7 +17,9 @@ export function PrivateChatScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('sportiq_chat_theme') === 'dark';
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,6 +34,15 @@ export function PrivateChatScreen() {
       // Implement upload logic
       console.log('File selected:', file);
     }
+  };
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => {
+      const next = !prev;
+      localStorage.setItem('sportiq_chat_theme', next ? 'dark' : 'light');
+      return next;
+    });
+    setMenuOpen(false);
   };
 
   // Load initial messages
@@ -156,7 +167,7 @@ export function PrivateChatScreen() {
               {menuOpen && (
                 <div className={styles.menuDropdown}>
                   <button 
-                    onClick={() => { setIsDarkMode(!isDarkMode); setMenuOpen(false); }}
+                    onClick={toggleTheme}
                     className={styles.menuDropdownButton}
                   >
                     <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
