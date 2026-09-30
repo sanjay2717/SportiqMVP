@@ -6,7 +6,7 @@ import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
 import { ROUTES } from '../../../../routing/routes';
 import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
 import { getSportName } from '../../../../shared/constants/sports';
-import { getOwnProfile, getProfileCompleteness, ProfileCompleteness } from '../../../profile/services/profileService';
+import { getOwnProfile, getProfileCompleteness, ProfileCompleteness, triggerProfileReminderNotification } from '../../../profile/services/profileService';
 import { ProfileCompletenessModal } from '../../../../shared/components/ProfileCompletenessModal/ProfileCompletenessModal';
 import styles from './AthleteDashboardScreen.module.css';
 
@@ -34,7 +34,12 @@ export function AthleteDashboardScreen() {
     if (user) {
       getOwnProfile(user.id).then(profile => {
         if (profile) {
-          setCompleteness(getProfileCompleteness(profile));
+          const comp = getProfileCompleteness(profile);
+          setCompleteness(comp);
+          
+          if (comp.percentage < 100) {
+            triggerProfileReminderNotification(user.id);
+          }
         }
       }).catch(err => console.error(err));
     }

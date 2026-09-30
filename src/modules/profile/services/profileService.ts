@@ -344,3 +344,50 @@ export function getProfileCompleteness(profile: ProfileData): ProfileCompletenes
 
   return { percentage, missingFields };
 }
+
+/**
+ * Checks for a recent profile_reminder notification. If none exists, or the latest
+ * is older than 2 days, it inserts a new one.
+ */
+export async function triggerProfileReminderNotification(userId: string): Promise<void> {
+  const { data, error: selectError } = await supabase
+    .from('notifications')
+    .select('created_at')
+    .eq('recipient_id', userId)
+    .eq('type', 'profile_reminder')
+    .order('created_at', { ascending: false })
+    .limit(1);
+    
+  if (selectError) {
+    console.error('Failed to query profile_reminder', selectError);
+    return;
+  }
+  
+  let shouldInsert = false;
+  const firstRow = data && data.length > 0 ? data[0] : null;
+  if (!firstRow || !firstRow.created_at) {
+    shouldInsert = true;
+  } else {
+    const diffMs = Date.now() - new Date(firstRow.created_at).getTime();
+    const twoDaysMs = 2 * 24 * 60 * 60 * 1000;
+    if (diffMs > twoDaysMs) {
+      shouldInsert = true;
+    }
+  }
+  
+  if (shouldInsert) {
+    const { error: insertError } = await supabase
+      .from('notifications')
+      .insert({
+        recipient_id: userId,
+        type: 'profile_reminder',
+        actor_id: null,
+        post_id: null
+      });
+      
+    if (insertError) {
+      console.error('Failed to insert profile_reminder', insertError);
+    }
+  }
+}
+
