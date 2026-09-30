@@ -5,5 +5,13 @@ export const POSITIONS_BY_SPORT: Record<string, string[]> = {
   kho_kho: ['Chaser', 'Runner'],
   hockey: ['Forward', 'Midfielder', 'Defender', 'Goalkeeper'],
   volleyball: ['Setter', 'Spiker', 'Libero', 'Blocker'],
-  basketball: ['Point Guard', 'Shooting Guard', 'Forward', 'Center']
+  basketball: ['Point Guard', 'Shooting Guard', 'Forward', 'Center'],
+  athletics: [],
+  badminton: [],
+  table_tennis: [],
+  tennis: [],
+  swimming: [],
+  chess: [],
+  silambam: [],
+  carrom: []
 };

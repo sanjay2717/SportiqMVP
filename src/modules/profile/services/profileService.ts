@@ -139,6 +139,16 @@ export async function completeOnboarding(userId: string): Promise<void> {
   const weight_kg = personalInfo.weight ? parseFloat(personalInfo.weight) : null;
   const years_of_experience = playingInfo.experience ? parseInt(playingInfo.experience, 10) : null;
 
+  const { data: currentProfile } = await supabase
+    .from('profiles')
+    .select('positions')
+    .eq('id', userId)
+    .single();
+    
+  const existingPositions = currentProfile?.positions || {};
+  const newPositions = playingInfo.positions || {};
+  const mergedPositions = { ...existingPositions, ...newPositions };
+
   // Single consolidated update — all fields + onboarding_complete in one call
   const { error } = await supabase
     .from('profiles')
@@ -148,7 +158,8 @@ export async function completeOnboarding(userId: string): Promise<void> {
       height_cm: isNaN(height_cm as number) ? null : height_cm,
       weight_kg: isNaN(weight_kg as number) ? null : weight_kg,
       dominant_foot: playingInfo.dominantFoot ? playingInfo.dominantFoot.toLowerCase() : null,
-      primary_position: playingInfo.position || null,
+      primary_position: playingInfo.primary_position || null,
+      positions: mergedPositions,
       years_of_experience: isNaN(years_of_experience as number) ? null : years_of_experience,
       onboarding_complete: true,
     })
