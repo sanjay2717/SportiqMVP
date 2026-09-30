@@ -67,10 +67,6 @@ export function NotificationsScreen() {
       <main className={styles.container}>
         <header className={styles.header}>
           <Skeleton width="150px" height="32px" />
-          <div className={styles.headerActions}>
-             <Skeleton width="40px" height="40px" variant="circular" />
-             <Skeleton width="40px" height="40px" variant="circular" />
-          </div>
         </header>
         <div className={styles.content}>
           <section className={styles.section}>
@@ -165,14 +161,6 @@ export function NotificationsScreen() {
       <main className={styles.container}>
         <header className={styles.header}>
           <h1 className={styles.title}>Notifications</h1>
-          <div className={styles.headerActions}>
-            <button className={styles.iconButton} aria-label="Search">
-              <span className="material-symbols-outlined">search</span>
-            </button>
-            <button className={styles.iconButton} aria-label="Settings">
-              <span className="material-symbols-outlined">settings</span>
-            </button>
-          </div>
         </header>
 
         <div className={styles.content}>

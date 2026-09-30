@@ -179,15 +179,8 @@ export function OwnProfileScreen() {
 
   return (
     <div className={styles.container}>
-      {/* Header / Meta */}
-      <header className={styles.header}>
-        <div className={styles.headerTop}>
-          <h1 className={styles.brandTitle}>SportIQ</h1>
-          <div className={styles.headerIcons}>
-            <span className="material-symbols-outlined">search</span>
-            <span className="material-symbols-outlined">verified</span>
-          </div>
-        </div>
+      {/* Profile card — avatar, name, role, actions, bio */}
+      <div className={styles.profileCard}>
 
         <div className={styles.profileMeta}>
           <div className={styles.avatarContainer}>
@@ -240,7 +233,7 @@ export function OwnProfileScreen() {
             {profile.bio || "No bio provided."}
           </p>
         </div>
-      </header>
+      </div>
 
       {/* Tabs */}
       <div className={styles.tabsContainer}>

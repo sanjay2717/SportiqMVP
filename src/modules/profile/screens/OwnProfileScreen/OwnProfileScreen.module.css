@@ -41,31 +41,10 @@
   color: var(--color-error);
 }
 
-.header {
+.profileCard {
   background-color: var(--color-bg-primary);
   padding: var(--spacing-6);
   border-bottom: 1px solid var(--color-neutral-400);
-}
-
-.headerTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-8);
-}
-
-.brandTitle {
-  font-family: var(--font-family);
-  font-size: var(--font-size-xl);
-  color: var(--color-text-primary);
-  margin: 0;
-  font-weight: var(--font-weight-bold);
-}
-
-.headerIcons {
-  display: flex;
-  gap: var(--spacing-4);
-  color: var(--color-text-secondary);
 }
 
 .profileMeta {
