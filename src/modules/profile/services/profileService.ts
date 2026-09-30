@@ -169,9 +169,10 @@ export async function completeOnboarding(userId: string): Promise<void> {
     throw error;
   }
 
-  // Clear both stopgap keys on success only
+  // Clear all onboarding stopgap keys on wizard completion
   sessionStorage.removeItem('sportiq_onboarding_personal_info');
   sessionStorage.removeItem('sportiq_onboarding_playing_info');
+  sessionStorage.removeItem('sportiq_onboarding_selected_sports');
 }
 
 export interface ProfileData {

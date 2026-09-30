@@ -114,8 +114,6 @@ export function CreateSportsProfileScreen() {
         await refreshProfile();
       }
 
-      sessionStorage.removeItem('sportiq_onboarding_selected_sports');
-
       setShowConfirmation(true);
     } catch (err: any) {
       setError(err.message || 'Failed to save profile. Please try again.');
