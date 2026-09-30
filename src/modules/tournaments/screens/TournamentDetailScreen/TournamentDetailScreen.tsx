@@ -124,14 +124,18 @@ export function TournamentDetailScreen() {
                   <span className="material-symbols-outlined">group</span>
                   <div>
                     <strong>Organiser</strong>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                    <button
+                      type="button"
+                      className={styles.organiserLink}
+                      onClick={() => navigate(ROUTES.ORGANIZATION_DETAIL.replace(':id', tournament.organiser_id))}
+                    >
                       {tournament.organiser_avatar ? (
                         <img src={tournament.organiser_avatar} alt="Avatar" className={styles.organiserAvatar} />
                       ) : (
                         <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>person</span>
                       )}
                       <span className={styles.detailText}>{tournament.organiser_name}</span>
-                    </div>
+                    </button>
                   </div>
                 </li>
               )}

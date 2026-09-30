@@ -135,6 +135,24 @@
   color: var(--color-neutral-900);
 }
 
+.organiserLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-1);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family);
+  color: inherit;
+}
+
+.organiserLink:hover .detailText {
+  text-decoration: underline;
+  color: var(--color-primary-600);
+}
+
 .organiserAvatar {
   width: 24px;
   height: 24px;
