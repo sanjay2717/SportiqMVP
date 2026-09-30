@@ -1,0 +1,20 @@
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+  border-radius: 10px;
+  padding: 0 4px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-family: var(--font-family-label-sm, var(--font-family));
+  font-weight: bold;
+  border: 1.5px solid var(--color-surface);
+  z-index: 10;
+  pointer-events: none;
+}

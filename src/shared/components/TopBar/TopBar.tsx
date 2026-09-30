@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@core/auth/AuthProvider';
 import { ROUTES } from '@routing/routes';
+import { NotificationBadge } from '../NotificationBadge/NotificationBadge';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
@@ -27,14 +28,17 @@ export function TopBar({ showSearch = false }: TopBarProps) {
             <span className="material-symbols-outlined">search</span>
           </button>
         )}
-        <button 
-          className={styles.iconButton} 
-          onClick={() => navigate(ROUTES.NOTIFICATIONS)} 
-          aria-label="Notifications" 
-          type="button"
-        >
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
+        <div style={{ position: 'relative' }}>
+          <button 
+            className={styles.iconButton} 
+            onClick={() => navigate(ROUTES.NOTIFICATIONS)} 
+            aria-label="Notifications" 
+            type="button"
+          >
+            <span className="material-symbols-outlined">notifications</span>
+          </button>
+          <NotificationBadge />
+        </div>
         <button 
           className={styles.iconButton} 
           onClick={() => navigate(ROUTES.PROFILE)} 

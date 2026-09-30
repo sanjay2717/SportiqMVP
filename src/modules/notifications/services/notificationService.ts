@@ -14,6 +14,23 @@ export interface Notification {
   };
 }
 
+export const NOTIFICATION_READ_EVENT = 'sportiq:notifications_read';
+
+export async function getUnreadCount(userId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from('notifications')
+    .select('*', { count: 'exact', head: true })
+    .eq('recipient_id', userId)
+    .eq('read', false);
+
+  if (error) {
+    console.error('Error fetching unread notification count:', error);
+    return 0;
+  }
+
+  return count || 0;
+}
+
 export async function getNotifications(): Promise<Notification[]> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
@@ -45,6 +62,10 @@ export async function markAsRead(id: string): Promise<void> {
     console.error('Error marking notification as read:', error);
     throw error;
   }
+  
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(NOTIFICATION_READ_EVENT));
+  }
 }
 
 export async function markAllAsRead(): Promise<void> {
@@ -60,5 +81,9 @@ export async function markAllAsRead(): Promise<void> {
   if (error) {
     console.error('Error marking all notifications as read:', error);
     throw error;
+  }
+  
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(NOTIFICATION_READ_EVENT));
   }
 }
