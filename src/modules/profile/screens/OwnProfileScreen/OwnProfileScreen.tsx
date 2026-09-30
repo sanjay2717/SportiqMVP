@@ -345,7 +345,7 @@ export function OwnProfileScreen() {
                 <p className={styles.emptyStateText}>No posts yet.</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
                 {posts.map((post) => (
                   <article key={post.id} style={{ backgroundColor: 'var(--color-neutral-0)', borderRadius: '12px', padding: 'var(--spacing-4)', border: '1px solid var(--color-neutral-200)' }}>
                     <div style={{ display: 'flex', gap: 'var(--spacing-3)', marginBottom: 'var(--spacing-3)' }}>

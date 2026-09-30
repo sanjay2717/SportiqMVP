@@ -543,7 +543,7 @@ export function AthletePublicProfileScreen() {
                   <p className={styles.emptyStateDesc}>This athlete has not posted anything yet.</p>
                 </div>
               ) : activeTab === 'Posts' ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
                   {posts.map((post) => (
                     <article key={post.id} className={styles.card} style={{ padding: 'var(--spacing-4)' }}>
                       <div style={{ display: 'flex', gap: 'var(--spacing-3)', marginBottom: 'var(--spacing-3)' }}>
