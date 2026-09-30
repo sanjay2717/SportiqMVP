@@ -305,12 +305,12 @@ export function AthleteDashboardScreen() {
                   ) : (
                     <div className={styles.postTextWrapper}>
                       <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`}>{post.content}</p>
-                      {post.content && post.content.length > 100 && (
+                      {post.content && post.content.length > 120 && (
                         <button 
                           className={styles.readMoreBtn} 
                           onClick={() => toggleExpand(post.id)}
                         >
-                          {expandedPosts.has(post.id) ? 'Show less' : '...more'}
+                          {expandedPosts.has(post.id) ? 'Show less' : 'Read more'}
                         </button>
                       )}
                     </div>

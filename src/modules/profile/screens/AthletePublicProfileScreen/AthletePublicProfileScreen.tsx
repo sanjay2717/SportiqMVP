@@ -47,6 +47,16 @@ export function AthletePublicProfileScreen() {
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) => {
+    setExpandedPosts(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
   
   // Interactions state for posts
   const [postComments, setPostComments] = useState<Record<string, any[]>>({});
@@ -552,9 +562,19 @@ export function AthletePublicProfileScreen() {
                         </div>
                       </div>
                       
-                      <p style={{ margin: '0 0 var(--spacing-3) 0', fontSize: '14px', lineHeight: 1.5, color: 'var(--color-neutral-800)' }}>
-                        {post.content}
-                      </p>
+                      <div className={styles.postTextWrapper}>
+                        <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`}>
+                          {post.content}
+                        </p>
+                        {post.content && post.content.length > 120 && (
+                          <button 
+                            className={styles.readMoreBtn} 
+                            onClick={() => toggleExpand(post.id)}
+                          >
+                            {expandedPosts.has(post.id) ? 'Show less' : 'Read more'}
+                          </button>
+                        )}
+                      </div>
                       
                       {post.image_url && (
                         <div 
