@@ -420,3 +420,41 @@
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
 }
+
+.postImageContainer {
+  margin: 0 calc(-1 * var(--spacing-4)) var(--spacing-3) calc(-1 * var(--spacing-4));
+  overflow: hidden;
+  background-color: var(--color-neutral-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 500px;
+  cursor: pointer;
+}
+
+.postImage {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  display: block;
+}
+
+.enlargedImageOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.enlargedImage {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+}

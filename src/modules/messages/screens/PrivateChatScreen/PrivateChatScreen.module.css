@@ -400,15 +400,15 @@
 }
 
 .darkTheme {
-  --color-neutral-0: #121212;
-  --color-neutral-50: #1e1e1e;
-  --color-neutral-100: #2c2c2c;
-  --color-neutral-200: #333333;
-  --color-neutral-300: #444444;
-  --color-neutral-400: #555555;
-  --color-neutral-500: #666666;
-  --color-text-primary: #e0e0e0;
-  --color-text-secondary: #aaaaaa;
+  --color-neutral-0: var(--color-dark-surface);
+  --color-neutral-50: var(--color-dark-surface-alt);
+  --color-neutral-100: var(--color-dark-neutral-100);
+  --color-neutral-200: var(--color-dark-neutral-200);
+  --color-neutral-300: var(--color-dark-neutral-300);
+  --color-neutral-400: var(--color-dark-neutral-400);
+  --color-neutral-500: var(--color-dark-neutral-500);
+  --color-text-primary: var(--color-dark-text-primary);
+  --color-text-secondary: var(--color-dark-text-secondary);
 }
 
 .darkTheme .menuDropdown {

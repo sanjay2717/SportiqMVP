@@ -26,6 +26,15 @@ export function OwnProfileScreen() {
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!enlargedImage) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setEnlargedImage(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [enlargedImage]);
+
   const toggleExpand = (id: string) => {
     setExpandedPosts(prev => {
       const next = new Set(prev);
@@ -379,13 +388,13 @@ export function OwnProfileScreen() {
                         </div>
                       </div>
                     ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', marginBottom: 'var(--spacing-3)' }}>
-                        <p style={{ margin: 0, width: '100%', fontSize: '14px', lineHeight: 1.5, color: 'var(--color-neutral-800)', whiteSpace: 'pre-wrap', ...( !expandedPosts.has(post.id) ? { display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {} ) }}>
+                      <div className={styles.postTextWrapper}>
+                        <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`}>
                           {post.content}
                         </p>
                         {post.content && post.content.length > 100 && (
                           <button 
-                            style={{ background: 'none', border: 'none', color: 'var(--color-neutral-600)', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 600, cursor: 'pointer', marginTop: '4px', textAlign: 'left' }}
+                            className={styles.readMoreBtn}
                             onClick={() => toggleExpand(post.id)}
                           >
                             {expandedPosts.has(post.id) ? 'Show less' : '...more'}
@@ -396,10 +405,10 @@ export function OwnProfileScreen() {
                     
                     {post.image_url && (
                       <div 
-                        style={{ margin: '0 -var(--spacing-4) var(--spacing-3) -var(--spacing-4)', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', maxHeight: '500px', cursor: 'pointer' }}
+                        className={styles.postImageContainer}
                         onClick={() => setEnlargedImage(post.image_url)}
                       >
-                         <img src={post.image_url} alt="Post content" style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain' }} />
+                         <img src={post.image_url} alt="Post content" className={styles.postImage} />
                       </div>
                     )}
                     
@@ -478,10 +487,10 @@ export function OwnProfileScreen() {
 
       {enlargedImage && (
         <div 
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.9)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+          className={styles.enlargedImageOverlay}
           onClick={() => setEnlargedImage(null)}
         >
-          <img src={enlargedImage} alt="Enlarged view" style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain' }} />
+          <img src={enlargedImage} alt="Enlarged view" className={styles.enlargedImage} />
         </div>
       )}
     </div>

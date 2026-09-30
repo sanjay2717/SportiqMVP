@@ -190,4 +190,17 @@
      ======================================== */
   --z-index-base: 0;
   --z-index-overlay: 10;
+
+  /* ========================================
+     Colors — Dark Theme
+     ======================================== */
+  --color-dark-surface: #121212;
+  --color-dark-surface-alt: #1e1e1e;
+  --color-dark-neutral-100: #2c2c2c;
+  --color-dark-neutral-200: #333333;
+  --color-dark-neutral-300: #444444;
+  --color-dark-neutral-400: #555555;
+  --color-dark-neutral-500: #666666;
+  --color-dark-text-primary: #e0e0e0;
+  --color-dark-text-secondary: #aaaaaa;
 }

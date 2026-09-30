@@ -139,8 +139,13 @@
   margin-left: calc(-1 * var(--spacing-4));
   margin-right: calc(-1 * var(--spacing-4));
   overflow: hidden;
-  background-color: #000;
+  background-color: var(--color-neutral-900);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 500px;
+  cursor: pointer;
+}
   align-items: center;
   justify-content: center;
   max-height: 500px;
@@ -529,4 +534,31 @@
   .recommendedCard {
     min-width: auto;
   }
+}
+
+.postTextWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.enlargedImageOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.enlargedImage {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
 }

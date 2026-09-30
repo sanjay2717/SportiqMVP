@@ -52,6 +52,16 @@ export function AthletePublicProfileScreen() {
   const [postComments, setPostComments] = useState<Record<string, any[]>>({});
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState('');
+  const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!enlargedImage) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setEnlargedImage(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [enlargedImage]);
 
   const loadComments = async (postId: string) => {
     try {
@@ -547,8 +557,11 @@ export function AthletePublicProfileScreen() {
                       </p>
                       
                       {post.image_url && (
-                        <div style={{ margin: '0 -var(--spacing-4) var(--spacing-3) -var(--spacing-4)' }}>
-                           <img src={post.image_url} alt="Post content" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }} />
+                        <div 
+                          className={styles.postImageContainer}
+                          onClick={() => setEnlargedImage(post.image_url)}
+                        >
+                           <img src={post.image_url} alt="Post content" className={styles.postImage} />
                         </div>
                       )}
                       
@@ -626,6 +639,15 @@ export function AthletePublicProfileScreen() {
           </div>
         </div>
       </main>
+
+      {enlargedImage && (
+        <div 
+          className={styles.enlargedImageOverlay}
+          onClick={() => setEnlargedImage(null)}
+        >
+          <img src={enlargedImage} alt="Enlarged view" className={styles.enlargedImage} />
+        </div>
+      )}
     </div>
   );
 }

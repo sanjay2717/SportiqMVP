@@ -26,6 +26,15 @@ export function AthleteDashboardScreen() {
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!enlargedImage) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setEnlargedImage(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [enlargedImage]);
+
   const toggleExpand = (id: string) => {
     setExpandedPosts(prev => {
       const next = new Set(prev);
@@ -275,13 +284,12 @@ export function AthleteDashboardScreen() {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-                      <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`} style={{ width: '100%' }}>{post.content}</p>
+                    <div className={styles.postTextWrapper}>
+                      <p className={`${styles.postText} ${!expandedPosts.has(post.id) ? styles.lineClamp : ''}`}>{post.content}</p>
                       {post.content && post.content.length > 100 && (
                         <button 
                           className={styles.readMoreBtn} 
                           onClick={() => toggleExpand(post.id)}
-                          style={{ marginTop: '4px', textAlign: 'left' }}
                         >
                           {expandedPosts.has(post.id) ? 'Show less' : '...more'}
                         </button>
@@ -371,10 +379,10 @@ export function AthleteDashboardScreen() {
 
       {enlargedImage && (
         <div 
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.9)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+          className={styles.enlargedImageOverlay}
           onClick={() => setEnlargedImage(null)}
         >
-          <img src={enlargedImage} alt="Enlarged view" style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain' }} />
+          <img src={enlargedImage} alt="Enlarged view" className={styles.enlargedImage} />
         </div>
       )}
     </div>
