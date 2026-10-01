@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './AssignTrainingScreen.module.css';
 
 export function AssignTrainingScreen() {
@@ -67,16 +68,17 @@ export function AssignTrainingScreen() {
                 {/* Duration Picker */}
                 <div className={styles.fieldWrapper}>
                   <label className={styles.fieldLabel}>Est. Duration</label>
-                  <div className={styles.selectWrapper}>
-                    <select className={styles.selectInput} defaultValue="45 Minutes">
-                      <option>30 Minutes</option>
-                      <option>45 Minutes</option>
-                      <option>60 Minutes</option>
-                      <option>90 Minutes</option>
-                      <option>120+ Minutes</option>
-                    </select>
-                    <span className={`material-symbols-outlined ${styles.selectIcon}`}>expand_more</span>
-                  </div>
+                  <ModernSelect
+                    value="45 Minutes"
+                    onChange={() => {}}
+                    options={[
+                      { value: '30 Minutes', label: '30 Minutes' },
+                      { value: '45 Minutes', label: '45 Minutes' },
+                      { value: '60 Minutes', label: '60 Minutes' },
+                      { value: '90 Minutes', label: '90 Minutes' },
+                      { value: '120+ Minutes', label: '120+ Minutes' },
+                    ]}
+                  />
                 </div>
               </div>
             </div>

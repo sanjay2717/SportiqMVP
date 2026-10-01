@@ -8,6 +8,7 @@ import { DashboardSectionHeader } from '../../components/DashboardSectionHeader/
 import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import { PlaceholderScreen } from '../../../../shared/components/PlaceholderScreen';
 import { Skeleton } from '../../../../shared/components/Skeleton/Skeleton';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './CoachAthleteSearchScreen.module.css';
 import cardStyles from '../../components/AthleteResultCard/AthleteResultCard.module.css';
 
@@ -104,17 +105,16 @@ export function CoachAthleteSearchScreen() {
 
         <div className={styles.filtersGrid}>
           <div className={styles.dropdownWrapper}>
-            <select
-              className={styles.dropdown}
+            <ModernSelect
               value={selectedRegion}
-              onChange={(e) => setSelectedRegion(e.target.value)}
-            >
-              <option value="">District: All</option>
-              {REGION_LIST.map((region: any) => (
-                <option key={region.id} value={region.id}>{region.name}</option>
-              ))}
-            </select>
-            <span className={`material-symbols-outlined ${styles.dropdownIcon}`}>expand_more</span>
+              onChange={setSelectedRegion}
+              options={[
+                { value: '', label: 'District: All' },
+                ...REGION_LIST.map((region: any) => ({ value: region.id, label: region.name }))
+              ]}
+              placeholder="District: All"
+              aria-label="Filter by district"
+            />
           </div>
 
           {/* Static placeholders for visual fidelity to the Stitch design */}
@@ -128,10 +128,13 @@ export function CoachAthleteSearchScreen() {
           </div>
 
           <div className={styles.dropdownWrapper}>
-            <select className={styles.dropdown} disabled>
-              <option>Age: 16-24</option>
-            </select>
-            <span className={`material-symbols-outlined ${styles.dropdownIcon}`}>expand_more</span>
+            <ModernSelect
+              value=""
+              onChange={() => {}}
+              options={[{ value: '', label: 'Age: 16-24' }]}
+              disabled
+              aria-label="Age filter (coming soon)"
+            />
           </div>
         </div>
       </section>

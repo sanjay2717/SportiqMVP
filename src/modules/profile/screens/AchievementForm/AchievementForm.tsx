@@ -9,6 +9,7 @@ import {
   AchievementPayload,
   uploadAchievementImage
 } from '../../services/achievementService';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './AchievementForm.module.css';
 
 const ICON_OPTIONS = [
@@ -37,7 +38,7 @@ export function AchievementForm() {
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [iconName, setIconName] = useState(ICON_OPTIONS[0]);
+  const [iconName, setIconName] = useState<string>(ICON_OPTIONS[0] ?? '');
   const [metricValue, setMetricValue] = useState('');
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
 
@@ -56,7 +57,7 @@ export function AchievementForm() {
           setDescription(ach.description || '');
           setStartDate(ach.start_date || '');
           setEndDate(ach.end_date || '');
-          setIconName(ach.icon_name || ICON_OPTIONS[0]);
+          setIconName(ach.icon_name || ICON_OPTIONS[0] || '');
           setMetricValue(ach.metric_value || '');
           setExistingImageUrl(ach.image_url);
         } else {
@@ -227,19 +228,12 @@ export function AchievementForm() {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>Icon</label>
-            <div className={styles.inputWrapper}>
-              <select 
-                className={styles.input}
-                style={{ appearance: 'none', paddingRight: '40px' }}
-                value={iconName}
-                onChange={e => setIconName(e.target.value)}
-              >
-                {ICON_OPTIONS.map(opt => (
-                  <option key={opt} value={opt}>{opt.replace('_', ' ')}</option>
-                ))}
-              </select>
-              <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
-            </div>
+            <ModernSelect
+              value={iconName}
+              onChange={setIconName}
+              options={ICON_OPTIONS.map(opt => ({ value: opt, label: opt.replace(/_/g, ' ') }))}
+              placeholder="Select icon"
+            />
           </div>
 
           <div className={styles.formGroup}>

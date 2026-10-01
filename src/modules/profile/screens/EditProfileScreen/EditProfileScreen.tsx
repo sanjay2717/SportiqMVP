@@ -12,6 +12,7 @@ import {
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import { ModernDatePicker } from '../../../../shared/components/ModernDatePicker/ModernDatePicker';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import { POSITIONS_BY_SPORT } from '../../../../shared/constants/positions';
 import styles from './EditProfileScreen.module.css';
 
@@ -364,20 +365,15 @@ export function EditProfileScreen() {
               {primarySport && POSITIONS_BY_SPORT[primarySport] && POSITIONS_BY_SPORT[primarySport].length > 0 && (
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Position / Role</label>
-                  <div className={styles.inputWrapper}>
-                    <select 
-                      className={styles.input} 
-                      style={{ appearance: 'none', paddingRight: '40px' }}
-                      value={position} 
-                      onChange={e => setPosition(e.target.value)}
-                    >
-                      <option value="">Select position</option>
-                      {POSITIONS_BY_SPORT[primarySport].map(pos => (
-                        <option key={pos} value={pos}>{pos}</option>
-                      ))}
-                    </select>
-                    <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
-                  </div>
+                  <ModernSelect
+                    value={position}
+                    onChange={setPosition}
+                    options={[
+                      { value: '', label: 'Select position' },
+                      ...POSITIONS_BY_SPORT[primarySport].map(pos => ({ value: pos, label: pos }))
+                    ]}
+                    placeholder="Select position"
+                  />
                 </div>
               )}
               <div className={styles.formGroupFull}>
@@ -395,21 +391,16 @@ export function EditProfileScreen() {
           {user?.role === UserRole.Coach && (
             <div className={styles.formGroupFull}>
               <label className={styles.label}>Organisation</label>
-              <div className={styles.inputWrapper}>
-                <select 
-                  className={styles.input} 
-                  style={{ appearance: 'none', paddingRight: '40px' }}
-                  value={organisationId}
-                  onChange={e => setOrganisationId(e.target.value)}
-                  disabled={organisersList.length === 0}
-                >
-                  <option value="">Select an organisation</option>
-                  {organisersList.map(org => (
-                    <option key={org.id} value={org.id}>{org.full_name}</option>
-                  ))}
-                </select>
-                <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
-              </div>
+              <ModernSelect
+                value={organisationId}
+                onChange={setOrganisationId}
+                options={[
+                  { value: '', label: 'Select an organisation' },
+                  ...organisersList.map(org => ({ value: org.id, label: org.full_name }))
+                ]}
+                placeholder="Select an organisation"
+                disabled={organisersList.length === 0}
+              />
               {organisersList.length === 0 && (
                 <p className={styles.helperText} style={{ color: 'var(--color-error)' }}>No organisations available yet.</p>
               )}

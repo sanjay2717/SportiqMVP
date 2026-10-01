@@ -6,6 +6,7 @@ import { updatePersonalInformation } from '../../services/profileService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import { ModernDatePicker } from '../../../../shared/components/ModernDatePicker/ModernDatePicker';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './PersonalInformationScreen.module.css';
 
 export function PersonalInformationScreen() {
@@ -166,21 +167,16 @@ export function PersonalInformationScreen() {
             
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel} htmlFor="location">Location</label>
-              <div className={styles.selectWrapper}>
-                <select
-                  id="location"
-                  className={styles.selectField}
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>Select Region</option>
-                  {REGION_LIST.map((region) => (
-                    <option key={region.id} value={region.id}>{region.name}</option>
-                  ))}
-                </select>
-                <span className={`material-symbols-outlined ${styles.selectIcon}`} data-icon="expand_more">expand_more</span>
-              </div>
+              <ModernSelect
+                id="location"
+                value={location}
+                onChange={setLocation}
+                options={[
+                  { value: '', label: 'Select Region' },
+                  ...REGION_LIST.map(r => ({ value: r.id, label: r.name }))
+                ]}
+                placeholder="Select Region"
+              />
             </div>
           </section>
 

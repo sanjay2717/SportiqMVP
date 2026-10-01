@@ -5,6 +5,7 @@ import { networkService, Connection } from '../../services/networkService';
 import { messageService } from '../../../messages/services/messageService';
 import { ROUTES } from '../../../../routing/routes';
 import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './NetworkScreen.module.css';
 
 export function NetworkScreen() {
@@ -123,17 +124,18 @@ export function NetworkScreen() {
             <div style={{ width: '1px', height: '24px', backgroundColor: 'var(--color-neutral-200)', margin: '0 8px' }}></div>
             
             <span className="material-symbols-outlined" style={{color: 'var(--color-neutral-500)'}}>badge</span>
-            <select 
-              className={styles.sportSelect}
+            <ModernSelect
               value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-            >
-              <option value="All">All Roles</option>
-              <option value="athlete">Athlete</option>
-              <option value="coach">Coach</option>
-              <option value="organiser">Organiser</option>
-              <option value="government">Government Official</option>
-            </select>
+              onChange={setRoleFilter}
+              options={[
+                { value: 'All', label: 'All Roles' },
+                { value: 'athlete', label: 'Athlete' },
+                { value: 'coach', label: 'Coach' },
+                { value: 'organiser', label: 'Organiser' },
+                { value: 'government', label: 'Government Official' },
+              ]}
+              aria-label="Filter by role"
+            />
           </div>
         )}
 

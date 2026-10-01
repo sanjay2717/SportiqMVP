@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { updateProfileOnboarding, updateAvatarUrl } from '../../services/profileService';
 import { ROUTES } from '../../../../routing/routes';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './CreateSportsProfileScreen.module.css';
 
 interface LocationState {
@@ -248,21 +249,19 @@ export function CreateSportsProfileScreen() {
             {/* Role Selection */}
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel} htmlFor="primaryRole">Primary Role</label>
-              <div className={styles.selectWrapper}>
-                <select 
-                  className={styles.selectField}
-                  id="primaryRole"
-                  value={primaryRole}
-                  onChange={(e) => setPrimaryRole(e.target.value)}
-                >
-                  <option value="" disabled>Select your main role</option>
-                  <option value="Athlete">Athlete</option>
-                  <option value="Coach">Coach</option>
-                  <option value="Scout">Scout</option>
-                  <option value="Fan">Fan</option>
-                </select>
-                <span className={`material-symbols-outlined ${styles.selectIcon}`}>expand_more</span>
-              </div>
+              <ModernSelect
+                id="primaryRole"
+                value={primaryRole}
+                onChange={setPrimaryRole}
+                options={[
+                  { value: '', label: 'Select your main role' },
+                  { value: 'Athlete', label: 'Athlete' },
+                  { value: 'Coach', label: 'Coach' },
+                  { value: 'Scout', label: 'Scout' },
+                  { value: 'Fan', label: 'Fan' },
+                ]}
+                placeholder="Select your main role"
+              />
             </div>
 
             {/* Bio Text Area */}

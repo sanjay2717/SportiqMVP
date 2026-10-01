@@ -5,6 +5,7 @@ import { ROUTES } from '../../../../routing/routes';
 import { SPORTS_LIST } from '../../../../shared/constants/sports';
 import { POSITIONS_BY_SPORT } from '../../../../shared/constants/positions';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './PlayingInformationScreen.module.css';
 
 export function PlayingInformationScreen() {
@@ -153,23 +154,16 @@ export function PlayingInformationScreen() {
               return (
                 <div key={sportId} className={styles.inputGroup}>
                   <label className={styles.inputLabel} htmlFor={`position-${sportId}`}>{label}</label>
-                  <div className={styles.selectWrapper}>
-                    <select
-                      id={`position-${sportId}`}
-                      className={styles.selectField}
-                      value={positions[sportId] || ''}
-                      onChange={(e) => setPositions(prev => ({ ...prev, [sportId]: e.target.value }))}
-                      required
-                    >
-                      <option value="" disabled>Select position</option>
-                      {sportPositions.map((pos: string, i: number) => (
-                        <option key={i} value={pos}>{pos}</option>
-                      ))}
-                    </select>
-                    <div className={styles.selectIcon}>
-                      <span className="material-symbols-outlined">expand_more</span>
-                    </div>
-                  </div>
+                  <ModernSelect
+                    id={`position-${sportId}`}
+                    value={positions[sportId] || ''}
+                    onChange={(val) => setPositions(prev => ({ ...prev, [sportId]: val }))}
+                    options={[
+                      { value: '', label: 'Select position' },
+                      ...sportPositions.map((pos: string) => ({ value: pos, label: pos }))
+                    ]}
+                    placeholder="Select position"
+                  />
                 </div>
               );
             })}

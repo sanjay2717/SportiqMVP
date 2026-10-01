@@ -5,6 +5,7 @@ import { ROUTES } from '../../../../routing/routes';
 import { createEvent, CreateEventPayload } from '../../services/eventService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
 import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
+import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
 import styles from './CreateEventScreen.module.css';
 
 export function CreateEventScreen() {
@@ -143,18 +144,16 @@ export function CreateEventScreen() {
         <div className={styles.row}>
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="location">District <span className={styles.required}>*</span></label>
-            <select
+            <ModernSelect
               id="location"
-              className={styles.select}
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-            >
-              <option value="" disabled>Select a district</option>
-              {REGION_LIST.map(r => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </select>
+              onChange={setLocation}
+              options={[
+                { value: '', label: 'Select a district' },
+                ...REGION_LIST.map(r => ({ value: r.id, label: r.name }))
+              ]}
+              placeholder="Select a district"
+            />
           </div>
 
           <div className={styles.formGroup}>
