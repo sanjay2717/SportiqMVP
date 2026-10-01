@@ -6,7 +6,7 @@ import { updatePersonalInformation } from '../../services/profileService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import { ModernDatePicker } from '../../../../shared/components/ModernDatePicker/ModernDatePicker';
-import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
+import { LocationCombobox } from '../../../../shared/components/LocationCombobox/LocationCombobox';
 import styles from './PersonalInformationScreen.module.css';
 
 export function PersonalInformationScreen() {
@@ -167,15 +167,10 @@ export function PersonalInformationScreen() {
             
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel} htmlFor="location">Location</label>
-              <ModernSelect
-                id="location"
+              <LocationCombobox
                 value={location}
                 onChange={setLocation}
-                options={[
-                  { value: '', label: 'Select Region' },
-                  ...REGION_LIST.map(r => ({ value: r.id, label: r.name }))
-                ]}
-                placeholder="Select Region"
+                aria-label="Select location"
               />
             </div>
           </section>

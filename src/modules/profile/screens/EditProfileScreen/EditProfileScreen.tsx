@@ -13,6 +13,7 @@ import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
 import { ModernDatePicker } from '../../../../shared/components/ModernDatePicker/ModernDatePicker';
 import { ModernSelect } from '../../../../shared/components/ModernSelect/ModernSelect';
+import { LocationCombobox } from '../../../../shared/components/LocationCombobox/LocationCombobox';
 import { POSITIONS_BY_SPORT } from '../../../../shared/constants/positions';
 import styles from './EditProfileScreen.module.css';
 
@@ -335,16 +336,10 @@ export function EditProfileScreen() {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>Location</label>
-            <div className={styles.inputWrapper}>
-              <input 
-                className={`${styles.input} ${styles.inputWithIconLeft}`} 
-                type="text" 
-                value={location} 
-                onChange={e => setLocation(e.target.value)} 
-                placeholder="London, UK"
-              />
-              <span className={`material-symbols-outlined ${styles.iconLeft}`}>location_on</span>
-            </div>
+            <LocationCombobox 
+              value={location} 
+              onChange={setLocation} 
+            />
           </div>
         </div>
       </section>
