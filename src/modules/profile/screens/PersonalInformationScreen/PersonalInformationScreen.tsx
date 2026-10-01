@@ -5,6 +5,7 @@ import { ROUTES } from '../../../../routing/routes';
 import { updatePersonalInformation } from '../../services/profileService';
 import { REGION_LIST } from '../../../../shared/constants/regions';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
+import { ModernDatePicker } from '../../../../shared/components/ModernDatePicker/ModernDatePicker';
 import styles from './PersonalInformationScreen.module.css';
 
 export function PersonalInformationScreen() {
@@ -28,7 +29,7 @@ export function PersonalInformationScreen() {
 
   const [fullName, setFullName] = useState(initialState.fullName || user?.name || '');
   const [location, setLocation] = useState(initialState.location || '');
-  const [age, setAge] = useState(initialState.age || '');
+  const [dateOfBirth, setDateOfBirth] = useState(initialState.dateOfBirth || '');
   const [height, setHeight] = useState(initialState.height || '');
   const [weight, setWeight] = useState(initialState.weight || '');
 
@@ -56,13 +57,12 @@ export function PersonalInformationScreen() {
     sessionStorage.setItem('sportiq_onboarding_personal_info', JSON.stringify({
       fullName,
       location,
-      age,
+      dateOfBirth,
       height,
       weight
     }));
   };
 
-  const handleAgeKeyDown = useNumericInput(setError, false);
   const handleHeightKeyDown = useNumericInput(setError, false);
   const handleWeightKeyDown = useNumericInput(setError, true);
 
@@ -80,10 +80,6 @@ export function PersonalInformationScreen() {
     }
 
     // Bounds checking
-    if (age && (Number(age) < 10 || Number(age) > 100)) {
-      setError('Age must be between 10 and 100 years.');
-      return;
-    }
     if (height && (Number(height) < 50 || Number(height) > 250)) {
       setError('Height must be between 50 and 250 cm.');
       return;
@@ -99,7 +95,7 @@ export function PersonalInformationScreen() {
       await updatePersonalInformation(user.id, {
         fullName,
         location,
-        age,
+        dateOfBirth,
         height,
         weight
       });
@@ -193,25 +189,16 @@ export function PersonalInformationScreen() {
             <h2 className={styles.sectionTitle}>Physical Metrics</h2>
             <div className={styles.metricsGrid}>
               
-              <div className={styles.metricCard}>
+              <div className={styles.metricCard} style={{ gridColumn: '1 / -1' }}>
                 <div className={styles.metricHeader}>
                   <span className={`material-symbols-outlined ${styles.metricIcon}`} data-icon="calendar_month">calendar_month</span>
-                  <label className={styles.metricLabel} htmlFor="age">Age</label>
+                  <label className={styles.metricLabel}>Date of Birth</label>
                 </div>
-                <div className={styles.metricInputWrapper}>
-                  <input
-                    id="age"
-                    type="number"
-                    min="10"
-                    max="100"
-                    className={styles.metricInput}
-                    placeholder="--"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    onKeyDown={handleAgeKeyDown}
-                    required
+                <div style={{ marginTop: '12px' }}>
+                  <ModernDatePicker
+                    value={dateOfBirth}
+                    onChange={setDateOfBirth}
                   />
-                  <span className={styles.metricUnit}>yrs</span>
                 </div>
               </div>
 

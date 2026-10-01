@@ -11,6 +11,7 @@ import { getAchievements, Achievement } from '../../services/achievementService'
 import { postService, Post, ReactionType } from '../../../dashboard/services/postService';
 import { PostReactionPicker } from '../../../../shared/components/PostReactionPicker/PostReactionPicker';
 import { getSportName } from '../../../../shared/constants/sports';
+import { calculateAge } from '../../../../shared/utils/dateUtils';
 import styles from './AthletePublicProfileScreen.module.css';
 
 interface AthleteProfile {
@@ -20,6 +21,7 @@ interface AthleteProfile {
   role: string | null;
   selected_sports: string[];
   age: number | null;
+  date_of_birth: string | null;
   location: string | null;
   primary_position: string | null;
   bio: string | null;
@@ -150,7 +152,7 @@ export function AthletePublicProfileScreen() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, full_name, avatar_url, role, selected_sports, age, location, primary_position, bio, height_cm, weight_kg, dominant_foot')
+          .select('id, full_name, avatar_url, role, selected_sports, age, date_of_birth, location, primary_position, bio, height_cm, weight_kg, dominant_foot')
           .eq('id', id)
           .single();
 
@@ -426,12 +428,16 @@ export function AthletePublicProfileScreen() {
                 </div>
                 <div className={styles.card}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
-                    {profile.age && (
-                      <div>
-                        <p style={{ margin: 0, fontFamily: 'var(--font-family-body-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Age</p>
-                        <p style={{ margin: '4px 0 0', fontFamily: 'var(--font-family-title-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>{profile.age} yrs</p>
-                      </div>
-                    )}
+                    {(() => {
+                      const dobAge = profile.date_of_birth ? calculateAge(profile.date_of_birth) : null;
+                      const finalAge = dobAge !== null ? dobAge : profile.age;
+                      return finalAge ? (
+                        <div>
+                          <p style={{ margin: 0, fontFamily: 'var(--font-family-body-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Age</p>
+                          <p style={{ margin: '4px 0 0', fontFamily: 'var(--font-family-title-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>{finalAge} yrs</p>
+                        </div>
+                      ) : null;
+                    })()}
                     {profile.height_cm && (
                       <div>
                         <p style={{ margin: 0, fontFamily: 'var(--font-family-body-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Height</p>

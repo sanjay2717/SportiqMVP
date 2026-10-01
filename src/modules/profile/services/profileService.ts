@@ -1,4 +1,5 @@
 import { supabase } from '../../../core/database/supabaseClient';
+import { calculateAge } from '../../../shared/utils/dateUtils';
 
 export interface ProfileOnboardingPayload {
   selectedSports: string[];
@@ -33,7 +34,7 @@ export async function updateProfileOnboarding(
 export interface PersonalInformationPayload {
   fullName: string;
   location?: string;
-  age?: string;
+  dateOfBirth?: string;
   height?: string;
   weight?: string;
 }
@@ -134,7 +135,8 @@ export async function completeOnboarding(userId: string): Promise<void> {
   }
 
   // Parse numeric fields safely — null if absent/invalid
-  const age = personalInfo.age ? parseInt(personalInfo.age, 10) : null;
+  const dob = personalInfo.dateOfBirth || null;
+  const age = calculateAge(dob || '');
   const height_cm = personalInfo.height ? parseFloat(personalInfo.height) : null;
   const weight_kg = personalInfo.weight ? parseFloat(personalInfo.weight) : null;
   const years_of_experience = playingInfo.experience ? parseInt(playingInfo.experience, 10) : null;
@@ -154,7 +156,8 @@ export async function completeOnboarding(userId: string): Promise<void> {
     .from('profiles')
     .update({
       location: personalInfo.location || null,
-      age: isNaN(age as number) ? null : age,
+      date_of_birth: dob,
+      age: age !== null && !isNaN(age) ? age : null,
       height_cm: isNaN(height_cm as number) ? null : height_cm,
       weight_kg: isNaN(weight_kg as number) ? null : weight_kg,
       dominant_foot: playingInfo.dominantFoot ? playingInfo.dominantFoot.toLowerCase() : null,
@@ -191,6 +194,7 @@ export interface ProfileData {
   avatar_url: string | null;
   organisation_id?: string | null;
   age: number | null;
+  date_of_birth: string | null;
 }
 
 export async function getOwnProfile(userId: string): Promise<ProfileData | null> {
@@ -268,6 +272,7 @@ export async function updateEditProfile(
     : {};
     
   const mergedPositions = { ...existingPositions, ...newPositions };
+  const computedAge = calculateAge(payload.dateOfBirth || '');
 
   const { error } = await supabase
     .from('profiles')
@@ -278,6 +283,8 @@ export async function updateEditProfile(
       primary_position: payload.position || null,
       positions: mergedPositions,
       bio: payload.bio || null,
+      date_of_birth: payload.dateOfBirth || null,
+      age: computedAge !== null && !isNaN(computedAge) ? computedAge : null,
       organisation_id: payload.organisationId !== undefined ? payload.organisationId : undefined,
       height_cm: payload.heightCm !== undefined ? payload.heightCm : undefined,
       weight_kg: payload.weightKg !== undefined ? payload.weightKg : undefined,
@@ -291,13 +298,12 @@ export async function updateEditProfile(
 
   // Stopgap schema warning for unpersisted fields
   if (
-    payload.dateOfBirth ||
     payload.currentTeam ||
     payload.highlightReelUrl ||
     payload.instagramUsername
   ) {
     console.warn(
-      'SCHEMA GAP: Date of Birth, Current Team, Highlight Reel URL, and Instagram Username ' +
+      'SCHEMA GAP: Current Team, Highlight Reel URL, and Instagram Username ' +
       'cannot be persisted to Supabase yet. Ensure they are handled client-side pending a database migration.'
     );
   }

@@ -11,6 +11,7 @@ import {
 } from '../../services/profileService';
 import { useNumericInput } from '../../../../shared/hooks/useNumericInput';
 import { SportCombobox } from '../../../../shared/components/SportCombobox/SportCombobox';
+import { ModernDatePicker } from '../../../../shared/components/ModernDatePicker/ModernDatePicker';
 import { POSITIONS_BY_SPORT } from '../../../../shared/constants/positions';
 import styles from './EditProfileScreen.module.css';
 
@@ -94,6 +95,9 @@ export function EditProfileScreen() {
           }
           if (profileData.dominant_foot) {
             setDominantFoot(profileData.dominant_foot);
+          }
+          if (profileData.date_of_birth) {
+            setDateOfBirth(profileData.date_of_birth);
           }
         }
         
@@ -321,11 +325,9 @@ export function EditProfileScreen() {
           {user?.role === UserRole.Athlete && (
             <div className={styles.formGroup}>
               <label className={styles.label}>Date of Birth</label>
-              <input 
-                className={styles.input} 
-                type="date" 
+              <ModernDatePicker 
                 value={dateOfBirth} 
-                onChange={e => setDateOfBirth(e.target.value)} 
+                onChange={setDateOfBirth} 
               />
             </div>
           )}

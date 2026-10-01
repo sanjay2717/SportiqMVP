@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.selectWrapper {
+  position: relative;
+  flex: 1;
+}
+
+.select {
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-sm);
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.select:focus {
+  border-color: var(--color-primary);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+  font-size: 20px;
+}

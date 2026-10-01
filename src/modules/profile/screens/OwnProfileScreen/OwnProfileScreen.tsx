@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './OwnProfileScreen.module.css';
 import { useAuth } from '../../../../core/auth/AuthProvider';
 import { getOwnProfile, ProfileData } from '../../services/profileService';
+import { calculateAge } from '../../../../shared/utils/dateUtils';
 import { ROUTES } from '../../../../routing/routes';
 import { ProfileSectionHeader } from '../../components/ProfileSectionHeader/ProfileSectionHeader';
 import { UserRole } from '../../../../core/auth/types';
@@ -253,8 +254,12 @@ export function OwnProfileScreen() {
               
               <div className={styles.statBox}>
                 <span className={styles.statLabel}>Age</span>
-                <span className={styles.statValue}>
-                  {profile.age ? `${profile.age} yrs` : 'Not set'}
+                <span className={styles.statValue} style={{ color: 'var(--color-text-secondary)', userSelect: 'none' }}>
+                  {(() => {
+                    const dobAge = profile.date_of_birth ? calculateAge(profile.date_of_birth) : null;
+                    const finalAge = dobAge !== null ? dobAge : profile.age;
+                    return finalAge ? `${finalAge} yrs` : 'Not set';
+                  })()}
                 </span>
               </div>
 
